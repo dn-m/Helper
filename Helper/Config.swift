@@ -17,7 +17,7 @@ struct ConfigCommand: CommandProtocol {
     }
     
     var function: String {
-        return "Updates configuration: README,md, .travis.yml, .swiftlint.yml, .hound.yml, .gitignore.yml"
+        return "Updates configuration: README.md, .travis.yml, .swiftlint.yml, .hound.yml, .gitignore.yml"
     }
     
     // FIXME: Implement
