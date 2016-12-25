@@ -8,6 +8,7 @@
 
 import Foundation
 
+// All arguments (not including program name (dn-m))
 var arguments = CommandLine.arguments.dropFirst()
 
 guard !arguments.isEmpty else {
@@ -17,3 +18,4 @@ guard !arguments.isEmpty else {
     print("No commands or options given.")
     exit(1)
 }
+

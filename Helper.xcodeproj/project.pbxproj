@@ -110,6 +110,13 @@
 			name = Result;
 			sourceTree = "<group>";
 		};
+		072166821E1056E800A5D2CD /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Commands;
+			sourceTree = "<group>";
+		};
 		07DABEC41E1025BA00E35172 = {
 			isa = PBXGroup;
 			children = (
@@ -140,6 +147,7 @@
 				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
 				07DABEE51E10429F00E35172 /* FileUtilities.swift */,
 				07DABEE31E10425100E35172 /* Error.swift */,
+				072166821E1056E800A5D2CD /* Commands */,
 				072166811E1050A900A5D2CD /* Result */,
 				0721667C1E104FCA00A5D2CD /* Commandant */,
 			);
