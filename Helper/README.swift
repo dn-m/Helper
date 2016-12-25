@@ -55,7 +55,7 @@ private struct Readme {
     }
     
     private var codeCovBadge: String {
-        return "[![codecov](https://codecov.io/gh/dn-m/\(projectName)/branch/master/graph/badge.svg)](https://codecov.io/gh/dn-m/\(projectName)/))"
+        return "[![codecov](https://codecov.io/gh/dn-m/\(projectName)/branch/master/graph/badge.svg)](https://codecov.io/gh/dn-m/\(projectName))"
     }
     
     private var carthageBadge: String {
@@ -74,6 +74,7 @@ private struct Readme {
         result.line("## Integration")
         result.line("### Carthage")
         result.line("Integrate **\(projectName)** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).")
+        result.line()
         result.line("1. Follow [these instructions](https://github.com/Carthage/Carthage#installing-carthage) to install Carthage, if necessary.")
         result.line("2. Add `github \"dn-m/\(projectName)\"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).")
         result.line("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **\(projectName)** into your OSX or iOS project.")

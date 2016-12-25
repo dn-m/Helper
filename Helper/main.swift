@@ -8,12 +8,28 @@
 
 import Foundation
 
-var arguments = CommandLine.arguments.dropFirst()
+struct Project {
+    let directory: URL
+    let name: String
+}
 
-guard !arguments.isEmpty else {
-    
-    // TODO: Show help
-    
-    print("No commands or options given.")
+let fileManager = FileManager()
+let currentDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath)
+let projectName = fileManager.currentDirectoryPath.components(separatedBy: "/").last!
+
+let project = Project(
+    directory: currentDirectory,
+    name: projectName
+)
+
+// Prepare commands
+let registry = CommandRegistry<CommandLineError>()
+registry.register(InitCommand())
+registry.register(ConfigCommand())
+registry.register(UpdateCommand())
+
+// Parse commands and run necessary processes
+registry.main(defaultVerb: "update") { error in
+    print("fuck")
     exit(1)
 }
