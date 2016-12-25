@@ -58,7 +58,7 @@
 		072166711E104FAF00A5D2CD /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
 		0721667D1E1050A400A5D2CD /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		0721667E1E1050A400A5D2CD /* ResultProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultProtocol.swift; sourceTree = "<group>"; };
-		07DABECD1E1025BA00E35172 /* Helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Helper; sourceTree = BUILT_PRODUCTS_DIR; };
+		07DABECD1E1025BA00E35172 /* dn-m */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "dn-m"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DABED01E1025BA00E35172 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		07DABED71E102D4500E35172 /* TravisCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravisCI.swift; sourceTree = "<group>"; };
 		07DABED91E102D5200E35172 /* HoundCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HoundCI.swift; sourceTree = "<group>"; };
@@ -121,7 +121,7 @@
 		07DABECE1E1025BA00E35172 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				07DABECD1E1025BA00E35172 /* Helper */,
+				07DABECD1E1025BA00E35172 /* dn-m */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -163,7 +163,7 @@
 			);
 			name = Helper;
 			productName = Helper;
-			productReference = 07DABECD1E1025BA00E35172 /* Helper */;
+			productReference = 07DABECD1E1025BA00E35172 /* dn-m */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -330,7 +330,7 @@
 			buildSettings = {
 				DEVELOPMENT_TEAM = F8LCL8SXLX;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "dn-m";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -340,7 +340,7 @@
 			buildSettings = {
 				DEVELOPMENT_TEAM = F8LCL8SXLX;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "dn-m";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

@@ -8,3 +8,12 @@
 
 import Foundation
 
+var arguments = CommandLine.arguments.dropFirst()
+
+guard !arguments.isEmpty else {
+    
+    // TODO: Show help
+    
+    print("No commands or options given.")
+    exit(1)
+}
