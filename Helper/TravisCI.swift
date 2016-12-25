@@ -22,7 +22,7 @@ private func prepareTravisCIContents(projectName: String) -> String {
     result.line("env:")
     result.line("  matrix:")
     result.line("    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\"")
-    result.line("      SCHEME=\"Collections\"")
+    result.line("      SCHEME=\"\(projectName)\"")
     result.line("    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\"")
     result.line("      SCHEME=\"\(projectName)\"")
     result.line("    - DESTINATION=\"platform=OS X\"")

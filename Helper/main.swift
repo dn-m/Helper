@@ -17,6 +17,8 @@ let fileManager = FileManager()
 let currentDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath)
 let projectName = fileManager.currentDirectoryPath.components(separatedBy: "/").last!
 
+print("name: \(projectName) dir: \(currentDirectory)")
+
 let project = Project(
     directory: currentDirectory,
     name: projectName
