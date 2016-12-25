@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		07DABED11E1025BA00E35172 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED01E1025BA00E35172 /* main.swift */; };
+		07DABED81E102D4500E35172 /* TravisCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED71E102D4500E35172 /* TravisCI.swift */; };
+		07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED91E102D5200E35172 /* HoundCI.swift */; };
+		07DABEDC1E102D5900E35172 /* Cartfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDB1E102D5900E35172 /* Cartfile.swift */; };
+		07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDD1E102D6500E35172 /* GitIgnore.swift */; };
+		07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDF1E102D7300E35172 /* SwiftLint.swift */; };
+		07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE11E102D9A00E35172 /* StringExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +31,12 @@
 /* Begin PBXFileReference section */
 		07DABECD1E1025BA00E35172 /* Helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Helper; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DABED01E1025BA00E35172 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		07DABED71E102D4500E35172 /* TravisCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravisCI.swift; sourceTree = "<group>"; };
+		07DABED91E102D5200E35172 /* HoundCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HoundCI.swift; sourceTree = "<group>"; };
+		07DABEDB1E102D5900E35172 /* Cartfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cartfile.swift; sourceTree = "<group>"; };
+		07DABEDD1E102D6500E35172 /* GitIgnore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIgnore.swift; sourceTree = "<group>"; };
+		07DABEDF1E102D7300E35172 /* SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftLint.swift; sourceTree = "<group>"; };
+		07DABEE11E102D9A00E35172 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +70,12 @@
 			isa = PBXGroup;
 			children = (
 				07DABED01E1025BA00E35172 /* main.swift */,
+				07DABED71E102D4500E35172 /* TravisCI.swift */,
+				07DABEDF1E102D7300E35172 /* SwiftLint.swift */,
+				07DABED91E102D5200E35172 /* HoundCI.swift */,
+				07DABEDB1E102D5900E35172 /* Cartfile.swift */,
+				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
+				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -121,7 +139,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */,
+				07DABED81E102D4500E35172 /* TravisCI.swift in Sources */,
+				07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */,
+				07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */,
 				07DABED11E1025BA00E35172 /* main.swift in Sources */,
+				07DABEDC1E102D5900E35172 /* Cartfile.swift in Sources */,
+				07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
