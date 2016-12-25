@@ -8,14 +8,14 @@
 
 import Foundation
 
-// All arguments (not including program name (dn-m))
-var arguments = CommandLine.arguments.dropFirst()
+// Prepare commands
+let registry = CommandRegistry<CommandLineError>()
+registry.register(InitCommand())
+registry.register(ConfigCommand())
+registry.register(UpdateCommand())
 
-guard !arguments.isEmpty else {
-    
-    // TODO: Show help
-    
-    print("No commands or options given.")
+// Parse commands and run necessary processes
+registry.main(defaultVerb: "update") { error in
+    print("fuck")
     exit(1)
 }
-

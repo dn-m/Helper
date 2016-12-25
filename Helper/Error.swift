@@ -12,16 +12,3 @@ internal enum FileError: Error {
     
     case error
 }
-
-struct LogCommand: CommandProtocol {
-    typealias Options = LogOptions
-    
-    let verb = "log"
-    let function = "Reads the log"
-    
-    func run(_ options: Options) -> Result<(), CommandError> {
-        // Use the parsed options to do something interesting here.
-        fatalError()
-        //return ()
-    }
-}
