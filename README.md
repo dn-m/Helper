@@ -3,6 +3,8 @@ Command line interface for managing `dn-m` frameworks
 
 <a name="integration"></a>
 ## Integration
+
+### Clone and build from source
 1. `git clone https://github.com/dn-m/Helper`
 2. `cd Helper`
 3. `xcodebuild`
