@@ -8,27 +8,10 @@
 
 import Foundation
 
-/// - TODO: Generalize this and move up in project abstraction.
-enum Error: Swift.Error {
-    case error
-}
-
 /// Create a `.travis.yml` file for a given `projectName` in the given `directory`.
 internal func createTravisYML(projectName: String, in directory: URL) throws {
-    
-    let fileManager = FileManager()
-    let path = directory.appendingPathComponent(".travis.yml").path
-    let contents = makeTravisYAMLData(projectName: projectName)
-    
-    // FIXME: Throw specialized error
-    if !fileManager.createFile(atPath: path, contents: contents, attributes: nil) {
-        throw Error.error
-    }
-}
-
-/// - returns: `Data` representation of `travis.yml` contents for a given `projectName`.
-private func makeTravisYAMLData(projectName: String) -> Data {
-    return prepareTravisCIContents(projectName: projectName).data(using: .utf8)!
+    let contents = prepareTravisCIContents(projectName: projectName)
+    try createFile(name: ".travis.yml", in: directory, contents: contents)
 }
 
 /// - returns: `String` contents of `.travis.yml` for a given `projectName`.

@@ -14,6 +14,8 @@
 		07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDD1E102D6500E35172 /* GitIgnore.swift */; };
 		07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDF1E102D7300E35172 /* SwiftLint.swift */; };
 		07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE11E102D9A00E35172 /* StringExtensions.swift */; };
+		07DABEE41E10425100E35172 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE31E10425100E35172 /* Error.swift */; };
+		07DABEE61E10429F00E35172 /* FileUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE51E10429F00E35172 /* FileUtilities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,6 +39,8 @@
 		07DABEDD1E102D6500E35172 /* GitIgnore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIgnore.swift; sourceTree = "<group>"; };
 		07DABEDF1E102D7300E35172 /* SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftLint.swift; sourceTree = "<group>"; };
 		07DABEE11E102D9A00E35172 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		07DABEE31E10425100E35172 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		07DABEE51E10429F00E35172 /* FileUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +80,8 @@
 				07DABEDB1E102D5900E35172 /* Cartfile.swift */,
 				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
 				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
+				07DABEE51E10429F00E35172 /* FileUtilities.swift */,
+				07DABEE31E10425100E35172 /* Error.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -139,7 +145,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07DABEE41E10425100E35172 /* Error.swift in Sources */,
 				07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */,
+				07DABEE61E10429F00E35172 /* FileUtilities.swift in Sources */,
 				07DABED81E102D4500E35172 /* TravisCI.swift in Sources */,
 				07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */,
 				07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */,
