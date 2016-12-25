@@ -10,7 +10,7 @@ import Foundation
 
 extension String {
     
-    mutating func line(_ string: String) {
+    mutating func line(_ string: String = "") {
         append(string + "\n")
     }
 }
