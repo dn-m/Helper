@@ -19,6 +19,9 @@
 		0721667B1E104FAF00A5D2CD /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166711E104FAF00A5D2CD /* Switch.swift */; };
 		0721667F1E1050A400A5D2CD /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721667D1E1050A400A5D2CD /* Result.swift */; };
 		072166801E1050A400A5D2CD /* ResultProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721667E1E1050A400A5D2CD /* ResultProtocol.swift */; };
+		072166841E10592300A5D2CD /* InitCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166831E10592300A5D2CD /* InitCommand.swift */; };
+		072166861E10597400A5D2CD /* CommandError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166851E10597400A5D2CD /* CommandError.swift */; };
+		072166881E10597E00A5D2CD /* OptionsError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166871E10597E00A5D2CD /* OptionsError.swift */; };
 		07DABED11E1025BA00E35172 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED01E1025BA00E35172 /* main.swift */; };
 		07DABED81E102D4500E35172 /* TravisCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED71E102D4500E35172 /* TravisCI.swift */; };
 		07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED91E102D5200E35172 /* HoundCI.swift */; };
@@ -58,6 +61,9 @@
 		072166711E104FAF00A5D2CD /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
 		0721667D1E1050A400A5D2CD /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		0721667E1E1050A400A5D2CD /* ResultProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultProtocol.swift; sourceTree = "<group>"; };
+		072166831E10592300A5D2CD /* InitCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InitCommand.swift; sourceTree = "<group>"; };
+		072166851E10597400A5D2CD /* CommandError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandError.swift; sourceTree = "<group>"; };
+		072166871E10597E00A5D2CD /* OptionsError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsError.swift; sourceTree = "<group>"; };
 		07DABECD1E1025BA00E35172 /* dn-m */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "dn-m"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DABED01E1025BA00E35172 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		07DABED71E102D4500E35172 /* TravisCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravisCI.swift; sourceTree = "<group>"; };
@@ -113,6 +119,9 @@
 		072166821E1056E800A5D2CD /* Commands */ = {
 			isa = PBXGroup;
 			children = (
+				072166831E10592300A5D2CD /* InitCommand.swift */,
+				072166851E10597400A5D2CD /* CommandError.swift */,
+				072166871E10597E00A5D2CD /* OptionsError.swift */,
 			);
 			name = Commands;
 			sourceTree = "<group>";
@@ -220,7 +229,9 @@
 				072166761E104FAF00A5D2CD /* Errors.swift in Sources */,
 				072166721E104FAF00A5D2CD /* Argument.swift in Sources */,
 				0721667B1E104FAF00A5D2CD /* Switch.swift in Sources */,
+				072166841E10592300A5D2CD /* InitCommand.swift in Sources */,
 				07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */,
+				072166881E10597E00A5D2CD /* OptionsError.swift in Sources */,
 				07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */,
 				07DABED11E1025BA00E35172 /* main.swift in Sources */,
 				0721667F1E1050A400A5D2CD /* Result.swift in Sources */,
@@ -234,6 +245,7 @@
 				072166731E104FAF00A5D2CD /* ArgumentParser.swift in Sources */,
 				07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */,
 				072166771E104FAF00A5D2CD /* Extensions.swift in Sources */,
+				072166861E10597400A5D2CD /* CommandError.swift in Sources */,
 				07DABEE81E10475600E35172 /* README.swift in Sources */,
 				07DABEEA1E104E6000E35172 /* Configuration.swift in Sources */,
 			);
