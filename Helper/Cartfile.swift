@@ -8,4 +8,7 @@
 
 import Foundation
 
-// TODO
+/// Creates empty `Cartfile`.
+internal func createCartfile(in directory: URL) throws {
+    try createFile(name: "Cartfile", in: directory)
+}

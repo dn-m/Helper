@@ -12,7 +12,7 @@ import Foundation
 /// `contents`.
 ///
 /// - throws: Error if file cannot be created.
-internal func createFile(name: String, in directory: URL, contents: String) throws {
+internal func createFile(name: String, in directory: URL, contents: String = "") throws {
     
     let fileManager = FileManager()
     let path = directory.appendingPathComponent(name).path
