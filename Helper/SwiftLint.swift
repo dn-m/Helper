@@ -8,7 +8,7 @@
 
 import Foundation
 
-/// Create a `.swiftlint` file in a given `directory`.
+/// Create a `.swiftlint.yml` file in a given `directory`.
 internal func createSwiftLintYML(in directory: URL) throws {
     let contents = prepareSwiftLintYMLContents()
     try createFile(name: ".swiftlint.yml", in: directory, contents: contents)
