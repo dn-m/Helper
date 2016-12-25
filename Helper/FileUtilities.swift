@@ -16,8 +16,13 @@ internal func createFile(name: String, in directory: URL, contents: String) thro
     
     let fileManager = FileManager()
     let path = directory.appendingPathComponent(name).path
-    let data = contents.data(using: .utf8)!
     
+    // TODO: specialize error
+    guard let data = contents.data(using: .utf8) else {
+        throw Error.error
+    }
+    
+    // TODO: specialize error
     if !fileManager.createFile(atPath: path, contents: data, attributes: nil) {
         throw Error.error
     }
