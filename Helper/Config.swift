@@ -22,7 +22,13 @@ struct ConfigCommand: CommandProtocol {
     
     // FIXME: Implement
     func run(_ options: ConfigOptions) -> Result<(), CommandLineError> {
-        print("update configuration!")
+        print("Updating configuration")
+        do {
+            try configuration(projectName: project.name, directory: project.directory)
+        } catch {
+            print("Could not update config!")
+        }
+        
         return Result<(), CommandLineError>(value: ())
     }
 }

@@ -8,6 +8,20 @@
 
 import Foundation
 
+struct Project {
+    let directory: URL
+    let name: String
+}
+
+let fileManager = FileManager()
+let currentDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath)
+let projectName = fileManager.currentDirectoryPath.components(separatedBy: "/").last!
+
+let project = Project(
+    directory: currentDirectory,
+    name: projectName
+)
+
 // Prepare commands
 let registry = CommandRegistry<CommandLineError>()
 registry.register(InitCommand())
