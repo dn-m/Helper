@@ -8,4 +8,23 @@
 
 import Foundation
 
-// TODO
+/// Create a `.swiftlint` file in a given `directory`.
+internal func createSwiftLintYML(in directory: URL) throws {
+    let contents = prepareSwiftLintYMLContents()
+    try createFile(name: ".swiftlint.yml", in: directory, contents: contents)
+}
+
+/// - returns: `String` contents of a `swiftlint.yml`.
+private func prepareSwiftLintYMLContents() -> String {
+    var result = ""
+    result.line("disabled_rules:")
+    result.line("  - comma")
+    result.line("  - variable_name")
+    result.line()
+    result.line("excluded:")
+    result.line("  - Carthage")
+    result.line()
+    result.line("trailing_whitespace:")
+    result.line("  ignores_empty_lines: true")
+    return result
+}
