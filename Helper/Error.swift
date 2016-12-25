@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal enum Error: Swift.Error {
+internal enum FileError: Swift.Error {
     
     case error
 }

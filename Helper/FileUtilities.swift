@@ -19,11 +19,11 @@ internal func createFile(name: String, in directory: URL, contents: String = "")
     
     // TODO: specialize error
     guard let data = contents.data(using: .utf8) else {
-        throw Error.error
+        throw FileError.error
     }
     
     // TODO: specialize error
     if !fileManager.createFile(atPath: path, contents: data, attributes: nil) {
-        throw Error.error
+        throw FileError.error
     }
 }

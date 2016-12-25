@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		072166721E104FAF00A5D2CD /* Argument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166671E104FAF00A5D2CD /* Argument.swift */; };
+		072166731E104FAF00A5D2CD /* ArgumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166681E104FAF00A5D2CD /* ArgumentParser.swift */; };
+		072166741E104FAF00A5D2CD /* ArgumentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166691E104FAF00A5D2CD /* ArgumentProtocol.swift */; };
+		072166751E104FAF00A5D2CD /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721666A1E104FAF00A5D2CD /* Command.swift */; };
+		072166761E104FAF00A5D2CD /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721666C1E104FAF00A5D2CD /* Errors.swift */; };
+		072166771E104FAF00A5D2CD /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721666D1E104FAF00A5D2CD /* Extensions.swift */; };
+		072166781E104FAF00A5D2CD /* HelpCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721666E1E104FAF00A5D2CD /* HelpCommand.swift */; };
+		072166791E104FAF00A5D2CD /* LinuxSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721666F1E104FAF00A5D2CD /* LinuxSupport.swift */; };
+		0721667A1E104FAF00A5D2CD /* Option.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166701E104FAF00A5D2CD /* Option.swift */; };
+		0721667B1E104FAF00A5D2CD /* Switch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166711E104FAF00A5D2CD /* Switch.swift */; };
+		0721667F1E1050A400A5D2CD /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721667D1E1050A400A5D2CD /* Result.swift */; };
+		072166801E1050A400A5D2CD /* ResultProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721667E1E1050A400A5D2CD /* ResultProtocol.swift */; };
 		07DABED11E1025BA00E35172 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED01E1025BA00E35172 /* main.swift */; };
 		07DABED81E102D4500E35172 /* TravisCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED71E102D4500E35172 /* TravisCI.swift */; };
 		07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED91E102D5200E35172 /* HoundCI.swift */; };
@@ -33,6 +45,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		072166671E104FAF00A5D2CD /* Argument.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Argument.swift; sourceTree = "<group>"; };
+		072166681E104FAF00A5D2CD /* ArgumentParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentParser.swift; sourceTree = "<group>"; };
+		072166691E104FAF00A5D2CD /* ArgumentProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentProtocol.swift; sourceTree = "<group>"; };
+		0721666A1E104FAF00A5D2CD /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
+		0721666B1E104FAF00A5D2CD /* Commandant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Commandant.h; sourceTree = "<group>"; };
+		0721666C1E104FAF00A5D2CD /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		0721666D1E104FAF00A5D2CD /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		0721666E1E104FAF00A5D2CD /* HelpCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpCommand.swift; sourceTree = "<group>"; };
+		0721666F1E104FAF00A5D2CD /* LinuxSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinuxSupport.swift; sourceTree = "<group>"; };
+		072166701E104FAF00A5D2CD /* Option.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Option.swift; sourceTree = "<group>"; };
+		072166711E104FAF00A5D2CD /* Switch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Switch.swift; sourceTree = "<group>"; };
+		0721667D1E1050A400A5D2CD /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		0721667E1E1050A400A5D2CD /* ResultProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultProtocol.swift; sourceTree = "<group>"; };
 		07DABECD1E1025BA00E35172 /* Helper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Helper; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DABED01E1025BA00E35172 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		07DABED71E102D4500E35172 /* TravisCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravisCI.swift; sourceTree = "<group>"; };
@@ -58,6 +83,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0721667C1E104FCA00A5D2CD /* Commandant */ = {
+			isa = PBXGroup;
+			children = (
+				072166671E104FAF00A5D2CD /* Argument.swift */,
+				072166681E104FAF00A5D2CD /* ArgumentParser.swift */,
+				072166691E104FAF00A5D2CD /* ArgumentProtocol.swift */,
+				0721666A1E104FAF00A5D2CD /* Command.swift */,
+				0721666B1E104FAF00A5D2CD /* Commandant.h */,
+				0721666C1E104FAF00A5D2CD /* Errors.swift */,
+				0721666D1E104FAF00A5D2CD /* Extensions.swift */,
+				0721666E1E104FAF00A5D2CD /* HelpCommand.swift */,
+				0721666F1E104FAF00A5D2CD /* LinuxSupport.swift */,
+				072166701E104FAF00A5D2CD /* Option.swift */,
+				072166711E104FAF00A5D2CD /* Switch.swift */,
+			);
+			name = Commandant;
+			sourceTree = "<group>";
+		};
+		072166811E1050A900A5D2CD /* Result */ = {
+			isa = PBXGroup;
+			children = (
+				0721667D1E1050A400A5D2CD /* Result.swift */,
+				0721667E1E1050A400A5D2CD /* ResultProtocol.swift */,
+			);
+			name = Result;
+			sourceTree = "<group>";
+		};
 		07DABEC41E1025BA00E35172 = {
 			isa = PBXGroup;
 			children = (
@@ -88,6 +140,8 @@
 				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
 				07DABEE51E10429F00E35172 /* FileUtilities.swift */,
 				07DABEE31E10425100E35172 /* Error.swift */,
+				072166811E1050A900A5D2CD /* Result */,
+				0721667C1E104FCA00A5D2CD /* Commandant */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -155,11 +209,23 @@
 				07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */,
 				07DABEE61E10429F00E35172 /* FileUtilities.swift in Sources */,
 				07DABED81E102D4500E35172 /* TravisCI.swift in Sources */,
+				072166761E104FAF00A5D2CD /* Errors.swift in Sources */,
+				072166721E104FAF00A5D2CD /* Argument.swift in Sources */,
+				0721667B1E104FAF00A5D2CD /* Switch.swift in Sources */,
 				07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */,
 				07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */,
 				07DABED11E1025BA00E35172 /* main.swift in Sources */,
+				0721667F1E1050A400A5D2CD /* Result.swift in Sources */,
+				072166751E104FAF00A5D2CD /* Command.swift in Sources */,
+				072166741E104FAF00A5D2CD /* ArgumentProtocol.swift in Sources */,
 				07DABEDC1E102D5900E35172 /* Cartfile.swift in Sources */,
+				072166801E1050A400A5D2CD /* ResultProtocol.swift in Sources */,
+				0721667A1E104FAF00A5D2CD /* Option.swift in Sources */,
+				072166781E104FAF00A5D2CD /* HelpCommand.swift in Sources */,
+				072166791E104FAF00A5D2CD /* LinuxSupport.swift in Sources */,
+				072166731E104FAF00A5D2CD /* ArgumentParser.swift in Sources */,
 				07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */,
+				072166771E104FAF00A5D2CD /* Extensions.swift in Sources */,
 				07DABEE81E10475600E35172 /* README.swift in Sources */,
 				07DABEEA1E104E6000E35172 /* Configuration.swift in Sources */,
 			);
