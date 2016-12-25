@@ -6,6 +6,8 @@
 //  Copyright © 2016 James Bean. All rights reserved.
 //
 
+import Foundation
+
 struct UpdateCommand: CommandProtocol {
     
     typealias Options = UpdateOptions

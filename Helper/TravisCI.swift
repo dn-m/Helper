@@ -28,7 +28,7 @@ private func prepareTravisCIContents(projectName: String) -> String {
     result.line("    - DESTINATION=\"platform=OS X\"")
     result.line("      SCHEME=\"\(projectName)Mac\"")
     result.line()
-    result.line("before_script: if [ -f ./Cartresult ]; then carthage update; fi;")
+    result.line("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
     result.line()
     result.line("script: travis_retry xcodebuild test")
     result.line("  -project \(projectName).xcodeproj")
