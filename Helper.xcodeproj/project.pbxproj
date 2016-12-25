@@ -17,6 +17,7 @@
 		07DABEE41E10425100E35172 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE31E10425100E35172 /* Error.swift */; };
 		07DABEE61E10429F00E35172 /* FileUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE51E10429F00E35172 /* FileUtilities.swift */; };
 		07DABEE81E10475600E35172 /* README.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE71E10475600E35172 /* README.swift */; };
+		07DABEEA1E104E6000E35172 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE91E104E6000E35172 /* Configuration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +44,7 @@
 		07DABEE31E10425100E35172 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		07DABEE51E10429F00E35172 /* FileUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtilities.swift; sourceTree = "<group>"; };
 		07DABEE71E10475600E35172 /* README.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = README.swift; sourceTree = "<group>"; };
+		07DABEE91E104E6000E35172 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,11 +78,12 @@
 			isa = PBXGroup;
 			children = (
 				07DABED01E1025BA00E35172 /* main.swift */,
+				07DABEE91E104E6000E35172 /* Configuration.swift */,
+				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
 				07DABED71E102D4500E35172 /* TravisCI.swift */,
 				07DABEDF1E102D7300E35172 /* SwiftLint.swift */,
 				07DABED91E102D5200E35172 /* HoundCI.swift */,
 				07DABEDB1E102D5900E35172 /* Cartfile.swift */,
-				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
 				07DABEE71E10475600E35172 /* README.swift */,
 				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
 				07DABEE51E10429F00E35172 /* FileUtilities.swift */,
@@ -158,6 +161,7 @@
 				07DABEDC1E102D5900E35172 /* Cartfile.swift in Sources */,
 				07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */,
 				07DABEE81E10475600E35172 /* README.swift in Sources */,
+				07DABEEA1E104E6000E35172 /* Configuration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
