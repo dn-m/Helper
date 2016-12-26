@@ -123,21 +123,12 @@
 		072166821E1056E800A5D2CD /* Commands */ = {
 			isa = PBXGroup;
 			children = (
-				072166831E10592300A5D2CD /* Init.swift */,
-				0721668D1E1078CB00A5D2CD /* Config.swift */,
+				072166941E118C1B00A5D2CD /* Initialize */,
+				072166931E118C1300A5D2CD /* Configure */,
 				0721668B1E106BB000A5D2CD /* UpdateCommand.swift */,
 				072166891E1068BD00A5D2CD /* CommandLineError.swift */,
 			);
 			name = Commands;
-			sourceTree = "<group>";
-		};
-		0721668F1E107BFA00A5D2CD /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				072166941E118C1B00A5D2CD /* Initialize */,
-				072166931E118C1300A5D2CD /* Configure */,
-			);
-			name = Core;
 			sourceTree = "<group>";
 		};
 		072166901E107C1200A5D2CD /* Utils */ = {
@@ -153,6 +144,7 @@
 		072166931E118C1300A5D2CD /* Configure */ = {
 			isa = PBXGroup;
 			children = (
+				0721668D1E1078CB00A5D2CD /* Config.swift */,
 				07DABEE91E104E6000E35172 /* Configuration.swift */,
 				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
 				07DABED71E102D4500E35172 /* TravisCI.swift */,
@@ -167,6 +159,7 @@
 		072166941E118C1B00A5D2CD /* Initialize */ = {
 			isa = PBXGroup;
 			children = (
+				072166831E10592300A5D2CD /* Init.swift */,
 				072166911E118BFF00A5D2CD /* Initialize.swift */,
 			);
 			name = Initialize;
@@ -193,7 +186,6 @@
 			children = (
 				07DABED01E1025BA00E35172 /* main.swift */,
 				072166901E107C1200A5D2CD /* Utils */,
-				0721668F1E107BFA00A5D2CD /* Core */,
 				072166821E1056E800A5D2CD /* Commands */,
 				072166811E1050A900A5D2CD /* Result */,
 				0721667C1E104FCA00A5D2CD /* Commandant */,
