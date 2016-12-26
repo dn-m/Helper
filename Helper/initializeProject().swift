@@ -11,6 +11,8 @@ import Foundation
 func initializeProject(name: String, in directory: URL) throws {
     try createFileStructure(projectName: name, in: directory)
     // configureProject()
+    print("trying to run ruby")
+    shell("ruby", "/usr/local/bin/test.rb")
 }
 
 // Create directories for primary and test targets

@@ -1,5 +1,5 @@
 //
-//  Error.swift
+//  FileError.swift
 //  Helper
 //
 //  Created by James Bean on 12/25/16.
