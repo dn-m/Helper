@@ -26,6 +26,8 @@ private struct Readme {
     
     var contents: String {
         var result = ""
+        result.line(title)
+        result.line()
         result.line(badges)
         result.line()
         result.line(integration)
@@ -34,6 +36,10 @@ private struct Readme {
         result.line()
         result.line(documentation)
         return result
+    }
+    
+    private var title: String {
+        return "# \(projectName)";
     }
     
     private var badges: String {
