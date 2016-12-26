@@ -15,6 +15,33 @@ struct InitCommand: CommandProtocol {
     }
     
     var function: String {
+        return "Create a new xcode project"
+    }
+    
+    func run(_ options: InitOptions) -> Result<(), CommandLineError> {
+        fatalError()
+    }
+}
+
+struct InitOptions: OptionsProtocol {
+    
+    typealias ClientError = CommandLineError
+    
+    static func evaluate(_ m: CommandMode) -> Result<InitOptions, CommandantError<CommandLineError>> {
+        return Result<InitOptions, CommandantError<CommandLineError>>(value: InitOptions())
+    }
+}
+
+/*
+struct InitCommand: CommandProtocol {
+    
+    typealias Options = InitOptions
+    
+    var verb: String {
+        return "init"
+    }
+    
+    var function: String {
         return "Create a new, configured Xcode project"
     }
     
@@ -24,7 +51,9 @@ struct InitCommand: CommandProtocol {
         return Result<(), CommandLineError>(value: ())
     }
 }
+*/
 
+/*
 struct InitOptions: OptionsProtocol {
     
     typealias ClientError = CommandLineError
@@ -95,3 +124,4 @@ struct InitOptions: OptionsProtocol {
             <*> m <| Option(key: "demos", defaultValue: false, usage: demosUsage)
     }
 }
+*/

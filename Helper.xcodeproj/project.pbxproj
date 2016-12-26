@@ -23,6 +23,7 @@
 		0721668A1E1068BD00A5D2CD /* CommandLineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166891E1068BD00A5D2CD /* CommandLineError.swift */; };
 		0721668C1E106BB000A5D2CD /* UpdateCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721668B1E106BB000A5D2CD /* UpdateCommand.swift */; };
 		0721668E1E1078CB00A5D2CD /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721668D1E1078CB00A5D2CD /* Config.swift */; };
+		072166921E118BFF00A5D2CD /* Initialize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166911E118BFF00A5D2CD /* Initialize.swift */; };
 		07DABED11E1025BA00E35172 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED01E1025BA00E35172 /* main.swift */; };
 		07DABED81E102D4500E35172 /* TravisCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED71E102D4500E35172 /* TravisCI.swift */; };
 		07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED91E102D5200E35172 /* HoundCI.swift */; };
@@ -66,6 +67,7 @@
 		072166891E1068BD00A5D2CD /* CommandLineError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandLineError.swift; sourceTree = "<group>"; };
 		0721668B1E106BB000A5D2CD /* UpdateCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCommand.swift; sourceTree = "<group>"; };
 		0721668D1E1078CB00A5D2CD /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		072166911E118BFF00A5D2CD /* Initialize.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Initialize.swift; sourceTree = "<group>"; };
 		07DABECD1E1025BA00E35172 /* dn-m */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "dn-m"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DABED01E1025BA00E35172 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		07DABED71E102D4500E35172 /* TravisCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravisCI.swift; sourceTree = "<group>"; };
@@ -132,13 +134,8 @@
 		0721668F1E107BFA00A5D2CD /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				07DABEE91E104E6000E35172 /* Configuration.swift */,
-				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
-				07DABED71E102D4500E35172 /* TravisCI.swift */,
-				07DABEDF1E102D7300E35172 /* SwiftLint.swift */,
-				07DABED91E102D5200E35172 /* HoundCI.swift */,
-				07DABEDB1E102D5900E35172 /* Cartfile.swift */,
-				07DABEE71E10475600E35172 /* README.swift */,
+				072166941E118C1B00A5D2CD /* Initialize */,
+				072166931E118C1300A5D2CD /* Configure */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -151,6 +148,28 @@
 				07DABEE31E10425100E35172 /* Error.swift */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		072166931E118C1300A5D2CD /* Configure */ = {
+			isa = PBXGroup;
+			children = (
+				07DABEE91E104E6000E35172 /* Configuration.swift */,
+				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
+				07DABED71E102D4500E35172 /* TravisCI.swift */,
+				07DABEDF1E102D7300E35172 /* SwiftLint.swift */,
+				07DABED91E102D5200E35172 /* HoundCI.swift */,
+				07DABEDB1E102D5900E35172 /* Cartfile.swift */,
+				07DABEE71E10475600E35172 /* README.swift */,
+			);
+			name = Configure;
+			sourceTree = "<group>";
+		};
+		072166941E118C1B00A5D2CD /* Initialize */ = {
+			isa = PBXGroup;
+			children = (
+				072166911E118BFF00A5D2CD /* Initialize.swift */,
+			);
+			name = Initialize;
 			sourceTree = "<group>";
 		};
 		07DABEC41E1025BA00E35172 = {
@@ -262,6 +281,7 @@
 				0721667A1E104FAF00A5D2CD /* Option.swift in Sources */,
 				072166781E104FAF00A5D2CD /* HelpCommand.swift in Sources */,
 				072166791E104FAF00A5D2CD /* LinuxSupport.swift in Sources */,
+				072166921E118BFF00A5D2CD /* Initialize.swift in Sources */,
 				0721668C1E106BB000A5D2CD /* UpdateCommand.swift in Sources */,
 				072166731E104FAF00A5D2CD /* ArgumentParser.swift in Sources */,
 				07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */,
