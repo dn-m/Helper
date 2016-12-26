@@ -77,7 +77,7 @@ private struct Readme {
         result.line()
         result.line("1. Follow [these instructions](https://github.com/Carthage/Carthage#installing-carthage) to install Carthage, if necessary.")
         result.line("2. Add `github \"dn-m/\(projectName)\"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).")
-        result.line("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **\(projectName)** into your OSX or iOS project.")
+        result.line("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **\(projectName)** into your macOS or iOS project.")
         return result
     }
     
