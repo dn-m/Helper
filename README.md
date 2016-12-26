@@ -11,6 +11,7 @@ Command line interface for managing `dn-m` frameworks
 4. `cp build/Release/dn-m /usr/local/bin/dn-m`
 
 ## Usage
-- `dn-m init`
+
 - `dn-m config`
-- `dn-m update-frameworks`
+  - Produces `README.md`, `.travis.yml`, `.hound.yml`, `.swiftlint.yml` and `.gitignore` files tailored to the **dn-m** project and the given repository.
+
