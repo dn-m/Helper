@@ -23,6 +23,9 @@
 		0721668A1E1068BD00A5D2CD /* CommandLineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166891E1068BD00A5D2CD /* CommandLineError.swift */; };
 		0721668C1E106BB000A5D2CD /* UpdateCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721668B1E106BB000A5D2CD /* UpdateCommand.swift */; };
 		0721668E1E1078CB00A5D2CD /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721668D1E1078CB00A5D2CD /* Config.swift */; };
+		072166921E118BFF00A5D2CD /* initializeProject().swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166911E118BFF00A5D2CD /* initializeProject().swift */; };
+		072166991E118F9000A5D2CD /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 072166981E118F9000A5D2CD /* Project.swift */; };
+		0721669E1E1195B100A5D2CD /* ShellUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0721669D1E1195B100A5D2CD /* ShellUtilities.swift */; };
 		07DABED11E1025BA00E35172 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED01E1025BA00E35172 /* main.swift */; };
 		07DABED81E102D4500E35172 /* TravisCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED71E102D4500E35172 /* TravisCI.swift */; };
 		07DABEDA1E102D5200E35172 /* HoundCI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABED91E102D5200E35172 /* HoundCI.swift */; };
@@ -30,10 +33,10 @@
 		07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDD1E102D6500E35172 /* GitIgnore.swift */; };
 		07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEDF1E102D7300E35172 /* SwiftLint.swift */; };
 		07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE11E102D9A00E35172 /* StringExtensions.swift */; };
-		07DABEE41E10425100E35172 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE31E10425100E35172 /* Error.swift */; };
+		07DABEE41E10425100E35172 /* FileError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE31E10425100E35172 /* FileError.swift */; };
 		07DABEE61E10429F00E35172 /* FileUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE51E10429F00E35172 /* FileUtilities.swift */; };
 		07DABEE81E10475600E35172 /* README.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE71E10475600E35172 /* README.swift */; };
-		07DABEEA1E104E6000E35172 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE91E104E6000E35172 /* Configuration.swift */; };
+		07DABEEA1E104E6000E35172 /* configureEnvironment().swift in Sources */ = {isa = PBXBuildFile; fileRef = 07DABEE91E104E6000E35172 /* configureEnvironment().swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -66,6 +69,9 @@
 		072166891E1068BD00A5D2CD /* CommandLineError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandLineError.swift; sourceTree = "<group>"; };
 		0721668B1E106BB000A5D2CD /* UpdateCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCommand.swift; sourceTree = "<group>"; };
 		0721668D1E1078CB00A5D2CD /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		072166911E118BFF00A5D2CD /* initializeProject().swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "initializeProject().swift"; sourceTree = "<group>"; };
+		072166981E118F9000A5D2CD /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		0721669D1E1195B100A5D2CD /* ShellUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShellUtilities.swift; sourceTree = "<group>"; };
 		07DABECD1E1025BA00E35172 /* dn-m */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "dn-m"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07DABED01E1025BA00E35172 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		07DABED71E102D4500E35172 /* TravisCI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TravisCI.swift; sourceTree = "<group>"; };
@@ -74,10 +80,10 @@
 		07DABEDD1E102D6500E35172 /* GitIgnore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitIgnore.swift; sourceTree = "<group>"; };
 		07DABEDF1E102D7300E35172 /* SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftLint.swift; sourceTree = "<group>"; };
 		07DABEE11E102D9A00E35172 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
-		07DABEE31E10425100E35172 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		07DABEE31E10425100E35172 /* FileError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileError.swift; sourceTree = "<group>"; };
 		07DABEE51E10429F00E35172 /* FileUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtilities.swift; sourceTree = "<group>"; };
 		07DABEE71E10475600E35172 /* README.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = README.swift; sourceTree = "<group>"; };
-		07DABEE91E104E6000E35172 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		07DABEE91E104E6000E35172 /* configureEnvironment().swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "configureEnvironment().swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,18 +127,49 @@
 		072166821E1056E800A5D2CD /* Commands */ = {
 			isa = PBXGroup;
 			children = (
-				072166831E10592300A5D2CD /* Init.swift */,
-				0721668D1E1078CB00A5D2CD /* Config.swift */,
-				0721668B1E106BB000A5D2CD /* UpdateCommand.swift */,
+				072166941E118C1B00A5D2CD /* Initialize */,
+				072166931E118C1300A5D2CD /* Configure */,
+				0721669B1E11953600A5D2CD /* Update */,
 				072166891E1068BD00A5D2CD /* CommandLineError.swift */,
 			);
 			name = Commands;
 			sourceTree = "<group>";
 		};
-		0721668F1E107BFA00A5D2CD /* Core */ = {
+		072166901E107C1200A5D2CD /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				07DABEE91E104E6000E35172 /* Configuration.swift */,
+				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
+				072166981E118F9000A5D2CD /* Project.swift */,
+				07DABEE51E10429F00E35172 /* FileUtilities.swift */,
+				07DABEE31E10425100E35172 /* FileError.swift */,
+				0721669D1E1195B100A5D2CD /* ShellUtilities.swift */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
+		072166931E118C1300A5D2CD /* Configure */ = {
+			isa = PBXGroup;
+			children = (
+				0721668D1E1078CB00A5D2CD /* Config.swift */,
+				07DABEE91E104E6000E35172 /* configureEnvironment().swift */,
+				072166951E118E1B00A5D2CD /* Components */,
+			);
+			name = Configure;
+			sourceTree = "<group>";
+		};
+		072166941E118C1B00A5D2CD /* Initialize */ = {
+			isa = PBXGroup;
+			children = (
+				072166831E10592300A5D2CD /* Init.swift */,
+				072166911E118BFF00A5D2CD /* initializeProject().swift */,
+				072166961E118E3200A5D2CD /* Components */,
+			);
+			name = Initialize;
+			sourceTree = "<group>";
+		};
+		072166951E118E1B00A5D2CD /* Components */ = {
+			isa = PBXGroup;
+			children = (
 				07DABEDD1E102D6500E35172 /* GitIgnore.swift */,
 				07DABED71E102D4500E35172 /* TravisCI.swift */,
 				07DABEDF1E102D7300E35172 /* SwiftLint.swift */,
@@ -140,17 +177,22 @@
 				07DABEDB1E102D5900E35172 /* Cartfile.swift */,
 				07DABEE71E10475600E35172 /* README.swift */,
 			);
-			name = Core;
+			name = Components;
 			sourceTree = "<group>";
 		};
-		072166901E107C1200A5D2CD /* Utils */ = {
+		072166961E118E3200A5D2CD /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				07DABEE11E102D9A00E35172 /* StringExtensions.swift */,
-				07DABEE51E10429F00E35172 /* FileUtilities.swift */,
-				07DABEE31E10425100E35172 /* Error.swift */,
 			);
-			name = Utils;
+			name = Components;
+			sourceTree = "<group>";
+		};
+		0721669B1E11953600A5D2CD /* Update */ = {
+			isa = PBXGroup;
+			children = (
+				0721668B1E106BB000A5D2CD /* UpdateCommand.swift */,
+			);
+			name = Update;
 			sourceTree = "<group>";
 		};
 		07DABEC41E1025BA00E35172 = {
@@ -174,7 +216,6 @@
 			children = (
 				07DABED01E1025BA00E35172 /* main.swift */,
 				072166901E107C1200A5D2CD /* Utils */,
-				0721668F1E107BFA00A5D2CD /* Core */,
 				072166821E1056E800A5D2CD /* Commands */,
 				072166811E1050A900A5D2CD /* Result */,
 				0721667C1E104FCA00A5D2CD /* Commandant */,
@@ -241,7 +282,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07DABEE41E10425100E35172 /* Error.swift in Sources */,
+				07DABEE41E10425100E35172 /* FileError.swift in Sources */,
 				07DABEE01E102D7400E35172 /* SwiftLint.swift in Sources */,
 				0721668E1E1078CB00A5D2CD /* Config.swift in Sources */,
 				07DABEE61E10429F00E35172 /* FileUtilities.swift in Sources */,
@@ -255,6 +296,8 @@
 				07DABEE21E102D9A00E35172 /* StringExtensions.swift in Sources */,
 				07DABED11E1025BA00E35172 /* main.swift in Sources */,
 				0721667F1E1050A400A5D2CD /* Result.swift in Sources */,
+				072166991E118F9000A5D2CD /* Project.swift in Sources */,
+				0721669E1E1195B100A5D2CD /* ShellUtilities.swift in Sources */,
 				072166751E104FAF00A5D2CD /* Command.swift in Sources */,
 				072166741E104FAF00A5D2CD /* ArgumentProtocol.swift in Sources */,
 				07DABEDC1E102D5900E35172 /* Cartfile.swift in Sources */,
@@ -262,12 +305,13 @@
 				0721667A1E104FAF00A5D2CD /* Option.swift in Sources */,
 				072166781E104FAF00A5D2CD /* HelpCommand.swift in Sources */,
 				072166791E104FAF00A5D2CD /* LinuxSupport.swift in Sources */,
+				072166921E118BFF00A5D2CD /* initializeProject().swift in Sources */,
 				0721668C1E106BB000A5D2CD /* UpdateCommand.swift in Sources */,
 				072166731E104FAF00A5D2CD /* ArgumentParser.swift in Sources */,
 				07DABEDE1E102D6500E35172 /* GitIgnore.swift in Sources */,
 				072166771E104FAF00A5D2CD /* Extensions.swift in Sources */,
 				07DABEE81E10475600E35172 /* README.swift in Sources */,
-				07DABEEA1E104E6000E35172 /* Configuration.swift in Sources */,
+				07DABEEA1E104E6000E35172 /* configureEnvironment().swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

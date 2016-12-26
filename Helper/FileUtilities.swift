@@ -27,3 +27,11 @@ internal func createFile(name: String, in directory: URL, contents: String = "")
         throw FileError.error
     }
 }
+
+internal func createDirectory(name: String, in directory: URL) throws {
+    
+    let fileManager = FileManager()
+    let url = directory.appendingPathComponent(name)
+    
+    try fileManager.createDirectory(at: url, withIntermediateDirectories: false)
+}
