@@ -19,7 +19,14 @@ struct InitCommand: CommandProtocol {
     }
     
     func run(_ options: InitOptions) -> Result<(), CommandLineError> {
-        fatalError()
+        
+        do {
+            try initializeProject(name: Project.name, in: Project.directory)
+        } catch {
+            print("Could not initialize project: \(error)")
+        }
+        
+        return Result<(), CommandLineError>(value: ())
     }
 }
 

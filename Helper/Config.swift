@@ -25,7 +25,7 @@ struct ConfigCommand: CommandProtocol {
         do {
             try configureEnvironment(projectName: Project.name, directory: Project.directory)
         } catch {
-            print("Could not update config!")
+            print("Could not configure environment: \(error)")
         }
         
         return Result<(), CommandLineError>(value: ())

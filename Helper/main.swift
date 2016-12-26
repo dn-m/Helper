@@ -11,14 +11,14 @@ import Foundation
 let registry = CommandRegistry<CommandLineError>()
 
 func prepareCommands() {
+    registry.register(InitCommand())
     registry.register(ConfigCommand())
-    // TODO: InitCommand
     // TODO: UpdateCommand
 }
 
 func runCommands() {
-    registry.main(defaultVerb: "update") { error in
-        print("fuck")
+    registry.main(defaultVerb: "config") { error in
+        print(error)
         exit(1)
     }
 }

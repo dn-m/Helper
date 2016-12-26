@@ -11,13 +11,13 @@ import Foundation
 func initializeProject(name: String, in directory: URL) throws {
     try createFileStructure(projectName: name, in: directory)
     // configureProject()
-    
 }
 
+// Create directories for primary and test targets
 func createFileStructure(projectName: String, in directory: URL) throws {
-    // create folders for main and test target
-    try createDirectory(name: projectName, in: directory)
-    try createDirectory(name: "\(projectName).tests", in: Project.directory)
+    try [projectName, "\(projectName)Tests"].forEach { name in
+        try createDirectory(name: name, in: directory)
+    }
 }
 
 func configureProject() {
