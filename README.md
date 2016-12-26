@@ -17,5 +17,5 @@ Command line interface for managing `dn-m` frameworks
 ## Usage
 
 - `dn-m config`
-  - Produces `README.md`, `.travis.yml`, `.hound.yml`, `.swiftlint.yml` and `.gitignore` files tailored to the **dn-m** project and the given repository.
+  - Produces `README.md`, `.travis.yml`, `.hound.yml`, `.swiftlint.yml` and `.gitignore` files.
 
