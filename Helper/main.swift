@@ -28,8 +28,13 @@ registry.register(InitCommand())
 registry.register(ConfigCommand())
 registry.register(UpdateCommand())
 
-// Parse commands and run necessary processes
-registry.main(defaultVerb: "update") { error in
-    print("fuck")
-    exit(1)
+
+func runCommands() {
+    // Parse commands and run necessary processes
+    registry.main(defaultVerb: "update") { error in
+        print("fuck")
+        exit(1)
+    }
 }
+
+runCommands()
