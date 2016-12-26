@@ -8,33 +8,34 @@
 
 import Foundation
 
-struct Project {
-    let directory: URL
-    let name: String
+// Global reference to attributes of the current project
+enum Project {
+
+    // Name of project
+    static var name: String {
+        return FileManager.default.currentDirectoryPath.components(separatedBy: "/").last!
+    }
+    
+    // Directory containing project
+    static var directory: URL {
+        return URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+    }
 }
 
-let fileManager = FileManager()
-let currentDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath)
-let projectName = fileManager.currentDirectoryPath.components(separatedBy: "/").last!
-
-let project = Project(
-    directory: currentDirectory,
-    name: projectName
-)
-
-// Prepare commands
 let registry = CommandRegistry<CommandLineError>()
-registry.register(InitCommand())
-registry.register(ConfigCommand())
-registry.register(UpdateCommand())
 
+func prepareCommands() {
+    registry.register(ConfigCommand())
+    // TODO: InitCommand
+    // TODO: UpdateCommand
+}
 
 func runCommands() {
-    // Parse commands and run necessary processes
     registry.main(defaultVerb: "update") { error in
         print("fuck")
         exit(1)
     }
 }
 
+prepareCommands()
 runCommands()

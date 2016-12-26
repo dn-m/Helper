@@ -12,7 +12,7 @@ import Foundation
 internal func createCartfile(in directory: URL) throws {
     
     let fileManager = FileManager()
-    let cartfilePath = project.directory.appendingPathComponent("Cartfile").path
+    let cartfilePath = Project.directory.appendingPathComponent("Cartfile").path
     
     guard !fileManager.fileExists(atPath: cartfilePath) else {
         return
