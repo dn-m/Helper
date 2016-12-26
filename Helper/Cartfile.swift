@@ -14,7 +14,7 @@ internal func createCartfile(in directory: URL) throws {
     let fileManager = FileManager()
     let cartfilePath = project.directory.appendingPathComponent("Cartfile").path
     
-    guard fileManager.fileExists(atPath: cartfilePath) else {
+    guard !fileManager.fileExists(atPath: cartfilePath) else {
         return
     }
     
