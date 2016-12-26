@@ -7,7 +7,7 @@ Command line interface for managing **dn-m** frameworks.
 
 This project uses the [CocoaPods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) framework, written in [Ruby](https://www.ruby-lang.org/en/). 
 
-As such, there are a few dependencies. To get started try:
+As such, there are a few dependencies. To get started, try:
 
 0. Install [Homebrew](brew.sh) 
 1. `brew install ruby`
