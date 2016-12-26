@@ -1,8 +1,19 @@
 # Helper
 Command line interface for managing **dn-m** frameworks.
 
-<a name="integration"></a>
 ## Integration
+
+### Dependencies
+
+This project uses the [CocoaPods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) framework, written in [Ruby](https://www.ruby-lang.org/en/). 
+
+As such, there are a few dependencies. To get started try:
+
+0. Install [Homebrew](brew.sh) 
+1. `brew install ruby`
+2. `[sudo] gem install xcodeproj -i /usr/local/bin`
+
+You should be good to go!
 
 ### Clone and build from source
 1. `git clone https://github.com/dn-m/Helper`
