@@ -20,7 +20,6 @@ struct ConfigCommand: CommandProtocol {
         return "Updates configuration: README.md, .travis.yml, .swiftlint.yml, .hound.yml, .gitignore.yml"
     }
     
-    // FIXME: Implement
     func run(_ options: ConfigOptions) -> Result<(), CommandLineError> {
         
         do {
