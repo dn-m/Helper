@@ -76,8 +76,8 @@ private struct Readme {
     
     private var integration: String {
         var result = ""
-        result.line("<a name=\"integration\"></a>")
         result.line("## Integration")
+        result.line()
         result.line("### Carthage")
         result.line("Integrate **\(projectName)** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).")
         result.line()
