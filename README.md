@@ -9,7 +9,7 @@ This project uses the [CocoaPods/Xcodeproj](https://github.com/CocoaPods/Xcodepr
 
 As such, there are a few dependencies. To get started:
 
-0. Install [Homebrew](brew.sh) 
+0. Install [Homebrew](https://brew.sh) 
 1. `brew install ruby`
 2. `[sudo] gem install xcodeproj -i /usr/local/bin`
 
