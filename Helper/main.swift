@@ -8,20 +8,6 @@
 
 import Foundation
 
-// Global reference to attributes of the current project
-enum Project {
-
-    // Name of project
-    static var name: String {
-        return FileManager.default.currentDirectoryPath.components(separatedBy: "/").last!
-    }
-    
-    // Directory containing project
-    static var directory: URL {
-        return URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-    }
-}
-
 let registry = CommandRegistry<CommandLineError>()
 
 func prepareCommands() {

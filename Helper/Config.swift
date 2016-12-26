@@ -23,7 +23,7 @@ struct ConfigCommand: CommandProtocol {
     func run(_ options: ConfigOptions) -> Result<(), CommandLineError> {
         
         do {
-            try configuration(projectName: Project.name, directory: Project.directory)
+            try configureEnvironment(projectName: Project.name, directory: Project.directory)
         } catch {
             print("Could not update config!")
         }

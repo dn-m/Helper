@@ -1,5 +1,5 @@
 //
-//  Configuration.swift
+//  configureEnvironment().swift
 //  Helper
 //
 //  Created by James Bean on 12/25/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-func configuration(projectName: String, directory: URL) throws {
+func configureEnvironment(projectName: String, directory: URL) throws {
     try createGitIgnore(in: directory)
     try createTravisYML(projectName: projectName, in: directory)
     try createSwiftLintYML(in: directory)
