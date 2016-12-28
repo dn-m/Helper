@@ -13,12 +13,13 @@ puts "Configuring xcodeproj"
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
 
-
 def config(project_name)
     puts "Configuring artifacts for #{project_name}"
     create_gitignore
-    create_travis   
+    create_travis(project_name)
     create_swift_lint
+    create_hound
+    create_cartfile
 end
 
 def create_gitignore
@@ -54,23 +55,23 @@ def create_gitignore
     }
 end
 
-def create_travis
+def create_travis(project_name)
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8")
         file.puts("env:")
         file.puts("  matrix:")
         file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\"")
-        file.puts("      SCHEME=\"\(projectName)\"")
+        file.puts("      SCHEME=\"#{project_name}\"")
         file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\"")
-        file.puts("      SCHEME=\"\(projectName)\"")
+        file.puts("      SCHEME=\"#{project_name}\"")
         file.puts("    - DESTINATION=\"platform=OS X\"")
-        file.puts("      SCHEME=\"\(projectName)Mac\"")
+        file.puts("      SCHEME=\"#{project_name}Mac\"")
         file.puts()
         file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
         file.puts("script: travis_retry xcodebuild test")
-        file.puts("  -project \(projectName).xcodeproj")
+        file.puts("  -project #{project_name}.xcodeproj")
         file.puts("  -scheme \"${SCHEME}\"")
         file.puts("  -destination \"${DESTINATION}\"")
         file.puts("  TOOLCHAINS=swift")
@@ -95,11 +96,18 @@ def create_swift_lint
 end
 
 def create_hound 
-    File.open('.swiftlint.yml', 'w') { |file| 
+    File.open('.hound.yml', 'w') { |file| 
         file.puts("swift:")
         file.puts("  config_file: .swiftlint.yml")
     }
 end
+
+def create_cartfile
+    unless File.file?('Cartfile') then
+        FileUtils.touch('Cartfile')
+    end
+end 
+
 
 # README
 # travis
