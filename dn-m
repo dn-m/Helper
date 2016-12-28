@@ -4,9 +4,6 @@ require 'xcodeproj'
 require 'rubygems'
 require 'commander'
 
-# Silence deprecation warnings
-ActiveSupport::Deprecation.silenced = true
-
 # "Generating directory structure"
 # "Generating environment artifacts"
 # "Generating xcodeproj"
