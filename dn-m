@@ -20,7 +20,36 @@ def config(project_name)
 end
 
 def create_gitignore
-    File.open('.gitignore', 'w') { |file| file.write("your text") }
+    File.open('.gitignore', 'w') { |file| 
+        file.puts("## Build generated")
+        file.puts("build/")
+        file.puts("DerivedData/")
+        file.puts()
+        file.puts("## Various settings")
+        file.puts("*.pbxuser")
+        file.puts("!default.pbxuser")
+        file.puts("*.mode1v3")
+        file.puts("!default.mode1v3")
+        file.puts("*.mode2v3")
+        file.puts("!default.mode2v3")
+        file.puts("*.perspectivev3")
+        file.puts("!default.perspectivev3")
+        file.puts("xcuserdata/")
+        file.puts()
+        file.puts("## Other")
+        file.puts("*.moved-aside")
+        file.puts("*.xcuserstate")
+        file.puts()
+        file.puts("## Obj-C/Swift specific")
+        file.puts("*.hmap")
+        file.puts("*.ipa")
+        file.puts("*.dSYM.zip")
+        file.puts("*.dSYM")
+        file.puts()
+        file.puts("# Carthage")
+        file.puts("Carthage/Checkouts")
+        file.puts("Carthage/Build")
+    }
 end
 
 # README
