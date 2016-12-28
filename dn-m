@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
+# Move this do xcodeproj specific scripts
+require 'xcodeproj'
+require 'commander'
+
+puts "xcodproj found"
+puts 'commander found'
+
 puts "Generating directory structure"
 puts "Generating environment artifacts"
 puts "Generating xcodeproj"
