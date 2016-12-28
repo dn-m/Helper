@@ -1,14 +1,16 @@
 #!/usr/bin/env ruby
 
-# Move this do xcodeproj specific scripts
 require 'xcodeproj'
 require 'rubygems'
 require 'commander'
 
-puts "Generating directory structure"
-puts "Generating environment artifacts"
-puts "Generating xcodeproj"
-puts "Configuring xcodeproj"
+# Silence deprecation warnings
+ActiveSupport::Deprecation.silenced = true
+
+# "Generating directory structure"
+# "Generating environment artifacts"
+# "Generating xcodeproj"
+# "Configuring xcodeproj"
 
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
@@ -107,11 +109,7 @@ def create_cartfile
     unless File.file?('Cartfile') then
         FileUtils.touch('Cartfile')
     end
-end 
-
-
-# README
-
+end
 
 def create_readme(project_name)
 
@@ -146,8 +144,6 @@ end
 
 class MyApplication
   include Commander::Methods
-
-    
 
     def run
         program :name, 'Foo Bar'
