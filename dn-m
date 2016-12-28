@@ -10,29 +10,60 @@ puts "Generating environment artifacts"
 puts "Generating xcodeproj"
 puts "Configuring xcodeproj"
 
+# The name of the project to be created or configured
+$project_name = File.basename(Dir.getwd)
+
+
+def config(project_name)
+    puts "Configuring artifacts for #{project_name}"
+    create_gitignore
+end
+
+def create_gitignore
+    File.open('.gitignore', 'w') { |file| file.write("your text") }
+end
+
+# README
+# travis
+# hound
+# swiftlint
+# Cartfile if it doesnt exist
+# .gitignore
+
+def init(project_name)
+    puts "Initializing repository for #{project_name}"
+end
+
 class MyApplication
   include Commander::Methods
 
-  def run
-    program :name, 'Foo Bar'
-    program :version, '1.0.0'
-    program :description, 'Stupid command that prints foo or bar.'
+    
 
-    command :foo do |c|
-      c.syntax = 'foobar foo'
-      c.description = 'Displays foo'
-      c.action do |args, options|
-        say 'foo'
-      end
+    def run
+        program :name, 'Foo Bar'
+        program :version, '1.0.0'
+        program :description, 'Stupid command that prints foo or bar.'
+
+        command :config do |c|
+            c.syntax = 'config'
+            c.description = 'Configures test environment'
+            c.action do |args, options|
+                config($project_name)
+            end
+        end
+
+        command :init do |c|
+            c.syntax = 'init'
+            c.description = 'Create new repository from scratch'
+            c.action do |args, options|
+                init($project_name)
+            end
+        end
+
+        run!
     end
-
-    run!
-  end
 end
 
 MyApplication.new.run if $0 == __FILE__
 
 
-def config(name)
-	puts "Configuring artifacts for #{name}"
-end
