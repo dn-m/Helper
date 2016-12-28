@@ -17,6 +17,8 @@ $project_name = File.basename(Dir.getwd)
 def config(project_name)
     puts "Configuring artifacts for #{project_name}"
     create_gitignore
+    create_travis
+    create_swift_lint
 end
 
 def create_gitignore
@@ -49,6 +51,46 @@ def create_gitignore
         file.puts("# Carthage")
         file.puts("Carthage/Checkouts")
         file.puts("Carthage/Build")
+    }
+end
+
+def create_travis
+    File.open('.travis.yml', 'w') { |file| 
+        file.puts("language: objective-c")
+        file.puts("osx_image: xcode8")
+        file.puts("env:")
+        file.puts("  matrix:")
+        file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\"")
+        file.puts("      SCHEME=\"\(projectName)\"")
+        file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\"")
+        file.puts("      SCHEME=\"\(projectName)\"")
+        file.puts("    - DESTINATION=\"platform=OS X\"")
+        file.puts("      SCHEME=\"\(projectName)Mac\"")
+        file.puts()
+        file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
+        file.puts()
+        file.puts("script: travis_retry xcodebuild test")
+        file.puts("  -project \(projectName).xcodeproj")
+        file.puts("  -scheme \"${SCHEME}\"")
+        file.puts("  -destination \"${DESTINATION}\"")
+        file.puts("  TOOLCHAINS=swift")
+        file.puts()
+        file.puts("after_success:")
+        file.puts("  - bash <(curl -s https://codecov.io/bash)")
+    }   
+end
+
+def create_swift_lint
+    File.open('.swiftlint.yml', 'w') { |file| 
+        file.puts("disabled_rules:")
+        file.puts("  - comma")
+        file.puts("  - variable_name")
+        file.puts()
+        file.puts("excluded:")
+        file.puts("  - Carthage")
+        file.puts()
+        file.puts("trailing_whitespace:")
+        file.puts("  ignores_empty_lines: true")
     }
 end
 
