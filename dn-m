@@ -17,7 +17,7 @@ $project_name = File.basename(Dir.getwd)
 def config(project_name)
     puts "Configuring artifacts for #{project_name}"
     create_gitignore
-    create_travis
+    create_travis   
     create_swift_lint
 end
 
@@ -91,6 +91,13 @@ def create_swift_lint
         file.puts()
         file.puts("trailing_whitespace:")
         file.puts("  ignores_empty_lines: true")
+    }
+end
+
+def create_hound 
+    File.open('.swiftlint.yml', 'w') { |file| 
+        file.puts("swift:")
+        file.puts("  config_file: .swiftlint.yml")
     }
 end
 
