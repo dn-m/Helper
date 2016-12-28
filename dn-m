@@ -2,12 +2,37 @@
 
 # Move this do xcodeproj specific scripts
 require 'xcodeproj'
+require 'rubygems'
 require 'commander'
-
-puts "xcodproj found"
-puts 'commander found'
 
 puts "Generating directory structure"
 puts "Generating environment artifacts"
 puts "Generating xcodeproj"
 puts "Configuring xcodeproj"
+
+class MyApplication
+  include Commander::Methods
+
+  def run
+    program :name, 'Foo Bar'
+    program :version, '1.0.0'
+    program :description, 'Stupid command that prints foo or bar.'
+
+    command :foo do |c|
+      c.syntax = 'foobar foo'
+      c.description = 'Displays foo'
+      c.action do |args, options|
+        say 'foo'
+      end
+    end
+
+    run!
+  end
+end
+
+MyApplication.new.run if $0 == __FILE__
+
+
+def config(name)
+	puts "Configuring artifacts for #{name}"
+end

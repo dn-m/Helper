@@ -1,6 +1,6 @@
 # Helper
 
-Command line utility for generating and updating **dn-m** project repsitories.
+Command line utility for generating and updating **dn-m** project repositories.
 
 ## Dependencies
 - Ruby (get on Homebrew)
