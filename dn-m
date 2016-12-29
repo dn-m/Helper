@@ -8,16 +8,6 @@ require 'commander'
 $project_name = File.basename(Dir.getwd)
 
 # =============================================================================
-# xcodeproj utils
-# TODO: move down (or to new file)
-# =============================================================================
-def project_from_name(project_name)
-    project = Xcodeproj::Project.new("#{project_name}.xcodeproj")
-    project.initialize_from_file
-    return project
-end
-
-# =============================================================================
 # init
 # =============================================================================
 def init(project_name)
@@ -26,7 +16,6 @@ def init(project_name)
     project = new_project(project_name)
     configure_PBXGroups(project, project_name)
     project.save
-
 end
 
 def new_project(project_name)
