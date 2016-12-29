@@ -47,6 +47,11 @@ end
 # Build Configuration
 # =============================================================================
 def configure_build_configuration_settings(project, name)
+    configure_primary_build_configuration_settings(project, name)
+    configure_tests_build_configuration_settings(project, name)
+end
+
+def configure_primary_build_configuration_settings(project, name)
 
     ["#{name} iOS", "#{name} macOS"].each do |x|
 
@@ -57,7 +62,26 @@ def configure_build_configuration_settings(project, name)
             'INFOPLIST_FILE' => "#{name}/Info.plist",
             'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'NO',
             'PRODUCT_NAME' => "#{name}",
-            'CODE_SIGN_IDENTITY' => ""
+            'EXPANDED_CODE_SIGN_IDENTITY' => "",
+            'CODE_SIGNING_REQUIRED' => "NO",
+            'CODE_SIGNING_ALLOWED' => "NO"
+        }
+
+        settings.each do |key, val|
+            target.build_configuration_list.set_setting(key, val)
+        end
+    end
+end
+
+def configure_tests_build_configuration_settings(project, name)
+
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+
+        target = project.targets.find { |y| y.name == "#{x} Tests" }
+
+        settings = { 
+            'INFOPLIST_FILE' => "#{name}Tests/Info.plist",
+            'COMBINE_HIDPI_IMAGES' => 'YES'
         }
 
         settings.each do |key, val|
@@ -129,6 +153,7 @@ end
 # =============================================================================
 # Targets
 # TODO: iOS macOS / framework / test
+# TODO: Abstract these into single def
 # =============================================================================
 def configure_ios_targets(project, name)
     
