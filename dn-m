@@ -4,13 +4,18 @@ require 'xcodeproj'
 require 'rubygems'
 require 'commander'
 
-
-# "Generating environment artifacts"
-# "Generating xcodeproj"
-# "Configuring xcodeproj"
-
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
+
+# =============================================================================
+# xcodeproj utils
+# TODO: move down (or to new file)
+# =============================================================================
+def project_from_name(name)
+    project = Xcodeproj::Project.new("#{name}.xcodeproj")
+    project.initialize_from_file
+    return project
+end
 
 # =============================================================================
 # init
@@ -18,12 +23,37 @@ $project_name = File.basename(Dir.getwd)
 def init(project_name)
     puts "Generating project: #{project_name}"
     create_file_structure(project_name)
+    configure_PBXGroups(project_names)
 end
 
 def create_file_structure(project_name)
     puts "Generating directory structure"
     Dir.mkdir(project_name)
     Dir.mkdir("#{project_name}Tests")
+end
+
+# =============================================================================
+# PBXGroups
+# =============================================================================
+def configure_PBXGroups(project_name)
+    configure_primary_group(project_name)
+    configure_tests_group(project_name)
+end
+
+def configure_primary_group(project_name)
+    project = project_from_name(project_name)
+    primary_group = project.new_group("#{project_name}")
+    supporting_files_group = primary_group.new_group("Supporting Files")
+    supporting_files_group.new_file("#{project_name}/Info.plist")
+    project.save
+end
+
+def configure_tests_group(project_name)
+    project = project_from_name(project_name)
+    test_group = project.new_group("#{project_name}Tests")
+    supporting_files_group = test_group.new_group("Supporting Files")
+    supporting_files_group.new_file("#{project_name}Tests/Info.plist")
+    project.save
 end
 
 # =============================================================================
