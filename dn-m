@@ -55,7 +55,7 @@ def configure_build_configuration_settings(project, name)
 
         settings = {
             'INFOPLIST_FILE' => "#{name}/Info.plist",
-            'EMBEDDED_CONTENT_CONTAINS_SWIFT' => 'YES',
+            'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'NO',
             'PRODUCT_NAME' => "#{name}",
             'CODE_SIGN_IDENTITY' => "-"
         }
