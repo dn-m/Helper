@@ -3,10 +3,11 @@
 Command line utility for generating and maintaining frameworks and applications in the **dn-m** project.
 
 ## Dependencies
-- Ruby
-- Bundler
-	- `'xcodeproj'`
-	- `'commander'`
+- [Ruby](https://www.ruby-lang.org/en/)
+- [Bundler](http://bundler.io/)
+	- [`xcodeproj`](https://github.com/CocoaPods/Xcodeproj)
+	- [`commander`](https://github.com/commander-rb/commander)
+
 
 ## Integration
 
