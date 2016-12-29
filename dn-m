@@ -41,7 +41,42 @@ end
 # TODO: Add Info.plists and empty headers
 
 def create_info_plists(project_name)
-    # tests plist
+    create_tests_info_plist(project_name)
+    create_primary_framework_info_plist(project_name)
+end
+
+def create_primary_framework_info_plist(project_name)
+    File.open("#{project_name}/Info.plist", 'w') { |file| 
+        file.puts("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+        file.puts("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
+        file.puts("<plist version=\"1.0\">")
+        file.puts("<dict>")
+        file.puts("    <key>CFBundleDevelopmentRegion</key>")
+        file.puts("    <string>en</string>")
+        file.puts("    <key>CFBundleExecutable</key>")
+        file.puts("    <string>$(EXECUTABLE_NAME)</string>")
+        file.puts("    <key>CFBundleIdentifier</key>")
+        file.puts("    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>")
+        file.puts("    <key>CFBundleInfoDictionaryVersion</key>")
+        file.puts("    <string>6.0</string>")
+        file.puts("    <key>CFBundleName</key>")
+        file.puts("    <string>$(PRODUCT_NAME)</string>")
+        file.puts("    <key>CFBundlePackageType</key>")
+        file.puts("    <string>FMWK</string>")
+        file.puts("    <key>CFBundleShortVersionString</key>")
+        file.puts("    <string>1.0</string>")
+        file.puts("    <key>CFBundleSignature</key>")
+        file.puts("    <string>????</string>")
+        file.puts("    <key>CFBundleVersion</key>")
+        file.puts("    <string>$(CURRENT_PROJECT_VERSION)</string>")
+        file.puts("    <key>NSPrincipalClass</key>")
+        file.puts("    <string></string>")
+        file.puts("</dict>")
+        file.puts("</plist>")
+    }
+end
+
+def create_tests_info_plist(project_name)
     File.open("#{project_name}Tests/Info.plist", 'w') { |file| 
         file.puts("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
         file.puts("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
@@ -69,9 +104,6 @@ def create_info_plists(project_name)
         file.puts("</plist>")
     }
 end
-
-# primary info plist
-# tests info plist
 
 # =============================================================================
 # PBXGroups
