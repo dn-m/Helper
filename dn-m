@@ -40,7 +40,26 @@ end
 # Targets
 # TODO: iOS macOS / framework / test
 # =============================================================================
-#def configure_iOS_targets(project, name)
+def configure_ios_targets(project, name)
+    
+    # Options
+
+    ios_framework_target = project.new_target(
+        :framework, 
+        name, 
+        :ios, 
+        '8.4'
+    )
+
+    ios_tests_target = project.new_target(
+        :unit_test_bundle, 
+        "#{name}Tests", 
+        :ios, 
+        '8.4'
+    )
+    
+    ios_tests_target.add_dependency(ios_framework_target)
+end
 
 # =============================================================================
 # Supporting Files
