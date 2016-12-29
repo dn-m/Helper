@@ -9,7 +9,7 @@ GEM
       tzinfo (~> 1.1)
     claide (1.0.1)
     colored (1.2)
-    commander (4.4.2)
+    commander (4.4.3)
       highline (~> 1.7.2)
     concurrent-ruby (1.0.4)
     highline (1.7.8)
