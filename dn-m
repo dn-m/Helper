@@ -10,12 +10,13 @@ $project_name = File.basename(Dir.getwd)
 # =============================================================================
 # init
 # =============================================================================
-def init(project_name)
-    puts "Generating project: #{project_name}"
-    create_file_structure(project_name)
-    project = new_project(project_name)
-    configure_PBXGroups(project, project_name)
-    add_info_plist_refs(project, project_name)
+def init(name)
+    puts "Generating project: #{name}"
+    create_file_structure(name)
+    project = new_project(name)
+    configure_PBXGroups(project, name)
+    add_info_plist_refs(project, name)
+    configure_ios_targets(project, name)
     project.save
 end
 
@@ -42,23 +43,44 @@ end
 # =============================================================================
 def configure_ios_targets(project, name)
     
-    # Options
+    # TODO: Options
 
     ios_framework_target = project.new_target(
         :framework, 
-        name, 
+        "#{name} iOS", 
         :ios, 
         '8.4'
     )
 
     ios_tests_target = project.new_target(
         :unit_test_bundle, 
-        "#{name}Tests", 
+        "#{name} iOS Tests", 
         :ios, 
         '8.4'
     )
     
     ios_tests_target.add_dependency(ios_framework_target)
+end
+
+def configure_macos_targets(project, name)
+
+   # TODO: Options
+
+    macos_framework_target = project.new_target(
+        :framework, 
+        "#{name} macOS", 
+        :osx, 
+        '8.4'
+    )
+
+    macos_tests_target = project.new_target(
+        :unit_test_bundle, 
+        "#{name} macOS Tests", 
+        :osx, 
+        '10.9'
+    )
+    
+    macos_tests_target.add_dependency(macos_framework_target) 
 end
 
 # =============================================================================
