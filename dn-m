@@ -29,6 +29,11 @@ def create_file_structure(project_name)
     Dir.mkdir("#{project_name}Tests")
 end
 
+def create_project(project_name)
+    project = Xcodeproj::Project.new("#{project_name}.xcodeproj")
+    project.save
+end
+
 # =============================================================================
 # Supporting Files
 # =============================================================================
