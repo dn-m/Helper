@@ -57,7 +57,7 @@ def configure_build_configuration_settings(project, name)
             'INFOPLIST_FILE' => "#{name}/Info.plist",
             'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'NO',
             'PRODUCT_NAME' => "#{name}",
-            'CODE_SIGN_IDENTITY' => "-"
+            'CODE_SIGN_IDENTITY' => ""
         }
 
         settings.each do |key, val|
