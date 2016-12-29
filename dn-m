@@ -47,6 +47,28 @@ end
 # =============================================================================
 def configure_schemes(project, name)
     share_schemes(project, name)
+    add_testable_entries(project, name)
+end
+
+def add_testable_entries(project, name)
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+        target = project.targets.find { |y| y.name == "#{x} Tests" }
+
+        # Scheme
+        scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
+        scheme = Xcodeproj::XCScheme.new(scheme_path)
+
+        testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
+        
+        # ?
+        testable_entry.build_for_analyzing = false
+
+        scheme.build_action.add_entry(testable_entry)
+
+        testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target)
+        scheme.test_action.add_testable(testable_ref)
+        scheme.test_action.code_coverage_enabled = true
+    end
 end
 
 def share_schemes(project, name)
