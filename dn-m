@@ -10,7 +10,7 @@ $project_name = File.basename(Dir.getwd)
 # TODO: Encapsulate in class (subclass of `Project`)
 
 # =============================================================================
-# init
+# init command
 # =============================================================================
 def init(name)
     puts "Generating project: #{name}"
@@ -22,6 +22,7 @@ def init(name)
     configure_macos_targets(project, name)
     configure_header(project, name)
     configure_schemes(project, name)
+    configure_build_configuration_settings(project, name)
     project.save
 end
 
@@ -43,6 +44,29 @@ def create_project(name)
 end
 
 # =============================================================================
+# Build Configuration
+# =============================================================================
+def configure_build_configuration_settings(project, name)
+
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+
+        # FIXME: abstract away
+        target = project.targets.find { |y| y.name == "#{x}" }
+
+        settings = {
+            'INFOPLIST_FILE' => "#{name}/Info.plist",
+            'EMBEDDED_CONTENT_CONTAINS_SWIFT' => 'YES',
+            'PRODUCT_NAME' => "#{name}",
+            'CODE_SIGN_IDENTITY' => "-"
+        }
+
+        settings.each do |key, val|
+            target.build_configuration_list.set_setting(key, val)
+        end
+    end
+end
+
+# =============================================================================
 # Schemes
 # =============================================================================
 def configure_schemes(project, name)
@@ -52,19 +76,19 @@ end
 
 def add_testable_entries(project, name)
     ["#{name} iOS", "#{name} macOS"].each do |x|
+        
+        # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{x} Tests" }
 
         # Scheme
         scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
 
-        testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
-        
         # ?
+        testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
+        # ??
         testable_entry.build_for_analyzing = false
-
         scheme.build_action.add_entry(testable_entry)
-
         testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target)
         scheme.test_action.add_testable(testable_ref)
         scheme.test_action.code_coverage_enabled = true
@@ -237,7 +261,7 @@ def configure_PBXGroups(project, name)
 end
 
 # =============================================================================
-# config 
+# config command
 # =============================================================================
 def config(name)
     puts "Configuring artifacts for #{name}"
@@ -330,9 +354,7 @@ def create_hound
 end
 
 def create_cartfile
-    unless File.file?('Cartfile') then
-        FileUtils.touch('Cartfile')
-    end
+    FileUtils.touch('Cartfile')
 end
 
 def create_readme(name)
