@@ -10,7 +10,7 @@ $project_name = File.basename(Dir.getwd)
 # TODO: Encapsulate in class (subclass of `Project`)
 
 # =============================================================================
-# init
+# init command
 # =============================================================================
 def init(name)
     puts "Generating project: #{name}"
@@ -22,6 +22,7 @@ def init(name)
     configure_macos_targets(project, name)
     configure_header(project, name)
     configure_schemes(project, name)
+    configure_build_configuration_settings(project, name)
     project.save
 end
 
@@ -43,6 +44,53 @@ def create_project(name)
 end
 
 # =============================================================================
+# Build Configuration
+# =============================================================================
+def configure_build_configuration_settings(project, name)
+    configure_primary_build_configuration_settings(project, name)
+    configure_tests_build_configuration_settings(project, name)
+end
+
+def configure_primary_build_configuration_settings(project, name)
+
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+
+        # FIXME: abstract away
+        target = project.targets.find { |y| y.name == "#{x}" }
+
+        settings = {
+            'INFOPLIST_FILE' => "#{name}/Info.plist",
+            'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'NO',
+            'PRODUCT_NAME' => "#{name}",
+            'EXPANDED_CODE_SIGN_IDENTITY' => "",
+            'CODE_SIGNING_REQUIRED' => "NO",
+            'CODE_SIGNING_ALLOWED' => "NO"
+        }
+
+        settings.each do |key, val|
+            target.build_configuration_list.set_setting(key, val)
+        end
+    end
+end
+
+def configure_tests_build_configuration_settings(project, name)
+
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+
+        target = project.targets.find { |y| y.name == "#{x} Tests" }
+
+        settings = { 
+            'INFOPLIST_FILE' => "#{name}Tests/Info.plist",
+            'COMBINE_HIDPI_IMAGES' => 'YES'
+        }
+
+        settings.each do |key, val|
+            target.build_configuration_list.set_setting(key, val)
+        end
+    end
+end
+
+# =============================================================================
 # Schemes
 # =============================================================================
 def configure_schemes(project, name)
@@ -52,19 +100,19 @@ end
 
 def add_testable_entries(project, name)
     ["#{name} iOS", "#{name} macOS"].each do |x|
+        
+        # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{x} Tests" }
 
         # Scheme
         scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
 
-        testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
-        
         # ?
+        testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
+        # ??
         testable_entry.build_for_analyzing = false
-
         scheme.build_action.add_entry(testable_entry)
-
         testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target)
         scheme.test_action.add_testable(testable_ref)
         scheme.test_action.code_coverage_enabled = true
@@ -105,6 +153,7 @@ end
 # =============================================================================
 # Targets
 # TODO: iOS macOS / framework / test
+# TODO: Abstract these into single def
 # =============================================================================
 def configure_ios_targets(project, name)
     
@@ -135,7 +184,7 @@ def configure_macos_targets(project, name)
         :framework, 
         "#{name} macOS", 
         :osx, 
-        '8.4'
+        '10.9'
     )
 
     macos_tests_target = project.new_target(
@@ -237,7 +286,7 @@ def configure_PBXGroups(project, name)
 end
 
 # =============================================================================
-# config 
+# config command
 # =============================================================================
 def config(name)
     puts "Configuring artifacts for #{name}"
@@ -330,9 +379,7 @@ def create_hound
 end
 
 def create_cartfile
-    unless File.file?('Cartfile') then
-        FileUtils.touch('Cartfile')
-    end
+    FileUtils.touch('Cartfile')
 end
 
 def create_readme(name)
