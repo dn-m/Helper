@@ -7,6 +7,8 @@ require 'commander'
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
 
+# TODO: Encapsulate in class (subclass of `Project`)
+
 # =============================================================================
 # init
 # =============================================================================
@@ -17,6 +19,8 @@ def init(name)
     configure_PBXGroups(project, name)
     add_info_plist_refs(project, name)
     configure_ios_targets(project, name)
+    configure_macos_targets(project, name)
+    configure_header(project, name)
     project.save
 end
 
@@ -35,6 +39,31 @@ end
 def create_project(project_name)
     project = Xcodeproj::Project.new("#{project_name}.xcodeproj")
     project.save
+end
+
+# =============================================================================
+# Header
+# TODO: iOS macOS / framework / test
+# =============================================================================
+def configure_header(project, name)
+    header_path = "#{name}/#{name}.h"
+    create_empty_header(header_path)
+    add_header_build_files(project, name, header_path)
+    puts project.targets
+end
+
+def create_empty_header(path)
+    FileUtils.touch(path)
+end
+
+def add_header_build_files(project, name, header_path)
+    header_ref = project.main_group.new_file(header_path)
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+        build_file = project.targets
+            .find { |y| y.name == x }
+            .add_file_references([header_ref], 'header_build_file')
+        build_file.first.settings = { 'ATTRIBUTES' => ['Public'] }
+    end
 end
 
 # =============================================================================
@@ -85,7 +114,6 @@ end
 
 # =============================================================================
 # Supporting Files
-# TODO: Add empty headers
 # =============================================================================
 
 def add_info_plist_refs(project, name)
@@ -164,7 +192,6 @@ end
 # PBXGroups
 # =============================================================================
 def configure_PBXGroups(project, name)
-    puts "Configure PBXGroups: project: #{name}"
     [name, "#{name}Tests"].each do |x|
         project
             .new_group(x)
