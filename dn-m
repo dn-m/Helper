@@ -7,15 +7,20 @@ require 'commander'
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
 
+# TODO: Encapsulate in class (subclass of `Project`)
+
 # =============================================================================
 # init
 # =============================================================================
-def init(project_name)
-    puts "Generating project: #{project_name}"
-    create_file_structure(project_name)
-    project = new_project(project_name)
-    configure_PBXGroups(project, project_name)
-    add_info_plist_refs(project, project_name)
+def init(name)
+    puts "Generating project: #{name}"
+    create_file_structure(name)
+    project = new_project(name)
+    configure_PBXGroups(project, name)
+    add_info_plist_refs(project, name)
+    configure_ios_targets(project, name)
+    configure_macos_targets(project, name)
+    configure_header(project, name)
     project.save
 end
 
@@ -37,23 +42,94 @@ def create_project(project_name)
 end
 
 # =============================================================================
+# Header
+# TODO: iOS macOS / framework / test
+# =============================================================================
+def configure_header(project, name)
+    header_path = "#{name}/#{name}.h"
+    create_empty_header(header_path)
+    add_header_build_files(project, name, header_path)
+    puts project.targets
+end
+
+def create_empty_header(path)
+    FileUtils.touch(path)
+end
+
+def add_header_build_files(project, name, header_path)
+    header_ref = project.main_group.new_file(header_path)
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+        build_file = project.targets
+            .find { |y| y.name == x }
+            .add_file_references([header_ref], 'header_build_file')
+        build_file.first.settings = { 'ATTRIBUTES' => ['Public'] }
+    end
+end
+
+# =============================================================================
+# Targets
+# TODO: iOS macOS / framework / test
+# =============================================================================
+def configure_ios_targets(project, name)
+    
+    # TODO: Options
+
+    ios_framework_target = project.new_target(
+        :framework, 
+        "#{name} iOS", 
+        :ios, 
+        '8.4'
+    )
+
+    ios_tests_target = project.new_target(
+        :unit_test_bundle, 
+        "#{name} iOS Tests", 
+        :ios, 
+        '8.4'
+    )
+    
+    ios_tests_target.add_dependency(ios_framework_target)
+end
+
+def configure_macos_targets(project, name)
+
+   # TODO: Options
+
+    macos_framework_target = project.new_target(
+        :framework, 
+        "#{name} macOS", 
+        :osx, 
+        '8.4'
+    )
+
+    macos_tests_target = project.new_target(
+        :unit_test_bundle, 
+        "#{name} macOS Tests", 
+        :osx, 
+        '10.9'
+    )
+    
+    macos_tests_target.add_dependency(macos_framework_target) 
+end
+
+# =============================================================================
 # Supporting Files
-# TODO: Add empty headers
 # =============================================================================
 
-def add_info_plist_refs(project, project_name)
-    [project_name, "#{project_name}Tests"].each do |x|
+def add_info_plist_refs(project, name)
+    [name, "#{name}Tests"].each do |x|
         project[x]["Supporting Files"].new_file("#{x}/Info.plist")
     end
 end
 
-def create_info_plists(project_name)
-    create_tests_info_plist(project_name)
-    create_primary_framework_info_plist(project_name)
+def create_info_plists(name)
+    create_tests_info_plist(name)
+    create_primary_framework_info_plist(name)
 end
 
-def create_primary_framework_info_plist(project_name)
-    File.open("#{project_name}/Info.plist", 'w') { |file| 
+# TODO: App Info.plist
+def create_primary_framework_info_plist(name)
+    File.open("#{name}/Info.plist", 'w') { |file| 
         file.puts("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
         file.puts("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
         file.puts("<plist version=\"1.0\">")
@@ -83,8 +159,8 @@ def create_primary_framework_info_plist(project_name)
     }
 end
 
-def create_tests_info_plist(project_name)
-    File.open("#{project_name}Tests/Info.plist", 'w') { |file| 
+def create_tests_info_plist(name)
+    File.open("#{name}Tests/Info.plist", 'w') { |file| 
         file.puts("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
         file.puts("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
         file.puts("<plist version=\"1.0\">")
@@ -116,7 +192,6 @@ end
 # PBXGroups
 # =============================================================================
 def configure_PBXGroups(project, name)
-    puts "Configure PBXGroups: project: #{name}"
     [name, "#{name}Tests"].each do |x|
         project
             .new_group(x)
@@ -128,14 +203,14 @@ end
 # =============================================================================
 # config 
 # =============================================================================
-def config(project_name)
-    puts "Configuring artifacts for #{project_name}"
+def config(name)
+    puts "Configuring artifacts for #{name}"
     create_gitignore
-    create_travis(project_name)
+    create_travis(name)
     create_swift_lint
     create_hound
     create_cartfile
-    create_readme(project_name)
+    create_readme(name)
 end
 
 def create_gitignore
@@ -171,23 +246,23 @@ def create_gitignore
     }
 end
 
-def create_travis(project_name)
+def create_travis(name)
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8")
         file.puts("env:")
         file.puts("  matrix:")
         file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\"")
-        file.puts("      SCHEME=\"#{project_name}\"")
+        file.puts("      SCHEME=\"#{name}\"")
         file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\"")
-        file.puts("      SCHEME=\"#{project_name}\"")
+        file.puts("      SCHEME=\"#{name}\"")
         file.puts("    - DESTINATION=\"platform=OS X\"")
-        file.puts("      SCHEME=\"#{project_name}Mac\"")
+        file.puts("      SCHEME=\"#{name}Mac\"")
         file.puts()
         file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
         file.puts("script: travis_retry xcodebuild test")
-        file.puts("  -project #{project_name}.xcodeproj")
+        file.puts("  -project #{name}.xcodeproj")
         file.puts("  -scheme \"${SCHEME}\"")
         file.puts("  -destination \"${DESTINATION}\"")
         file.puts("  TOOLCHAINS=swift")
@@ -224,30 +299,30 @@ def create_cartfile
     end
 end
 
-def create_readme(project_name)
+def create_readme(name)
 
     File.open('README.md', 'w') { |file| 
-        file.puts("# #{project_name}")
+        file.puts("# #{name}")
         file.puts()
         file.puts("![Swift](https://img.shields.io/badge/%20in-swift%203.0-orange.svg)")
-        file.puts("[![Build Status](https://travis-ci.org/dn-m/#{project_name}.svg?branch=master)](https://travis-ci.org/dn-m/#{project_name}) ")
-        file.puts("[![codecov](https://codecov.io/gh/dn-m/#{project_name}/branch/master/graph/badge.svg)](https://codecov.io/gh/dn-m/#{project_name}) ")
+        file.puts("[![Build Status](https://travis-ci.org/dn-m/#{name}.svg?branch=master)](https://travis-ci.org/dn-m/#{name}) ")
+        file.puts("[![codecov](https://codecov.io/gh/dn-m/#{name}/branch/master/graph/badge.svg)](https://codecov.io/gh/dn-m/#{name}) ")
         file.puts("[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) ")
-        file.puts("[![GitHub version](https://badge.fury.io/gh/dn-m%2F#{project_name}.svg)](https://badge.fury.io/gh/dn-m%2F#{project_name}) ")
+        file.puts("[![GitHub version](https://badge.fury.io/gh/dn-m%2F#{name}.svg)](https://badge.fury.io/gh/dn-m%2F#{name}) ")
         file.puts()
         file.puts("## Integration")
         file.puts()
         file.puts("### Carthage")
-        file.puts("Integrate **#{project_name}** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).")
+        file.puts("Integrate **#{name}** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).")
         file.puts()
         file.puts("1. Follow [these instructions](https://github.com/Carthage/Carthage#installing-carthage) to install Carthage, if necessary.")
-        file.puts("2. Add `github \"dn-m/#{project_name}\"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).")
-        file.puts("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **#{project_name}** into your macOS or iOS project.")
+        file.puts("2. Add `github \"dn-m/#{name}\"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).")
+        file.puts("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **#{name}** into your macOS or iOS project.")
         file.puts()
         file.puts("---")
         file.puts()
         file.puts("### Documentation")
-        file.puts("See the [documentation](http://dn-m.github.io/#{project_name}/).")
+        file.puts("See the [documentation](http://dn-m.github.io/#{name}/).")
     }
 end
 
