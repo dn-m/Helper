@@ -21,35 +21,71 @@ def init(name)
     configure_ios_targets(project, name)
     configure_macos_targets(project, name)
     configure_header(project, name)
+    configure_schemes(project, name)
     project.save
 end
 
-def new_project(project_name)
-    project = Xcodeproj::Project.new("#{project_name}.xcodeproj")
+def new_project(name)
+    project = Xcodeproj::Project.new("#{name}.xcodeproj")
     return project
 end
 
-def create_file_structure(project_name)
+def create_file_structure(name)
     puts "Generating directory structure"
-    Dir.mkdir(project_name)
-    Dir.mkdir("#{project_name}Tests")
-    create_info_plists(project_name)
+    Dir.mkdir(name)
+    Dir.mkdir("#{name}Tests")
+    create_info_plists(name)
 end
 
-def create_project(project_name)
-    project = Xcodeproj::Project.new("#{project_name}.xcodeproj")
+def create_project(name)
+    project = Xcodeproj::Project.new("#{name}.xcodeproj")
     project.save
 end
 
 # =============================================================================
+# Schemes
+# =============================================================================
+def configure_schemes(project, name)
+    share_schemes(project, name)
+    add_testable_entries(project, name)
+end
+
+def add_testable_entries(project, name)
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+        target = project.targets.find { |y| y.name == "#{x} Tests" }
+
+        # Scheme
+        scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
+        scheme = Xcodeproj::XCScheme.new(scheme_path)
+
+        testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
+        
+        # ?
+        testable_entry.build_for_analyzing = false
+
+        scheme.build_action.add_entry(testable_entry)
+
+        testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target)
+        scheme.test_action.add_testable(testable_ref)
+        scheme.test_action.code_coverage_enabled = true
+    end
+end
+
+def share_schemes(project, name)
+    project.recreate_user_schemes(true)
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+        Xcodeproj::XCScheme.share_scheme("#{Dir.pwd}/#{name}.xcodeproj", "#{x}")
+    end
+end
+
+# =============================================================================
 # Header
-# TODO: iOS macOS / framework / test
+# TODO: iOS macOS / framework / app options
 # =============================================================================
 def configure_header(project, name)
     header_path = "#{name}/#{name}.h"
     create_empty_header(header_path)
     add_header_build_files(project, name, header_path)
-    puts project.targets
 end
 
 def create_empty_header(path)
