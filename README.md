@@ -1,32 +1,21 @@
 # Helper
-Command line interface for managing **dn-m** frameworks.
+
+![Swift](https://img.shields.io/badge/%20in-swift%203.0-orange.svg)
+[![Build Status](https://travis-ci.org/dn-m/Helper.svg?branch=master)](https://travis-ci.org/dn-m/Helper) 
+[![codecov](https://codecov.io/gh/dn-m/Helper/branch/master/graph/badge.svg)](https://codecov.io/gh/dn-m/Helper) 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
+[![GitHub version](https://badge.fury.io/gh/dn-m%2FHelper.svg)](https://badge.fury.io/gh/dn-m%2FHelper) 
 
 ## Integration
 
-### Dependencies
+### Carthage
+Integrate **Helper** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).
 
-This project uses the [CocoaPods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) framework, written in [Ruby](https://www.ruby-lang.org/en/). 
+1. Follow [these instructions](https://github.com/Carthage/Carthage#installing-carthage) to install Carthage, if necessary.
+2. Add `github "dn-m/Helper"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).
+3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **Helper** into your macOS or iOS project.
 
-As such, there are a few dependencies. To get started:
+---
 
-0. Install [Homebrew](http://brew.sh) 
-1. `brew install ruby`
-2. `[sudo] gem install xcodeproj -i /usr/local/bin`
-
-You should be good to go!
-
-### Clone and build from source
-1. `git clone https://github.com/dn-m/Helper`
-2. `cd Helper`
-3. `xcodebuild`
-4. `cp build/Release/dn-m /usr/local/bin/dn-m`
-
-### Download pre-built CLI
-1. Download **dn-m** CLI from the most current [release](https://github.com/dn-m/Helper/releases).
-2. Copy **dn-m** CLI to `/usr/local/bin/dn-m`
-
-## Usage
-
-- `dn-m config`
-  - Produces `README.md`, `.travis.yml`, `.hound.yml`, `.swiftlint.yml` and `.gitignore` files.
-
+### Documentation
+See the [documentation](http://dn-m.github.io/Helper/).
