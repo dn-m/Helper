@@ -4,7 +4,7 @@ require 'xcodeproj'
 require 'rubygems'
 require 'commander'
 
-# "Generating directory structure"
+
 # "Generating environment artifacts"
 # "Generating xcodeproj"
 # "Configuring xcodeproj"
@@ -12,6 +12,23 @@ require 'commander'
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
 
+# =============================================================================
+# init
+# =============================================================================
+def init(project_name)
+    puts "Generating project: #{project_name}"
+    create_file_structure(project_name)
+end
+
+def create_file_structure(project_name)
+    puts "Generating directory structure"
+    Dir.mkdir(project_name)
+    Dir.mkdir("#{project_name}Tests")
+end
+
+# =============================================================================
+# config 
+# =============================================================================
 def config(project_name)
     puts "Configuring artifacts for #{project_name}"
     create_gitignore
@@ -133,10 +150,6 @@ def create_readme(project_name)
         file.puts("### Documentation")
         file.puts("See the [documentation](http://dn-m.github.io/#{project_name}/).")
     }
-end
-
-def init(project_name)
-    puts "Initializing repository for #{project_name}"
 end
 
 class MyApplication
