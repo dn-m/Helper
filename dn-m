@@ -15,6 +15,7 @@ def init(project_name)
     create_file_structure(project_name)
     project = new_project(project_name)
     configure_PBXGroups(project, project_name)
+    add_info_plist_refs(project, project_name)
     project.save
 end
 
@@ -37,8 +38,14 @@ end
 
 # =============================================================================
 # Supporting Files
+# TODO: Add empty headers
 # =============================================================================
-# TODO: Add Info.plists and empty headers
+
+def add_info_plist_refs(project, project_name)
+    [project_name, "#{project_name}Tests"].each do |x|
+        project[x]["Supporting Files"].new_file("#{x}/Info.plist")
+    end
+end
 
 def create_info_plists(project_name)
     create_tests_info_plist(project_name)
@@ -110,22 +117,11 @@ end
 # =============================================================================
 def configure_PBXGroups(project, name)
     puts "Configure PBXGroups: project: #{name}"
-    configure_primary_group(project, name)
-    configure_tests_group(project, name)
-    return project
-end
-
-def configure_primary_group(project, name)
-    primary_group = project.new_group(name)
-    #supporting_files_group = primary_group.new_group("Supporting Files")
-    #supporting_files_group.new_file("#{project_name}/Info.plist")
-    return project
-end
-
-def configure_tests_group(project, name)
-    test_group = project.new_group("#{name}Tests")
-    #supporting_files_group = test_group.new_group("Supporting Files")
-    #supporting_files_group.new_file("#{project_name}Tests/Info.plist")
+    [name, "#{name}Tests"].each do |x|
+        project
+            .new_group(x)
+            .new_group("Supporting Files")
+    end
     return project
 end
 
