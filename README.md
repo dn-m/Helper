@@ -14,8 +14,10 @@ This project uses [Cocoapods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) 
 ## Integration
 
 0. Ensure that Ruby and Bundler are installed
-1. Download zip from latest release
-2. `cp dn-m /usr/local/bin`
+1. `git clone https://github.com/dn-m/Helper` or download the zip from the latest release
+2. `cd Helper`
+3. `bundle install`
+4. `cp dn-m /usr/local/bin`
 
 ## Usage
 
