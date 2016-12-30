@@ -27,6 +27,9 @@ If you have any issues, it's worth giving `brew update` / `brew upgrade` a shot.
 	- Creates a new iOS + macOS project from scratch, with the name of the containing directory
 	- Will fail if you already have a Xcode project in there
 	- Automatically calls `config`
+	- `[--platforms [iOS | macOS | all]]`
+		- Creates targets for selected platforms
+		- Defaults to `all`
 - `dn-m config`
 	- Creates the necessary configuration files for:
 		- Version tracking with [git](https://git-scm.com/)
