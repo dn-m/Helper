@@ -620,11 +620,19 @@ class Helper
             c.syntax = 'init [-a | -f] [--platforms [iOS | macOS | all]]'
             c.description = 'Create a new project'
             c.option '--platforms STRING', String, 'iOS or macOS'
-            c.option '-a', 'Build an application target'
-            c.option '-f', 'Build a framework target'
+            c.option '--application', 'Build an application target'
+            c.option '--framework', 'Build a framework target'
             c.action do |args, options|
 
                 options.default :platforms => 'all'
+
+                if options.application && options.framework
+                    puts "Can't do both application and framework. Choose one."
+                    return
+                end
+
+                puts "app?: #{options.application}"
+                puts "fmwk?: #{options.framework}"
                 
                 unless platforms_supported(options.platforms)
                     puts "Unsupported platform(s): #{options.platforms}"
@@ -670,6 +678,8 @@ class Helper
     def platforms_supported(platforms)
 
         supported_platforms = ['iOS', 'macOS']
+
+        if platforms == 'all' then return true end
 
         # If single platform, check if it is supported
         if platforms.is_a? String then
