@@ -47,7 +47,10 @@ def update_carthage
     system('carthage update')
 end
 
+# TODO: Add knowledge of frameworks!
 def add_framework_search_paths(project, name)
+
+    # Instead, gather the targets, and extract platforms
 
     ['iOS', 'macOS'].each do |platform|
         [true, false].each do |isTest|
@@ -109,6 +112,8 @@ def frameworks()
 
     Dir.chdir('Carthage/Build')
     result = Hash.new
+
+    # Carthage may not be built yet
     carthage_platforms.each do |platform|
         Dir.chdir(platform)
         result[from_carthage_platform(platform)] = Dir.entries('.')
@@ -146,16 +151,21 @@ def init(name, platforms)
         return
     end
 
+    # Create environment
     git_init
     config(name, platforms)
     create_file_structure(name)
+
+    # Create xcodeproj
     project = new_project(name)
     configure_PBXGroups(project, name)
     add_info_plist_refs(project, name)
     configure_targets(project, name, platforms)
-    configure_header(project, name)
-    configure_schemes(project, name)
-    configure_build_configuration_settings(project, name)
+    configure_header(project, name, platforms)
+    configure_schemes(project, name, platforms)
+    configure_build_configuration_settings(project, name, platforms)
+
+    # Save xcodeproj
     project.save
 end
 
@@ -178,10 +188,10 @@ end
 # Build Configuration
 # TODO: Add platform variables
 # =============================================================================
-def configure_build_configuration_settings(project, name, platforms=['iOS', 'macOS'])
-    configure_project_build_configuration_settings(project, name, platforms)
+def configure_build_configuration_settings(project, name, platforms)
+    configure_project_build_configuration_settings(project, name)
     configure_primary_build_configuration_settings(project, name, platforms)
-    configure_tests_build_configuration_settings(project, name)
+    configure_tests_build_configuration_settings(project, name, platforms)
 end
 
 def configure_project_build_configuration_settings(project, name) 
@@ -215,7 +225,7 @@ def configure_project_build_configuration_settings(project, name)
 end
 
 # TODO: Add platform variables
-def configure_primary_build_configuration_settings(project, name, platforms=['iOS', 'macOS'])
+def configure_primary_build_configuration_settings(project, name, platforms)
 
     platforms.each do |platform|
 
@@ -237,7 +247,7 @@ def configure_primary_build_configuration_settings(project, name, platforms=['iO
 end
 
 # TODO: Add platform variables
-def configure_tests_build_configuration_settings(project, name, platforms=['iOS', 'macOS'])
+def configure_tests_build_configuration_settings(project, name, platforms)
 
     platforms.each do |platform|
 
@@ -258,13 +268,13 @@ end
 # Schemes
 # =============================================================================
 # TODO: Add platform variables
-def configure_schemes(project, name, platforms=['iOS', 'macOS'])
+def configure_schemes(project, name, platforms)
     share_schemes(project, name, platforms)
     add_testable_entries(project, name, platforms)
 end
 
 # TODO: Add platform variables
-def add_testable_entries(project, name, platforms=['iOS','macOS'])
+def add_testable_entries(project, name, platforms)
 
     platforms.each do |platform|
         
@@ -290,7 +300,7 @@ def testable_ref(test_target)
 end
 
 # TODO: Add platform variables
-def share_schemes(project, name, platforms=['iOS','macOS'])
+def share_schemes(project, name, platforms)
     project.recreate_user_schemes(true)
     
     platforms.each do |platform|
@@ -304,19 +314,17 @@ end
 # Header
 # TODO: iOS macOS / framework / app options
 # =============================================================================
-def configure_header(project, name)
+def configure_header(project, name, platforms)
     header_path = "#{name}/#{name}.h"
     create_empty_header(header_path)
-    add_header_build_files(project, name, header_path)
+    add_header_build_files(project, name, header_path, platforms)
 end
 
 def create_empty_header(path)
     FileUtils.touch(path)
 end
 
-def add_header_build_files(
-    project, name, header_path, platforms=['iOS','macOS']
-)
+def add_header_build_files(project, name, header_path, platforms)
     
     header_ref = project.main_group.new_file(header_path)
 
@@ -331,7 +339,7 @@ end
 # =============================================================================
 # Targets
 # =============================================================================
-def configure_targets(project, name, platforms=['iOS', 'macOS'])
+def configure_targets(project, name, platforms)
 
     platforms.each do |platform|
 
