@@ -616,28 +616,33 @@ class Helper
         program :version, '0.1'
         program :description, 'Creates and maintains dn-m projects.'
 
+        command :init do |c|
+            c.syntax = 'init [-a | -f] [--platforms [iOS | macOS | all]]'
+            c.description = 'Create a new project'
+            c.option '--platforms STRING', String, 'iOS or macOS'
+            c.option '-a', 'Build an application target'
+            c.option '-f', 'Build a framework target'
+            c.action do |args, options|
+
+                options.default :platforms => 'all'
+                
+                unless platforms_supported(options.platforms)
+                    puts "Unsupported platform(s): #{options.platforms}"
+                    return
+                end
+
+                puts "args: #{args}"
+                puts "options: #{options}"
+
+                init($project_name, sanitize_platforms(options.platforms))
+            end
+        end
+
         command :config do |c|
             c.syntax = 'config'
             c.description = 'Creates configuration files for testing.'
             c.action do |args, options|
                 config($project_name)
-            end
-        end
-
-        command :init do |c|
-            c.syntax = 'init [-a | -f]'
-            c.description = 'Create a new project'
-            c.option '--platforms', String, 'iOS or macOS'
-            c.action do |args, options|
-
-                platforms = args.empty? || (args.count ==1 && args.first == 'all') ? ['iOS', 'macOS'] : args
-
-                puts "args: #{args}"
-                puts "options: #{options}"
-
-                puts "Platforms to build: #{platforms}"
-
-                init($project_name, platforms)
             end
         end
 
@@ -650,6 +655,37 @@ class Helper
         end
 
         run!
+    end
+
+    # Ensure that platforms is an Array, not a String
+    def sanitize_platforms(platforms)
+        if platforms.is_a? String then
+            return [platforms]
+        else
+            return platforms
+        end
+    end
+
+    # Check if platform(s) are supported
+    def platforms_supported(platforms)
+
+        supported_platforms = ['iOS', 'macOS']
+
+        # If single platform, check if it is supported
+        if platforms.is_a? String then
+            if !supported_platforms.include?(platforms) then
+                return false
+            end
+
+        # If array of platforms, check if every platform is supported
+        elsif platforms.is_a? Array then
+            platforms.each do |platform|
+                if !supported_platforms.include?(platform) then
+                    return false
+                end
+            end
+        end
+        return true
     end
 end
 
