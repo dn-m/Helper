@@ -314,11 +314,13 @@ def create_empty_header(path)
     FileUtils.touch(path)
 end
 
-def add_header_build_files(project, name, header_path)
+def add_header_build_files(
+    project, name, header_path, platforms=['iOS','macOS']
+)
     
     header_ref = project.main_group.new_file(header_path)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
         build_file = project.targets
             .find { |y| y.name == "#{name} #{platform}" }
             .add_file_references([header_ref], 'header_build_file')
@@ -328,7 +330,6 @@ end
 
 # =============================================================================
 # Targets
-# TODO: iOS macOS / framework / test
 # =============================================================================
 def configure_targets(project, name, platforms=['iOS', 'macOS'])
 
@@ -338,7 +339,6 @@ def configure_targets(project, name, platforms=['iOS', 'macOS'])
 
         # TODO: Store versions in Hash somewhere
         version = platform == 'iOS' ? '8.4' : '10.9'
-
         platform_symbol = platform == 'iOS' ? :ios : :osx
 
         primary_target = project.new_target(
