@@ -140,6 +140,7 @@ def init(name)
         return
     end
 
+    git_init
     config(name)
     create_file_structure(name)
     project = new_project(name)
@@ -150,6 +151,10 @@ def init(name)
     configure_schemes(project, name)
     configure_build_configuration_settings(project, name)
     project.save
+end
+
+def git_init
+    system('git init')
 end
 
 def new_project(name)
