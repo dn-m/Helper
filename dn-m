@@ -109,15 +109,19 @@ def frameworks()
 
     Dir.chdir('Carthage/Build')
     result = Hash.new
-    ['iOS', 'Mac'].each do |x|
-        Dir.chdir(x)
-        result[from_carthage_platform(x)] = Dir.entries('.')
+    carthage_platforms.each do |platform|
+        Dir.chdir(platform)
+        result[from_carthage_platform(platform)] = Dir.entries('.')
             .select { |y| y.end_with?('framework') }
             .map { |y| y.split('.').first }
         Dir.chdir('../')
     end
     Dir.chdir('../../')
     return result
+end
+
+def carthage_platforms
+    return ['iOS', 'Mac']
 end
 
 def to_carthage_platform(platform)
