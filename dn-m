@@ -137,6 +137,8 @@ end
 # =============================================================================
 def init(name, platforms)
 
+    puts "Initializing for platforms: #{platforms}"
+
     path = "#{Dir.pwd}/#{name}.xcodeproj"
 
     unless !Dir.exist?(path) then
@@ -145,7 +147,7 @@ def init(name, platforms)
     end
 
     git_init
-    config(name)
+    config(name, platforms)
     create_file_structure(name)
     project = new_project(name)
     configure_PBXGroups(project, name)
@@ -448,13 +450,16 @@ end
 # =============================================================================
 # config command
 # =============================================================================
-def config(name)
+def config(name, platforms=['iOS', 'macOS'])
+
+    puts "Configuring for platforms: #{platforms}"
+
     create_gitignore
-    create_travis(name)
+    create_travis(name, platforms) # find platforms
     create_swift_lint
     create_hound
     create_cartfile
-    create_readme(name)
+    create_readme(name, platforms)
 end
 
 def create_gitignore
@@ -492,8 +497,6 @@ end
 
 def create_travis(name, platforms)
 
-
-
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8")
@@ -522,6 +525,7 @@ def create_travis(name, platforms)
             when 'macOS'
                 file.puts("    - DESTINATION=\"platform=OS X\"")
                 file.puts("      SCHEME=\"#{scheme}\"")            
+            end
         end
 
         file.puts()
@@ -563,7 +567,13 @@ def create_cartfile
     FileUtils.touch('Cartfile')
 end
 
-def create_readme(name)
+def create_readme(name, platforms)
+
+    puts "Readme for platforms: #{platforms}"
+
+    platform_phrase = platforms.count == 1 ? platforms.first : platforms.join(' or ')
+
+    puts "Platform phrase: #{platform_phrase}"
 
     File.open('README.md', 'w') { |file| 
         file.puts("# #{name}")
@@ -577,11 +587,11 @@ def create_readme(name)
         file.puts("## Integration")
         file.puts()
         file.puts("### Carthage")
-        file.puts("Integrate **#{name}** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).")
+        file.puts("Integrate **#{name}** into your #{platform_phrase} project with [Carthage](https://github.com/Carthage/Carthage).")
         file.puts()
         file.puts("1. Follow [these instructions](https://github.com/Carthage/Carthage#installing-carthage) to install Carthage, if necessary.")
         file.puts("2. Add `github \"dn-m/#{name}\"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).")
-        file.puts("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **#{name}** into your macOS or iOS project.")
+        file.puts("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **#{name}** into your #{platform_phrase} project.")
         file.puts()
         file.puts("---")
         file.puts()
