@@ -258,9 +258,9 @@ end
 # Schemes
 # =============================================================================
 # TODO: Add platform variables
-def configure_schemes(project, name)
-    share_schemes(project, name)
-    add_testable_entries(project, name)
+def configure_schemes(project, name, platforms=['iOS', 'macOS'])
+    share_schemes(project, name, platforms)
+    add_testable_entries(project, name, platforms)
 end
 
 # TODO: Add platform variables
