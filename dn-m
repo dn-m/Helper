@@ -68,7 +68,7 @@ def create_carthage_script_phase(project, name)
         t = target(project, name, platform, true)
 
         # Make sure there's only one shell script phase
-        if t.shell_script_build_phases.count == 0 then
+        if t.shell_script_build_phases.empty? then
             script_phase = t.new_shell_script_build_phase
             script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
         end
@@ -135,11 +135,11 @@ end
 # =============================================================================
 # init command
 # =============================================================================
-def init(name)
+def init(name, platforms)
 
     path = "#{Dir.pwd}/#{name}.xcodeproj"
 
-    if Dir.exist?(path) then
+    unless !Dir.exist?(path) then
         puts "There's already a project here!"
         return
     end
@@ -490,18 +490,40 @@ def create_gitignore
     }
 end
 
-def create_travis(name)
+def create_travis(name, platforms)
+
+
+
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8")
         file.puts("env:")
         file.puts("  matrix:")
-        file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\"")
-        file.puts("      SCHEME=\"#{name}\"")
-        file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\"")
-        file.puts("      SCHEME=\"#{name}\"")
-        file.puts("    - DESTINATION=\"platform=OS X\"")
-        file.puts("      SCHEME=\"#{name}Mac\"")
+        
+        platforms.each do |platform|
+
+            scheme = "#{name} #{platform}"
+
+            case platform
+            when 'iOS'
+                
+                file.puts(
+                    "    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\""
+                )
+                
+                file.puts("      SCHEME=\"#{scheme}\"")
+                
+                file.puts(
+                    "    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\""
+                )
+
+                file.puts("      SCHEME=\"#{name}\"")
+
+            when 'macOS'
+                file.puts("    - DESTINATION=\"platform=OS X\"")
+                file.puts("      SCHEME=\"#{scheme}\"")            
+        end
+
         file.puts()
         file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
@@ -585,10 +607,19 @@ class Helper
         end
 
         command :init do |c|
-            c.syntax = 'init'
+            c.syntax = 'init [-a | -f]'
             c.description = 'Create a new project'
+            c.option '--platforms', String, 'iOS or macOS'
             c.action do |args, options|
-                init($project_name)
+
+                platforms = args.empty? ? ['iOS', 'macOS'] : args
+
+                puts "args: #{args}"
+                puts "options: #{options}"
+
+                puts "Platforms to build: #{platforms}"
+
+                init($project_name, platforms)
             end
         end
 
