@@ -109,15 +109,19 @@ def frameworks()
 
     Dir.chdir('Carthage/Build')
     result = Hash.new
-    ['iOS', 'Mac'].each do |x|
-        Dir.chdir(x)
-        result[from_carthage_platform(x)] = Dir.entries('.')
+    carthage_platforms.each do |platform|
+        Dir.chdir(platform)
+        result[from_carthage_platform(platform)] = Dir.entries('.')
             .select { |y| y.end_with?('framework') }
             .map { |y| y.split('.').first }
         Dir.chdir('../')
     end
     Dir.chdir('../../')
     return result
+end
+
+def carthage_platforms
+    return ['iOS', 'Mac']
 end
 
 def to_carthage_platform(platform)
@@ -211,10 +215,10 @@ end
 # TODO: Add platform variables
 def configure_primary_build_configuration_settings(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+    ['iOS', 'macOS'].each do |platform|
 
         # FIXME: abstract away
-        target = project.targets.find { |y| y.name == "#{x}" }
+        target = project.targets.find { |y| y.name == "#{name} #{platform}" }
 
         settings = {
             'INFOPLIST_FILE' => "#{name}/Info.plist",
@@ -233,9 +237,9 @@ end
 # TODO: Add platform variables
 def configure_tests_build_configuration_settings(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+    ['iOS', 'macOS'].each do |platform|
 
-        target = project.targets.find { |y| y.name == "#{x} Tests" }
+        target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
         settings = { 
             'INFOPLIST_FILE' => "#{name}Tests/Info.plist",
@@ -260,13 +264,14 @@ end
 # TODO: Add platform variables
 def add_testable_entries(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+    ['iOS', 'macOS'].each do |platform|
         
         # FIXME: abstract away
-        target = project.targets.find { |y| y.name == "#{x} Tests" }
+        target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
         # Scheme
-        scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
+        scheme_name = "#{name} #{platform}.xcscheme"
+        scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{scheme_name}"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
 
         testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
@@ -285,8 +290,11 @@ end
 # TODO: Add platform variables
 def share_schemes(project, name)
     project.recreate_user_schemes(true)
-    ["#{name} iOS", "#{name} macOS"].each do |x|
-        Xcodeproj::XCScheme.share_scheme("#{Dir.pwd}/#{name}.xcodeproj", "#{x}")
+    
+    ['iOS', 'macOS'].each do |platform|
+        Xcodeproj::XCScheme.share_scheme(
+            "#{Dir.pwd}/#{name}.xcodeproj", "#{name} #{platform}"
+        )
     end
 end
 
@@ -305,10 +313,12 @@ def create_empty_header(path)
 end
 
 def add_header_build_files(project, name, header_path)
+    
     header_ref = project.main_group.new_file(header_path)
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+
+    ['iOS', 'macOS'].each do |platform|
         build_file = project.targets
-            .find { |y| y.name == x }
+            .find { |y| y.name == "#{name} #{platform}" }
             .add_file_references([header_ref], 'header_build_file')
         build_file.first.settings = { 'ATTRIBUTES' => ['Public'] }
     end
@@ -320,17 +330,26 @@ end
 # =============================================================================
 def configure_targets(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+    ['iOS', 'macOS'].each do |platform|
 
-        version = x == "#{name} iOS" ? '8.4' : '10.9'
-        platform = x == "#{name} iOS" ? :ios : :osx
+        target_name = "#{name} #{platform}"
 
-        primary_target = project.new_target(:framework, x, platform, version)
+        # TODO: Store versions in Hash somewhere
+        version = platform == 'iOS' ? '8.4' : '10.9'
+
+        platform_symbol = platform == 'iOS' ? :ios : :osx
+
+        primary_target = project.new_target(
+            :framework, 
+            target_name, 
+            platform_symbol, 
+            version
+        )
 
         tests_target = project.new_target(
             :unit_test_bundle, 
-            "#{x} Tests", 
-            platform, 
+            "#{target_name} Tests", 
+            platform_symbol, 
             version
         )
     
