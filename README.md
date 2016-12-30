@@ -20,8 +20,8 @@ This project uses [Cocoapods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) 
 ## Usage
 
 - `dn-m init`
-	- Creates a new iOS + macOS project from scratch, with the name of the containing directory.
-	- Will fail if you already have a Xcode project in there.
+	- Creates a new iOS + macOS project from scratch, with the name of the containing directory
+	- Will fail if you already have a Xcode project in there
 	- Automatically calls `config`
 - `dn-m config`
 	- Creates the necessary configuration files for:
