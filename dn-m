@@ -377,8 +377,42 @@ def add_info_plist_refs(project, name)
 end
 
 def create_info_plists(name)
+
+    puts "Info.plist preamble: #{info_plist_preamble}"
+
     create_tests_info_plist(name)
     create_primary_framework_info_plist(name)
+end
+
+def info_plist(name, type, platform, isTest)
+
+end
+
+def info_plist_preamble
+    return %{
+        <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+        <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+        <plist version=\"1.0\">
+        <dict>
+            <key>CFBundleDevelopmentRegion</key>
+            <string>en</string>
+            <key>CFBundleExecutable</key>
+            <string>$(EXECUTABLE_NAME)</string>
+            <key>CFBundleIdentifier</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+            <key>CFBundleInfoDictionaryVersion</key>
+            <string>6.0</string>
+            <key>CFBundleName</key>
+            <string>$(PRODUCT_NAME)</string>
+            <key>CFBundlePackageType</key>
+            <string>FMWK</string>
+            <key>CFBundleShortVersionString</key>
+            <string>1.0</string>
+            <key>CFBundleSignature</key>
+            <string>????</string>
+            <key>CFBundleVersion</key>
+            <string>$(CURRENT_PROJECT_VERSION)</string>
+    }
 end
 
 def macOS_info_plist(name)
@@ -404,6 +438,7 @@ def macOS_info_plist(name)
 #     <string>1.0</string>
 #     <key>CFBundleVersion</key>
 #     <string>1</string>
+
 #     <key>LSMinimumSystemVersion</key>
 #     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 #     <key>NSHumanReadableCopyright</key>
@@ -438,6 +473,7 @@ def ios_info_plist(name)
 #     <string>1.0</string>
 #     <key>CFBundleVersion</key>
 #     <string>1</string>
+
 #     <key>LSRequiresIPhoneOS</key>
 #     <true/>
 #     <key>UILaunchStoryboardName</key>
@@ -490,6 +526,7 @@ def create_primary_framework_info_plist(name)
         file.puts("    <string>????</string>")
         file.puts("    <key>CFBundleVersion</key>")
         file.puts("    <string>$(CURRENT_PROJECT_VERSION)</string>")
+
         file.puts("    <key>NSPrincipalClass</key>")
         file.puts("    <string></string>")
         file.puts("</dict>")
