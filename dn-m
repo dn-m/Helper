@@ -624,23 +624,24 @@ class Helper
             c.option '--framework', 'Build a framework target'
             c.action do |args, options|
 
-                options.default :platforms => 'all'
-
+                # Product type
+                type = 'framework'
                 if options.application && options.framework
                     puts "Can't do both application and framework. Choose one."
                     return
+                elsif options.application && !options.framework
+                    type = 'application'
                 end
 
-                puts "app?: #{options.application}"
-                puts "fmwk?: #{options.framework}"
-                
+                puts "Type: #{type}"
+
+                # Platforms
+                options.default :platforms => 'all'
+
                 unless platforms_supported(options.platforms)
                     puts "Unsupported platform(s): #{options.platforms}"
                     return
                 end
-
-                puts "args: #{args}"
-                puts "options: #{options}"
 
                 init($project_name, sanitize_platforms(options.platforms))
             end
@@ -667,6 +668,11 @@ class Helper
 
     # Ensure that platforms is an Array, not a String
     def sanitize_platforms(platforms)
+        
+        if platforms == 'all' then 
+            return supported_platforms
+        end
+
         if platforms.is_a? String then
             return [platforms]
         else
@@ -676,8 +682,6 @@ class Helper
 
     # Check if platform(s) are supported
     def platforms_supported(platforms)
-
-        supported_platforms = ['iOS', 'macOS']
 
         if platforms == 'all' then return true end
 
@@ -696,6 +700,10 @@ class Helper
             end
         end
         return true
+    end
+
+    def supported_platforms
+        return ['iOS', 'macOS']
     end
 end
 
