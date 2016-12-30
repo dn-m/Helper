@@ -152,7 +152,7 @@ def init(name, platforms)
     project = new_project(name)
     configure_PBXGroups(project, name)
     add_info_plist_refs(project, name)
-    configure_targets(project, name)
+    configure_targets(project, name, platforms)
     configure_header(project, name)
     configure_schemes(project, name)
     configure_build_configuration_settings(project, name)
@@ -330,9 +330,9 @@ end
 # Targets
 # TODO: iOS macOS / framework / test
 # =============================================================================
-def configure_targets(project, name)
+def configure_targets(project, name, platforms=['iOS', 'macOS'])
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
 
         target_name = "#{name} #{platform}"
 
@@ -362,7 +362,6 @@ end
 # =============================================================================
 # Supporting Files
 # =============================================================================
-
 def add_info_plist_refs(project, name)
     [name, "#{name}Tests"].each do |x|
         project[x]["Supporting Files"].new_file("#{x}/Info.plist")
