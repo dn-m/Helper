@@ -47,7 +47,7 @@ def add_framework_search_paths(project, name)
             target(project, name, platform, isTest)
                 .build_configuration_list.set_setting(
                     'FRAMEWORK_SEARCH_PATHS', 
-                    "$(SRCROOT)/Carthage/Build/#{platform}"
+                    "$(SRCROOT)/Carthage/Build/#{to_carthage_platform(platform)}"
                 )
         end
     end
@@ -75,7 +75,8 @@ def create_carthage_script_phase(project, name)
             unless f == name
             end
             input_path = 
-                "$(SRCROOT)/#{carthage_build_path(platform, f)}"
+                "$(SRCROOT)/#{carthage_build_path(
+                    to_carthage_platform(platform), f)}"
             script_phase.input_paths << input_path
         end
         
