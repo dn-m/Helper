@@ -178,9 +178,9 @@ end
 # Build Configuration
 # TODO: Add platform variables
 # =============================================================================
-def configure_build_configuration_settings(project, name)
-    configure_project_build_configuration_settings(project, name)
-    configure_primary_build_configuration_settings(project, name)
+def configure_build_configuration_settings(project, name, platforms=['iOS', 'macOS'])
+    configure_project_build_configuration_settings(project, name, platforms)
+    configure_primary_build_configuration_settings(project, name, platforms)
     configure_tests_build_configuration_settings(project, name)
 end
 
