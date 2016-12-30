@@ -266,7 +266,8 @@ def add_testable_entries(project, name)
         target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
         # Scheme
-        scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
+        scheme_name = "#{name} #{platform}.xcscheme"
+        scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{scheme_name}"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
 
         testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
