@@ -630,7 +630,7 @@ class Helper
             c.option '--platforms', String, 'iOS or macOS'
             c.action do |args, options|
 
-                platforms = args.empty? ? ['iOS', 'macOS'] : args
+                platforms = args.empty? || (args.count ==1 && args.first == 'all') ? ['iOS', 'macOS'] : args
 
                 puts "args: #{args}"
                 puts "options: #{options}"
