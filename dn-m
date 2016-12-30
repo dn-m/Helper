@@ -233,9 +233,9 @@ end
 # TODO: Add platform variables
 def configure_tests_build_configuration_settings(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
-
-        target = project.targets.find { |y| y.name == "#{x} Tests" }
+    ['iOS', 'macOS'].each do |platform|
+        
+        target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
         settings = { 
             'INFOPLIST_FILE' => "#{name}Tests/Info.plist",
