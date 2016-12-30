@@ -562,7 +562,7 @@ class Helper
 
         command :init do |c|
             c.syntax = 'init'
-            c.description = 'Create '
+            c.description = 'Create a new project'
             c.action do |args, options|
                 init($project_name)
             end
@@ -570,7 +570,7 @@ class Helper
 
         command :update do |c|
             c.syntax = 'update'
-            c.description = 'Update frameworks'
+            c.description = 'Update the frameworks for the current project'
             c.action do |args, options|
                 update_frameworks($project_name)
             end
