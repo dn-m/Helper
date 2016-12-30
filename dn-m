@@ -18,22 +18,27 @@ def project_from_name(name)
     return project
 end
 
+def target(project, name, platform, isTest)
+    test_suffix = isTest ? ' Test' : ''
+    target_name = "#{name} #{platform}#{test_suffix}"
+    return project.targets.find { |x| x.name == target_name }
+end
+
 # =============================================================================
 # integrate frameworks
 # =============================================================================
 def update_frameworks(name)
     puts "Updating frameworks for project: #{name}"
 
-    
     project = project_from_name(name)
-    puts project
-
-    puts frameworks(project, name)
-
-    # ["iOS", "macOS"].each do |x|
-    #     target = project.targets.find { |y| y.name == "#{name} #{x}" }
-
-    # end
+    
+    frameworks.each do |platform, frameworks|
+        t = target(project, name, platform, false)
+        script_phase = t.new_shell_script_build_phase
+        script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
+        t.shell_script_build_phases[0] = script_phase
+        puts t.shell_script_build_phases
+    end
 end
 
 def create_carthage_script_phase(project, name)
@@ -41,33 +46,34 @@ def create_carthage_script_phase(project, name)
 end
 
 # Add platforms option
-def frameworks(project, name)
+def frameworks()
+    
+    # Check that there is a `Cartfile` at all
     unless File.exist?('Cartfile')
         return
-    else
-        unless Dir.exist?('Carthage')
-            return
-        end
-
-        Dir.chdir('Carthage/Build')
-        
-        result = Hash.new
-
-        ['iOS', 'Mac'].each do |x|
-            
-            Dir.chdir(x)
-
-            result[x] = Dir.entries('.')
-                .select { |y| y.end_with?('framework') }
-                .map { |y| y.split('.').first }
-
-            Dir.chdir('..')
-        end
-        
-        puts result
     end
+    
+    # Check that there is a `Carthage ` artifacts directory
+    unless Dir.exist?('Carthage')
+        return
+    end
+
+    Dir.chdir('Carthage/Build')
+    result = Hash.new
+    ['iOS', 'Mac'].each do |x|
+        Dir.chdir(x)
+        result[platform_from_carthage(x)] = Dir.entries('.')
+            .select { |y| y.end_with?('framework') }
+            .map { |y| y.split('.').first }
+        Dir.chdir('../')
+    end
+    Dir.chdir('../../')
+    return result
 end
 
+def platform_from_carthage(platform)
+    return platform == 'Mac' ? 'macOS' : 'iOS'
+end
 
 # =============================================================================
 # init command
