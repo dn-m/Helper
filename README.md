@@ -17,9 +17,6 @@ Command line utility for generating and maintaining frameworks and applications 
 
 ## Usage
 
+- `dn-m init`
 - `dn-m config`
-
----
-
-### Documentation
-See the [documentation](http://dn-m.github.io/Helper/).
+- `dn-m update`
