@@ -36,17 +36,25 @@ def update_frameworks(name)
         return
     end
     
+    update_carthage()
+
+    puts "Injecting frameworks into #{name}..."
+
     project = project_from_path(path)
     create_carthage_script_phase(project, name)
     add_framework_search_paths(project, name)
-
     project.save
+
+    puts "Ready to go!"
+end
+
+def update_carthage
+    puts "Updating Carthage..."
+    system('carthage update')
 end
 
 def add_framework_search_paths(project, name)
 
-    puts "Updating framework search paths"
-    
     ['iOS', 'macOS'].each do |platform|
         [true, false].each do |isTest|
             target(project, name, platform, isTest)
