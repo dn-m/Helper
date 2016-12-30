@@ -11,7 +11,6 @@ This project uses [Cocoapods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) 
 	- [`xcodeproj`](https://github.com/CocoaPods/Xcodeproj)
 	- [`commander`](https://github.com/commander-rb/commander)
 
-
 ## Integration
 
 0. Ensure that Ruby and Bundler are installed
@@ -21,5 +20,16 @@ This project uses [Cocoapods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) 
 ## Usage
 
 - `dn-m init`
+	- Creates a new iOS + macOS project from scratch, with the name of the containing directory.
+	- Will fail if you already have a Xcode project in there.
+	- Automatically calls `config`
 - `dn-m config`
+	- Creates the necessary configuration files for:
+		- Version tracking with [git](https://git-scm.com/)
+		- Dependency management with [Carthage](https://github.com/Carthage/Carthage)
+		- Testing with [Travis CI](https://travis-ci.org/)
+		- Code coverage with [Codecov](https://codecov.io/)
+		- Code style with [Hound CI](https://houndci.com/) and [SwiftLint](https://github.com/realm/SwiftLint)
 - `dn-m update`
+	- Updates framework dependencies via [Carthage](https://github.com/Carthage/Carthage)
+	- Injects them into your project
