@@ -13,8 +13,6 @@ $project_name = File.basename(Dir.getwd)
 # init command
 # =============================================================================
 def init(name)
-    
-
     puts "Generating project: #{name}"
     create_file_structure(name)
     project = new_project(name)
@@ -41,9 +39,9 @@ end
 
 # =============================================================================
 # Build Configuration
+# TODO: Add platform variables
 # =============================================================================
 def configure_build_configuration_settings(project, name)
-
     configure_project_build_configuration_settings(project, name)
     configure_primary_build_configuration_settings(project, name)
     configure_tests_build_configuration_settings(project, name)
@@ -78,6 +76,7 @@ def configure_project_build_configuration_settings(project, name)
     end
 end
 
+# TODO: Add platform variables
 def configure_primary_build_configuration_settings(project, name)
 
     ["#{name} iOS", "#{name} macOS"].each do |x|
@@ -99,6 +98,7 @@ def configure_primary_build_configuration_settings(project, name)
     end
 end
 
+# TODO: Add platform variables
 def configure_tests_build_configuration_settings(project, name)
 
     ["#{name} iOS", "#{name} macOS"].each do |x|
@@ -119,32 +119,44 @@ end
 # =============================================================================
 # Schemes
 # =============================================================================
+# TODO: Add platform variables
 def configure_schemes(project, name)
     share_schemes(project, name)
     add_testable_entries(project, name)
 end
 
+# TODO: Add platform variables
 def add_testable_entries(project, name)
+
+    puts "Adding testable entries"
+
     ["#{name} iOS", "#{name} macOS"].each do |x|
         
         # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{x} Tests" }
 
+        puts "Test target: #{target}"
+
         # Scheme
         scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
+
+        puts "Scheme: #{scheme}"
 
         # ?
         testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
         # ??
         testable_entry.build_for_analyzing = false
         scheme.build_action.add_entry(testable_entry)
-        testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target)
+        testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target
+        )
         scheme.test_action.add_testable(testable_ref)
         scheme.test_action.code_coverage_enabled = true
+        scheme.save!
     end
 end
 
+# TODO: Add platform variables
 def share_schemes(project, name)
     project.recreate_user_schemes(true)
     ["#{name} iOS", "#{name} macOS"].each do |x|
@@ -412,7 +424,7 @@ def create_readme(name)
     }
 end
 
-class MyApplication
+class Helper
   include Commander::Methods
 
     def run
@@ -440,6 +452,4 @@ class MyApplication
     end
 end
 
-MyApplication.new.run if $0 == __FILE__
-
-
+Helper.new.run if $0 == __FILE__
