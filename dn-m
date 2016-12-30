@@ -47,7 +47,10 @@ def update_carthage
     system('carthage update')
 end
 
+# TODO: Add knowledge of frameworks!
 def add_framework_search_paths(project, name)
+
+    # Instead, gather the targets, and extract platforms
 
     ['iOS', 'macOS'].each do |platform|
         [true, false].each do |isTest|
@@ -68,7 +71,7 @@ def create_carthage_script_phase(project, name)
         t = target(project, name, platform, true)
 
         # Make sure there's only one shell script phase
-        if t.shell_script_build_phases.count == 0 then
+        if t.shell_script_build_phases.empty? then
             script_phase = t.new_shell_script_build_phase
             script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
         end
@@ -109,6 +112,8 @@ def frameworks()
 
     Dir.chdir('Carthage/Build')
     result = Hash.new
+
+    # Carthage may not be built yet
     carthage_platforms.each do |platform|
         Dir.chdir(platform)
         result[from_carthage_platform(platform)] = Dir.entries('.')
@@ -135,25 +140,32 @@ end
 # =============================================================================
 # init command
 # =============================================================================
-def init(name)
+def init(name, platforms)
+
+    puts "Initializing for platforms: #{platforms}"
 
     path = "#{Dir.pwd}/#{name}.xcodeproj"
 
-    if Dir.exist?(path) then
+    unless !Dir.exist?(path) then
         puts "There's already a project here!"
         return
     end
 
+    # Create environment
     git_init
-    config(name)
+    config(name, platforms)
     create_file_structure(name)
+
+    # Create xcodeproj
     project = new_project(name)
     configure_PBXGroups(project, name)
     add_info_plist_refs(project, name)
-    configure_targets(project, name)
-    configure_header(project, name)
-    configure_schemes(project, name)
-    configure_build_configuration_settings(project, name)
+    configure_targets(project, name, platforms)
+    configure_header(project, name, platforms)
+    configure_schemes(project, name, platforms)
+    configure_build_configuration_settings(project, name, platforms)
+
+    # Save xcodeproj
     project.save
 end
 
@@ -176,10 +188,10 @@ end
 # Build Configuration
 # TODO: Add platform variables
 # =============================================================================
-def configure_build_configuration_settings(project, name)
+def configure_build_configuration_settings(project, name, platforms)
     configure_project_build_configuration_settings(project, name)
-    configure_primary_build_configuration_settings(project, name)
-    configure_tests_build_configuration_settings(project, name)
+    configure_primary_build_configuration_settings(project, name, platforms)
+    configure_tests_build_configuration_settings(project, name, platforms)
 end
 
 def configure_project_build_configuration_settings(project, name) 
@@ -213,9 +225,9 @@ def configure_project_build_configuration_settings(project, name)
 end
 
 # TODO: Add platform variables
-def configure_primary_build_configuration_settings(project, name)
+def configure_primary_build_configuration_settings(project, name, platforms)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
 
         # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{name} #{platform}" }
@@ -235,9 +247,9 @@ def configure_primary_build_configuration_settings(project, name)
 end
 
 # TODO: Add platform variables
-def configure_tests_build_configuration_settings(project, name)
+def configure_tests_build_configuration_settings(project, name, platforms)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
 
         target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
@@ -256,15 +268,15 @@ end
 # Schemes
 # =============================================================================
 # TODO: Add platform variables
-def configure_schemes(project, name)
-    share_schemes(project, name)
-    add_testable_entries(project, name)
+def configure_schemes(project, name, platforms)
+    share_schemes(project, name, platforms)
+    add_testable_entries(project, name, platforms)
 end
 
 # TODO: Add platform variables
-def add_testable_entries(project, name)
+def add_testable_entries(project, name, platforms)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
         
         # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
@@ -288,10 +300,10 @@ def testable_ref(test_target)
 end
 
 # TODO: Add platform variables
-def share_schemes(project, name)
+def share_schemes(project, name, platforms)
     project.recreate_user_schemes(true)
     
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
         Xcodeproj::XCScheme.share_scheme(
             "#{Dir.pwd}/#{name}.xcodeproj", "#{name} #{platform}"
         )
@@ -302,21 +314,21 @@ end
 # Header
 # TODO: iOS macOS / framework / app options
 # =============================================================================
-def configure_header(project, name)
+def configure_header(project, name, platforms)
     header_path = "#{name}/#{name}.h"
     create_empty_header(header_path)
-    add_header_build_files(project, name, header_path)
+    add_header_build_files(project, name, header_path, platforms)
 end
 
 def create_empty_header(path)
     FileUtils.touch(path)
 end
 
-def add_header_build_files(project, name, header_path)
+def add_header_build_files(project, name, header_path, platforms)
     
     header_ref = project.main_group.new_file(header_path)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
         build_file = project.targets
             .find { |y| y.name == "#{name} #{platform}" }
             .add_file_references([header_ref], 'header_build_file')
@@ -326,17 +338,15 @@ end
 
 # =============================================================================
 # Targets
-# TODO: iOS macOS / framework / test
 # =============================================================================
-def configure_targets(project, name)
+def configure_targets(project, name, platforms)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
 
         target_name = "#{name} #{platform}"
 
         # TODO: Store versions in Hash somewhere
         version = platform == 'iOS' ? '8.4' : '10.9'
-
         platform_symbol = platform == 'iOS' ? :ios : :osx
 
         primary_target = project.new_target(
@@ -360,7 +370,6 @@ end
 # =============================================================================
 # Supporting Files
 # =============================================================================
-
 def add_info_plist_refs(project, name)
     [name, "#{name}Tests"].each do |x|
         project[x]["Supporting Files"].new_file("#{x}/Info.plist")
@@ -448,13 +457,16 @@ end
 # =============================================================================
 # config command
 # =============================================================================
-def config(name)
+def config(name, platforms=['iOS', 'macOS'])
+
+    puts "Configuring for platforms: #{platforms}"
+
     create_gitignore
-    create_travis(name)
+    create_travis(name, platforms) # find platforms
     create_swift_lint
     create_hound
     create_cartfile
-    create_readme(name)
+    create_readme(name, platforms)
 end
 
 def create_gitignore
@@ -490,18 +502,40 @@ def create_gitignore
     }
 end
 
-def create_travis(name)
+# TODO: Store build hardware, OS versions, etc. in Hash somewhere
+def create_travis(name, platforms)
+
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8")
         file.puts("env:")
         file.puts("  matrix:")
-        file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\"")
-        file.puts("      SCHEME=\"#{name}\"")
-        file.puts("    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\"")
-        file.puts("      SCHEME=\"#{name}\"")
-        file.puts("    - DESTINATION=\"platform=OS X\"")
-        file.puts("      SCHEME=\"#{name}Mac\"")
+
+        platforms.each do |platform|
+
+            scheme = "#{name} #{platform}"
+
+            case platform
+            when 'iOS'
+                
+                file.puts(
+                    "    - DESTINATION=\"platform=iOS Simulator,OS=9.3,name=iPad 2\""
+                )
+                
+                file.puts("      SCHEME=\"#{scheme}\"")
+                
+                file.puts(
+                    "    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\""
+                )
+
+                file.puts("      SCHEME=\"#{name}\"")
+
+            when 'macOS'
+                file.puts("    - DESTINATION=\"platform=OS X\"")
+                file.puts("      SCHEME=\"#{scheme}\"")            
+            end
+        end
+
         file.puts()
         file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
@@ -541,7 +575,13 @@ def create_cartfile
     FileUtils.touch('Cartfile')
 end
 
-def create_readme(name)
+def create_readme(name, platforms)
+
+    puts "Readme for platforms: #{platforms}"
+
+    platform_phrase = platforms.join(' or ')
+
+    puts "Platform phrase: #{platform_phrase}"
 
     File.open('README.md', 'w') { |file| 
         file.puts("# #{name}")
@@ -555,11 +595,11 @@ def create_readme(name)
         file.puts("## Integration")
         file.puts()
         file.puts("### Carthage")
-        file.puts("Integrate **#{name}** into your macOS or iOS project with [Carthage](https://github.com/Carthage/Carthage).")
+        file.puts("Integrate **#{name}** into your #{platform_phrase} project with [Carthage](https://github.com/Carthage/Carthage).")
         file.puts()
         file.puts("1. Follow [these instructions](https://github.com/Carthage/Carthage#installing-carthage) to install Carthage, if necessary.")
         file.puts("2. Add `github \"dn-m/#{name}\"` to your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile).")
-        file.puts("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **#{name}** into your macOS or iOS project.")
+        file.puts("3. Follow [these instructions](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application) to integrate **#{name}** into your #{platform_phrase} project.")
         file.puts()
         file.puts("---")
         file.puts()
@@ -585,10 +625,19 @@ class Helper
         end
 
         command :init do |c|
-            c.syntax = 'init'
+            c.syntax = 'init [-a | -f]'
             c.description = 'Create a new project'
+            c.option '--platforms', String, 'iOS or macOS'
             c.action do |args, options|
-                init($project_name)
+
+                platforms = args.empty? || (args.count ==1 && args.first == 'all') ? ['iOS', 'macOS'] : args
+
+                puts "args: #{args}"
+                puts "options: #{options}"
+
+                puts "Platforms to build: #{platforms}"
+
+                init($project_name, platforms)
             end
         end
 
