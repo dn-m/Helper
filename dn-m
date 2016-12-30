@@ -264,9 +264,9 @@ def configure_schemes(project, name)
 end
 
 # TODO: Add platform variables
-def add_testable_entries(project, name)
+def add_testable_entries(project, name, platforms=['iOS','macOS'])
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
         
         # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
