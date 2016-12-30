@@ -211,10 +211,10 @@ end
 # TODO: Add platform variables
 def configure_primary_build_configuration_settings(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+    ['iOS', 'macOS'].each do |platform|
 
         # FIXME: abstract away
-        target = project.targets.find { |y| y.name == "#{x}" }
+        target = project.targets.find { |y| y.name == "#{name} #{platform}" }
 
         settings = {
             'INFOPLIST_FILE' => "#{name}/Info.plist",
