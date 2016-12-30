@@ -16,8 +16,10 @@ This project uses [Cocoapods/Xcodeproj](https://github.com/CocoaPods/Xcodeproj) 
 0. Ensure that Ruby and Bundler are installed
 1. `git clone https://github.com/dn-m/Helper` or download the zip from the latest [release](https://github.com/dn-m/Helper/releases)
 2. `cd Helper`
-3. `bundle install`
+3. `bundle install` (this will install all of the ruby gem dependencies)
 4. `cp dn-m /usr/local/bin`
+
+If you have any issues, it's worth giving `brew update` / `brew upgrade` a shot.
 
 ## Usage
 
