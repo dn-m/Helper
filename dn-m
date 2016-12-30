@@ -571,7 +571,7 @@ def create_readme(name, platforms)
 
     puts "Readme for platforms: #{platforms}"
 
-    platform_phrase = platforms.count == 1 ? platforms.first : platforms.join(' or ')
+    platform_phrase = platforms.join(' or ')
 
     puts "Platform phrase: #{platform_phrase}"
 
