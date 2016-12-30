@@ -35,21 +35,15 @@ def update_frameworks(name)
         puts "No project!"
         return
     end
-    
+
     update_carthage()
-
-    puts "Injecting frameworks into #{name}..."
-
     project = project_from_path(path)
     create_carthage_script_phase(project, name)
     add_framework_search_paths(project, name)
     project.save
-
-    puts "Ready to go!"
 end
 
 def update_carthage
-    puts "Updating Carthage..."
     system('carthage update')
 end
 
@@ -138,7 +132,15 @@ end
 # init command
 # =============================================================================
 def init(name)
-    puts "Generating project: #{name}"
+
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+
+    if Dir.exist?(path) then
+        puts "There's already a project here!"
+        return
+    end
+
+    config(name)
     create_file_structure(name)
     project = new_project(name)
     configure_PBXGroups(project, name)
@@ -156,7 +158,6 @@ def new_project(name)
 end
 
 def create_file_structure(name)
-    puts "Generating directory structure"
     Dir.mkdir(name)
     Dir.mkdir("#{name}Tests")
     create_info_plists(name)
@@ -424,7 +425,6 @@ end
 # config command
 # =============================================================================
 def config(name)
-    puts "Configuring artifacts for #{name}"
     create_gitignore
     create_travis(name)
     create_swift_lint
@@ -548,13 +548,13 @@ class Helper
   include Commander::Methods
 
     def run
-        program :name, 'Foo Bar'
-        program :version, '1.0.0'
-        program :description, 'Stupid command that prints foo or bar.'
+        program :name, 'dn-m'
+        program :version, '0.1'
+        program :description, 'Creates and maintains dn-m projects.'
 
         command :config do |c|
             c.syntax = 'config'
-            c.description = 'Configures test environment'
+            c.description = 'Creates configuration files for testing.'
             c.action do |args, options|
                 config($project_name)
             end
@@ -562,7 +562,7 @@ class Helper
 
         command :init do |c|
             c.syntax = 'init'
-            c.description = 'Create new repository from scratch'
+            c.description = 'Create '
             c.action do |args, options|
                 init($project_name)
             end
