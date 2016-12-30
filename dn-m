@@ -632,8 +632,11 @@ class Helper
                 elsif options.application && !options.framework
                     type = 'application'
                 end
-
-                puts "Type: #{type}"
+                
+                if type == 'application' then
+                    puts "No support for application types, yet. Sorry."
+                    return
+                end
 
                 # Platforms
                 options.default :platforms => 'all'
