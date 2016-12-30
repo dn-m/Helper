@@ -237,9 +237,9 @@ def configure_primary_build_configuration_settings(project, name)
 end
 
 # TODO: Add platform variables
-def configure_tests_build_configuration_settings(project, name)
+def configure_tests_build_configuration_settings(project, name, platforms)
 
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
 
         target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
