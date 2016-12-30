@@ -23,11 +23,51 @@ end
 # =============================================================================
 def update_frameworks(name)
     puts "Updating frameworks for project: #{name}"
-    project = project_from_name(name)
+
     
+    project = project_from_name(name)
+    puts project
+
+    puts frameworks(project, name)
+
+    # ["iOS", "macOS"].each do |x|
+    #     target = project.targets.find { |y| y.name == "#{name} #{x}" }
+
+    # end
 end
 
 def create_carthage_script_phase(project, name)
+
+end
+
+# Add platforms option
+def frameworks(project, name)
+    unless File.exist?('Cartfile')
+        return
+    else
+        unless Dir.exist?('Carthage')
+            return
+        end
+
+        Dir.chdir('Carthage/Build')
+        
+        result = Hash.new
+
+        ['iOS', 'Mac'].each do |x|
+            
+            Dir.chdir(x)
+
+            result[x] = Dir.entries('.')
+                .select { |y| y.end_with?('framework') }
+                .map { |y| y.split('.').first }
+
+            Dir.chdir('..')
+        end
+        
+        puts result
+    end
+end
+
 
 # =============================================================================
 # init command
