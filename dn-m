@@ -140,7 +140,7 @@ end
 # =============================================================================
 # init command
 # =============================================================================
-def init(name, platforms)
+def init(name, platforms, type)
 
     puts "Initializing for platforms: #{platforms}"
 
@@ -381,6 +381,90 @@ def create_info_plists(name)
     create_primary_framework_info_plist(name)
 end
 
+def macOS_info_plist(name)
+# <?xml version="1.0" encoding="UTF-8"?>
+# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+# <plist version="1.0">
+# <dict>
+#     <key>CFBundleDevelopmentRegion</key>
+#     <string>en</string>
+#     <key>CFBundleExecutable</key>
+#     <string>$(EXECUTABLE_NAME)</string>
+#     <key>CFBundleIconFile</key>
+#     <string></string>
+#     <key>CFBundleIdentifier</key>
+#     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+#     <key>CFBundleInfoDictionaryVersion</key>
+#     <string>6.0</string>
+#     <key>CFBundleName</key>
+#     <string>$(PRODUCT_NAME)</string>
+#     <key>CFBundlePackageType</key>
+#     <string>APPL</string>
+#     <key>CFBundleShortVersionString</key>
+#     <string>1.0</string>
+#     <key>CFBundleVersion</key>
+#     <string>1</string>
+#     <key>LSMinimumSystemVersion</key>
+#     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+#     <key>NSHumanReadableCopyright</key>
+#     <string>Copyright © 2016 James Bean. All rights reserved.</string>
+#     <key>NSMainNibFile</key>
+#     <string>MainMenu</string>
+#     <key>NSPrincipalClass</key>
+#     <string>NSApplication</string>
+# </dict>
+# </plist>
+
+end
+
+def ios_info_plist(name)
+# ?xml version="1.0" encoding="UTF-8"?>
+# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+# <plist version="1.0">
+# <dict>
+#     <key>CFBundleDevelopmentRegion</key>
+#     <string>en</string>
+#     <key>CFBundleExecutable</key>
+#     <string>$(EXECUTABLE_NAME)</string>
+#     <key>CFBundleIdentifier</key>
+#     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+#     <key>CFBundleInfoDictionaryVersion</key>
+#     <string>6.0</string>
+#     <key>CFBundleName</key>
+#     <string>$(PRODUCT_NAME)</string>
+#     <key>CFBundlePackageType</key>
+#     <string>APPL</string>
+#     <key>CFBundleShortVersionString</key>
+#     <string>1.0</string>
+#     <key>CFBundleVersion</key>
+#     <string>1</string>
+#     <key>LSRequiresIPhoneOS</key>
+#     <true/>
+#     <key>UILaunchStoryboardName</key>
+#     <string>LaunchScreen</string>
+#     <key>UIMainStoryboardFile</key>
+#     <string>Main</string>
+#     <key>UIRequiredDeviceCapabilities</key>
+#     <array>
+#         <string>armv7</string>
+#     </array>
+#     <key>UISupportedInterfaceOrientations</key>
+#     <array>
+#         <string>UIInterfaceOrientationPortrait</string>
+#         <string>UIInterfaceOrientationLandscapeLeft</string>
+#         <string>UIInterfaceOrientationLandscapeRight</string>
+#     </array>
+#     <key>UISupportedInterfaceOrientations~ipad</key>
+#     <array>
+#         <string>UIInterfaceOrientationPortrait</string>
+#         <string>UIInterfaceOrientationPortraitUpsideDown</string>
+#         <string>UIInterfaceOrientationLandscapeLeft</string>
+#         <string>UIInterfaceOrientationLandscapeRight</string>
+#     </array>
+# </dict>
+# </plist>
+end
+
 # TODO: App Info.plist
 def create_primary_framework_info_plist(name)
     File.open("#{name}/Info.plist", 'w') { |file| 
@@ -577,11 +661,7 @@ end
 
 def create_readme(name, platforms)
 
-    puts "Readme for platforms: #{platforms}"
-
     platform_phrase = platforms.join(' or ')
-
-    puts "Platform phrase: #{platform_phrase}"
 
     File.open('README.md', 'w') { |file| 
         file.puts("# #{name}")
@@ -632,7 +712,7 @@ class Helper
                 elsif options.application && !options.framework
                     type = 'application'
                 end
-                
+
                 if type == 'application' then
                     puts "No support for application types, yet. Sorry."
                     return
@@ -646,7 +726,11 @@ class Helper
                     return
                 end
 
-                init($project_name, sanitize_platforms(options.platforms))
+                init(
+                    $project_name, 
+                    sanitize_platforms(options.platforms), 
+                    type
+                )
             end
         end
 
