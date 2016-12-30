@@ -10,16 +10,142 @@ $project_name = File.basename(Dir.getwd)
 # TODO: Encapsulate in class (subclass of `Project`)
 
 # =============================================================================
+# xcodeproj utilities
+# =============================================================================
+def project_from_path(path)
+    project = Xcodeproj::Project.new(path, true)
+    project.initialize_from_file
+    return project
+end
+
+def target(project, name, platform, isTest)
+    test_suffix = isTest ? ' Tests' : ''
+    target_name = "#{name} #{platform}#{test_suffix}"
+    return project.targets.find { |x| x.name == target_name }
+end
+
+# =============================================================================
+# update frameworks command
+# =============================================================================
+def update_frameworks(name)
+
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+
+    if !Dir.exist?(path) then
+        puts "No project!"
+        return
+    end
+
+    update_carthage()
+    project = project_from_path(path)
+    create_carthage_script_phase(project, name)
+    add_framework_search_paths(project, name)
+    project.save
+end
+
+def update_carthage
+    system('carthage update')
+end
+
+def add_framework_search_paths(project, name)
+
+    ['iOS', 'macOS'].each do |platform|
+        [true, false].each do |isTest|
+            target(project, name, platform, isTest)
+                .build_configuration_list.set_setting(
+                    'FRAMEWORK_SEARCH_PATHS', 
+                    "$(SRCROOT)/Carthage/Build/#{to_carthage_platform(platform)}"
+                )
+        end
+    end
+end
+
+def create_carthage_script_phase(project, name)
+
+    frameworks.each do |platform, fs|
+
+        # Only add shell script phase for test targets!
+        t = target(project, name, platform, true)
+
+        # Make sure there's only one shell script phase
+        if t.shell_script_build_phases.count == 0 then
+            script_phase = t.new_shell_script_build_phase
+            script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
+        end
+
+        # Only deal with the first one (we are hoping that's the only one)
+        script_phase = t.shell_script_build_phases.first
+
+        # Add the path to the framework in the Carthage build dir
+        script_phase.input_paths.clear
+        fs.each do |f|
+            unless f == name
+            end
+            input_path = 
+                "$(SRCROOT)/#{carthage_build_path(
+                    to_carthage_platform(platform), f)}"
+            script_phase.input_paths << input_path
+        end
+        
+    end
+end
+
+def carthage_build_path(platform, framework)
+    return "Carthage/Build/#{platform}/#{framework}.framework"
+end
+
+# Add platforms option
+def frameworks()
+    
+    # Check that there is a `Cartfile` at all
+    unless File.exist?('Cartfile')
+        return
+    end
+    
+    # Check that there is a `Carthage ` artifacts directory
+    unless Dir.exist?('Carthage')
+        return
+    end
+
+    Dir.chdir('Carthage/Build')
+    result = Hash.new
+    ['iOS', 'Mac'].each do |x|
+        Dir.chdir(x)
+        result[from_carthage_platform(x)] = Dir.entries('.')
+            .select { |y| y.end_with?('framework') }
+            .map { |y| y.split('.').first }
+        Dir.chdir('../')
+    end
+    Dir.chdir('../../')
+    return result
+end
+
+def to_carthage_platform(platform)
+    return platform == 'macOS' ? 'Mac' : 'iOS'
+end
+
+def from_carthage_platform(platform)
+    return platform == 'Mac' ? 'macOS' : 'iOS'
+end
+
+# =============================================================================
 # init command
 # =============================================================================
 def init(name)
-    puts "Generating project: #{name}"
+
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+
+    if Dir.exist?(path) then
+        puts "There's already a project here!"
+        return
+    end
+
+    config(name)
     create_file_structure(name)
     project = new_project(name)
     configure_PBXGroups(project, name)
     add_info_plist_refs(project, name)
-    configure_ios_targets(project, name)
-    configure_macos_targets(project, name)
+    configure_targets(project, name)
     configure_header(project, name)
     configure_schemes(project, name)
     configure_build_configuration_settings(project, name)
@@ -32,25 +158,52 @@ def new_project(name)
 end
 
 def create_file_structure(name)
-    puts "Generating directory structure"
     Dir.mkdir(name)
     Dir.mkdir("#{name}Tests")
     create_info_plists(name)
 end
 
-def create_project(name)
-    project = Xcodeproj::Project.new("#{name}.xcodeproj")
-    project.save
-end
-
 # =============================================================================
 # Build Configuration
+# TODO: Add platform variables
 # =============================================================================
 def configure_build_configuration_settings(project, name)
+    configure_project_build_configuration_settings(project, name)
     configure_primary_build_configuration_settings(project, name)
     configure_tests_build_configuration_settings(project, name)
 end
 
+def configure_project_build_configuration_settings(project, name) 
+
+    settings = {
+        'CLANG_WARN_BOOL_CONVERSION' => 'YES',
+        'CLANG_WARN_CONSTANT_CONVERSION' => 'YES',
+        'CLANG_WARN_DIRECT_OBJC_ISA_USAGE' => 'YES',
+        'CLANG_WARN_EMPTY_BODY' => 'YES',
+        'CLANG_WARN_ENUM_CONVERSION' => 'YES',
+        'CLANG_WARN_INFINITE_RECURSION' => 'YES',
+        'CLANG_WARN_INT_CONVERSION' => 'YES',
+        'CLANG_WARN_OBJC_ROOT_CLASS' => 'YES',
+        'CLANG_WARN_SUSPICIOUS_MOVE' => 'YES',
+        'CLANG_WARN_UNREACHABLE_CODE' => 'YES',
+        'CLANG_WARN__DUPLICATE_METHOD_MATCH' => 'YES',
+        'GCC_WARN_64_TO_32_BIT_CONVERSION' => 'YES',
+        'GCC_WARN_ABOUT_RETURN_TYPE' => 'YES',
+        'GCC_WARN_UNDECLARED_SELECTOR' => 'YES',
+        'GCC_WARN_UNINITIALIZED_AUTOS' => 'YES',
+        'GCC_WARN_UNUSED_FUNCTION' => 'YES',
+        'GCC_WARN_UNUSED_VARIABLE' => 'YES',
+        'GCC_NO_COMMON_BLOCKS' => 'YES',
+        'ENABLE_STRICT_OBJC_MSGSEND' => 'YES',
+        'SWIFT_OPTIMIZATION_LEVEL' => '-Owholemodule'
+    }
+
+    settings.each do |key, val| 
+        project.build_configuration_list.set_setting(key, val)
+    end
+end
+
+# TODO: Add platform variables
 def configure_primary_build_configuration_settings(project, name)
 
     ["#{name} iOS", "#{name} macOS"].each do |x|
@@ -62,9 +215,8 @@ def configure_primary_build_configuration_settings(project, name)
             'INFOPLIST_FILE' => "#{name}/Info.plist",
             'ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES' => 'NO',
             'PRODUCT_NAME' => "#{name}",
-            'EXPANDED_CODE_SIGN_IDENTITY' => "",
-            'CODE_SIGNING_REQUIRED' => "NO",
-            'CODE_SIGNING_ALLOWED' => "NO"
+            'CODE_SIGN_IDENTITY[sdk=iphoneos*]' => "-",
+            'PRODUCT_BUNDLE_IDENTIFIER' => "com.dn-m.#{name}"
         }
 
         settings.each do |key, val|
@@ -73,6 +225,7 @@ def configure_primary_build_configuration_settings(project, name)
     end
 end
 
+# TODO: Add platform variables
 def configure_tests_build_configuration_settings(project, name)
 
     ["#{name} iOS", "#{name} macOS"].each do |x|
@@ -93,12 +246,15 @@ end
 # =============================================================================
 # Schemes
 # =============================================================================
+# TODO: Add platform variables
 def configure_schemes(project, name)
     share_schemes(project, name)
     add_testable_entries(project, name)
 end
 
+# TODO: Add platform variables
 def add_testable_entries(project, name)
+
     ["#{name} iOS", "#{name} macOS"].each do |x|
         
         # FIXME: abstract away
@@ -108,17 +264,20 @@ def add_testable_entries(project, name)
         scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
 
-        # ?
         testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
-        # ??
         testable_entry.build_for_analyzing = false
         scheme.build_action.add_entry(testable_entry)
-        testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target)
-        scheme.test_action.add_testable(testable_ref)
+        scheme.test_action.add_testable(testable_ref(target))
         scheme.test_action.code_coverage_enabled = true
+        scheme.save!
     end
 end
 
+def testable_ref(test_target)
+    return Xcodeproj::XCScheme::TestAction::TestableReference.new(test_target)
+end
+
+# TODO: Add platform variables
 def share_schemes(project, name)
     project.recreate_user_schemes(true)
     ["#{name} iOS", "#{name} macOS"].each do |x|
@@ -153,48 +312,25 @@ end
 # =============================================================================
 # Targets
 # TODO: iOS macOS / framework / test
-# TODO: Abstract these into single def
 # =============================================================================
-def configure_ios_targets(project, name)
+def configure_targets(project, name)
+
+    ["#{name} iOS", "#{name} macOS"].each do |x|
+
+        version = x == "#{name} iOS" ? '8.4' : '10.9'
+        platform = x == "#{name} iOS" ? :ios : :osx
+
+        primary_target = project.new_target(:framework, x, platform, version)
+
+        tests_target = project.new_target(
+            :unit_test_bundle, 
+            "#{x} Tests", 
+            platform, 
+            version
+        )
     
-    # TODO: Options
-
-    ios_framework_target = project.new_target(
-        :framework, 
-        "#{name} iOS", 
-        :ios, 
-        '8.4'
-    )
-
-    ios_tests_target = project.new_target(
-        :unit_test_bundle, 
-        "#{name} iOS Tests", 
-        :ios, 
-        '8.4'
-    )
-    
-    ios_tests_target.add_dependency(ios_framework_target)
-end
-
-def configure_macos_targets(project, name)
-
-   # TODO: Options
-
-    macos_framework_target = project.new_target(
-        :framework, 
-        "#{name} macOS", 
-        :osx, 
-        '10.9'
-    )
-
-    macos_tests_target = project.new_target(
-        :unit_test_bundle, 
-        "#{name} macOS Tests", 
-        :osx, 
-        '10.9'
-    )
-    
-    macos_tests_target.add_dependency(macos_framework_target) 
+        tests_target.add_dependency(primary_target)
+    end
 end
 
 # =============================================================================
@@ -289,7 +425,6 @@ end
 # config command
 # =============================================================================
 def config(name)
-    puts "Configuring artifacts for #{name}"
     create_gitignore
     create_travis(name)
     create_swift_lint
@@ -409,17 +544,17 @@ def create_readme(name)
     }
 end
 
-class MyApplication
+class Helper
   include Commander::Methods
 
     def run
-        program :name, 'Foo Bar'
-        program :version, '1.0.0'
-        program :description, 'Stupid command that prints foo or bar.'
+        program :name, 'dn-m'
+        program :version, '0.1'
+        program :description, 'Creates and maintains dn-m projects.'
 
         command :config do |c|
             c.syntax = 'config'
-            c.description = 'Configures test environment'
+            c.description = 'Creates configuration files for testing.'
             c.action do |args, options|
                 config($project_name)
             end
@@ -427,9 +562,17 @@ class MyApplication
 
         command :init do |c|
             c.syntax = 'init'
-            c.description = 'Create new repository from scratch'
+            c.description = 'Create '
             c.action do |args, options|
                 init($project_name)
+            end
+        end
+
+        command :update do |c|
+            c.syntax = 'update'
+            c.description = 'Update frameworks'
+            c.action do |args, options|
+                update_frameworks($project_name)
             end
         end
 
@@ -437,6 +580,4 @@ class MyApplication
     end
 end
 
-MyApplication.new.run if $0 == __FILE__
-
-
+Helper.new.run if $0 == __FILE__
