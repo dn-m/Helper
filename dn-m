@@ -290,10 +290,10 @@ def testable_ref(test_target)
 end
 
 # TODO: Add platform variables
-def share_schemes(project, name)
+def share_schemes(project, name, platforms=['iOS','macOS'])
     project.recreate_user_schemes(true)
     
-    ['iOS', 'macOS'].each do |platform|
+    platforms.each do |platform|
         Xcodeproj::XCScheme.share_scheme(
             "#{Dir.pwd}/#{name}.xcodeproj", "#{name} #{platform}"
         )
