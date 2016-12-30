@@ -12,8 +12,7 @@ $project_name = File.basename(Dir.getwd)
 # =============================================================================
 # xcodeproj utilities
 # =============================================================================
-def project_from_name(name)
-    path = "#{Dir.pwd}/#{name}.xcodeproj"
+def project_from_path(path)
     project = Xcodeproj::Project.new(path, true)
     project.initialize_from_file
     return project
@@ -26,12 +25,18 @@ def target(project, name, platform, isTest)
 end
 
 # =============================================================================
-# integrate frameworks
+# update frameworks command
 # =============================================================================
 def update_frameworks(name)
+
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+
+    if !Dir.exist?(path) then
+        puts "No project!"
+        return
+    end
     
-    puts "Updating frameworks for project: #{name}"
-    project = project_from_name(name)
+    project = project_from_path(path)
     create_carthage_script_phase(project, name)
     add_framework_search_paths(project, name)
 
