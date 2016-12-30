@@ -13,13 +13,14 @@ $project_name = File.basename(Dir.getwd)
 # xcodeproj utilities
 # =============================================================================
 def project_from_name(name)
-    project = Xcodeproj::Project.new("#{name}.xcodeproj")
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+    project = Xcodeproj::Project.new(path, true)
     project.initialize_from_file
     return project
 end
 
 def target(project, name, platform, isTest)
-    test_suffix = isTest ? ' Test' : ''
+    test_suffix = isTest ? ' Tests' : ''
     target_name = "#{name} #{platform}#{test_suffix}"
     return project.targets.find { |x| x.name == target_name }
 end
@@ -28,16 +29,38 @@ end
 # integrate frameworks
 # =============================================================================
 def update_frameworks(name)
-    puts "Updating frameworks for project: #{name}"
+    
+    # puts "Updating frameworks for project: #{name}"
 
     project = project_from_name(name)
+    puts project
     
+
     frameworks.each do |platform, frameworks|
-        t = target(project, name, platform, false)
+        t = target(project, name, platform, true)
         script_phase = t.new_shell_script_build_phase
         script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
         t.shell_script_build_phases[0] = script_phase
         puts t.shell_script_build_phases
+    end
+
+    add_framework_search_paths(project, name)
+
+    project.save
+end
+
+def add_framework_search_paths(project, name)
+
+    puts "Updating framework search paths"
+    
+    ['iOS', 'macOS'].each do |platform|
+        [true, false].each do |isTest|
+            target(project, name, platform, isTest)
+                .build_configuration_list.set_setting(
+                    'FRAMEWORK_SEARCH_PATHS', 
+                    "$(SRCROOT)/Carthage/Build/#{platform}"
+                )
+        end
     end
 end
 
