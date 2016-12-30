@@ -10,6 +10,26 @@ $project_name = File.basename(Dir.getwd)
 # TODO: Encapsulate in class (subclass of `Project`)
 
 # =============================================================================
+# xcodeproj utilities
+# =============================================================================
+def project_from_name(name)
+    project = Xcodeproj::Project.new("#{name}.xcodeproj")
+    project.initialize_from_file
+    return project
+end
+
+# =============================================================================
+# integrate frameworks
+# =============================================================================
+def update_frameworks(name)
+    puts "Updating frameworks for project: #{name}"
+    project = project_from_name(name)
+    
+end
+
+def create_carthage_script_phase(project, name)
+
+# =============================================================================
 # init command
 # =============================================================================
 def init(name)
@@ -128,32 +148,26 @@ end
 # TODO: Add platform variables
 def add_testable_entries(project, name)
 
-    puts "Adding testable entries"
-
     ["#{name} iOS", "#{name} macOS"].each do |x|
         
         # FIXME: abstract away
         target = project.targets.find { |y| y.name == "#{x} Tests" }
 
-        puts "Test target: #{target}"
-
         # Scheme
         scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
         scheme = Xcodeproj::XCScheme.new(scheme_path)
 
-        puts "Scheme: #{scheme}"
-
-        # ?
         testable_entry = Xcodeproj::XCScheme::BuildAction::Entry.new(target)
-        # ??
         testable_entry.build_for_analyzing = false
         scheme.build_action.add_entry(testable_entry)
-        testable_ref = Xcodeproj::XCScheme::TestAction::TestableReference.new(target
-        )
-        scheme.test_action.add_testable(testable_ref)
+        scheme.test_action.add_testable(testable_ref(target))
         scheme.test_action.code_coverage_enabled = true
         scheme.save!
     end
+end
+
+def testable_ref(test_target)
+    return Xcodeproj::XCScheme::TestAction::TestableReference.new(test_target)
 end
 
 # TODO: Add platform variables
@@ -445,6 +459,14 @@ class Helper
             c.description = 'Create new repository from scratch'
             c.action do |args, options|
                 init($project_name)
+            end
+        end
+
+        command :update do |c|
+            c.syntax = 'update'
+            c.description = 'Update frameworks'
+            c.action do |args, options|
+                update_frameworks($project_name)
             end
         end
 
