@@ -234,7 +234,7 @@ end
 def configure_tests_build_configuration_settings(project, name)
 
     ['iOS', 'macOS'].each do |platform|
-        
+
         target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
         settings = { 
@@ -260,10 +260,10 @@ end
 # TODO: Add platform variables
 def add_testable_entries(project, name)
 
-    ["#{name} iOS", "#{name} macOS"].each do |x|
+    ['iOS', 'macOS'].each do |platform|
         
         # FIXME: abstract away
-        target = project.targets.find { |y| y.name == "#{x} Tests" }
+        target = project.targets.find { |y| y.name == "#{name} #{platform} Tests" }
 
         # Scheme
         scheme_path = "#{Dir.pwd}/#{name}.xcodeproj/xcshareddata/xcschemes/#{x}.xcscheme"
@@ -285,8 +285,11 @@ end
 # TODO: Add platform variables
 def share_schemes(project, name)
     project.recreate_user_schemes(true)
-    ["#{name} iOS", "#{name} macOS"].each do |x|
-        Xcodeproj::XCScheme.share_scheme("#{Dir.pwd}/#{name}.xcodeproj", "#{x}")
+    
+    ['iOS', 'macOS'].each do |platform|
+        Xcodeproj::XCScheme.share_scheme(
+            "#{Dir.pwd}/#{name}.xcodeproj", "#{name} #{platform}"
+        )
     end
 end
 
