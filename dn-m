@@ -83,7 +83,7 @@ def create_carthage_script_phase(project, name)
 end
 
 def carthage_build_path(platform, framework)
-    return "Carthage/Build/#{platform}/#{framework}"
+    return "Carthage/Build/#{platform}/#{framework}.framework"
 end
 
 # Add platforms option
@@ -103,7 +103,7 @@ def frameworks()
     result = Hash.new
     ['iOS', 'Mac'].each do |x|
         Dir.chdir(x)
-        result[platform_from_carthage(x)] = Dir.entries('.')
+        result[from_carthage_platform(x)] = Dir.entries('.')
             .select { |y| y.end_with?('framework') }
             .map { |y| y.split('.').first }
         Dir.chdir('../')
@@ -112,7 +112,11 @@ def frameworks()
     return result
 end
 
-def platform_from_carthage(platform)
+def to_carthage_platform(platform)
+    return platform == 'macOS' ? 'Mac' : 'iOS'
+end
+
+def from_carthage_platform(platform)
     return platform == 'Mac' ? 'macOS' : 'iOS'
 end
 
@@ -175,7 +179,8 @@ def configure_project_build_configuration_settings(project, name)
         'GCC_WARN_UNUSED_FUNCTION' => 'YES',
         'GCC_WARN_UNUSED_VARIABLE' => 'YES',
         'GCC_NO_COMMON_BLOCKS' => 'YES',
-        'ENABLE_STRICT_OBJC_MSGSEND' => 'YES'
+        'ENABLE_STRICT_OBJC_MSGSEND' => 'YES',
+        'SWIFT_OPTIMIZATION_LEVEL' => '-Owholemodule'
     }
 
     settings.each do |key, val| 
