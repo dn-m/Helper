@@ -495,6 +495,7 @@ def create_gitignore
     }
 end
 
+# TODO: Store build hardware, OS versions, etc. in Hash somewhere
 def create_travis(name, platforms)
 
     File.open('.travis.yml', 'w') { |file| 
@@ -502,7 +503,7 @@ def create_travis(name, platforms)
         file.puts("osx_image: xcode8")
         file.puts("env:")
         file.puts("  matrix:")
-        
+
         platforms.each do |platform|
 
             scheme = "#{name} #{platform}"
