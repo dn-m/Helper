@@ -30,20 +30,9 @@ end
 # =============================================================================
 def update_frameworks(name)
     
-    # puts "Updating frameworks for project: #{name}"
-
+    puts "Updating frameworks for project: #{name}"
     project = project_from_name(name)
-    puts project
-    
-
-    frameworks.each do |platform, frameworks|
-        t = target(project, name, platform, true)
-        script_phase = t.new_shell_script_build_phase
-        script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
-        t.shell_script_build_phases[0] = script_phase
-        puts t.shell_script_build_phases
-    end
-
+    create_carthage_script_phase(project, name)
     add_framework_search_paths(project, name)
 
     project.save
@@ -66,6 +55,35 @@ end
 
 def create_carthage_script_phase(project, name)
 
+    frameworks.each do |platform, fs|
+
+        # Only add shell script phase for test targets!
+        t = target(project, name, platform, true)
+
+        # Make sure there's only one shell script phase
+        if t.shell_script_build_phases.count == 0 then
+            script_phase = t.new_shell_script_build_phase
+            script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
+        end
+
+        # Only deal with the first one (we are hoping that's the only one)
+        script_phase = t.shell_script_build_phases.first
+
+        # Add the path to the framework in the Carthage build dir
+        script_phase.input_paths.clear
+        fs.each do |f|
+            unless f == name
+            end
+            input_path = 
+                "$(SRCROOT)/#{carthage_build_path(platform, f)}"
+            script_phase.input_paths << input_path
+        end
+        
+    end
+end
+
+def carthage_build_path(platform, framework)
+    return "Carthage/Build/#{platform}/#{framework}"
 end
 
 # Add platforms option
