@@ -649,7 +649,7 @@ def create_travis(name, platforms)
                     "    - DESTINATION=\"platform=iOS Simulator,OS=10.0,name=iPad Pro (12.9 inch)\""
                 )
 
-                file.puts("      SCHEME=\"#{name}\"")
+                file.puts("      SCHEME=\"#{scheme}\"")
 
             when 'macOS'
                 file.puts("    - DESTINATION=\"platform=OS X\"")
@@ -736,10 +736,24 @@ class Helper
         command :init do |c|
             c.syntax = 'init [-a | -f] [--platforms [iOS | macOS | all]]'
             c.description = 'Create a new project'
-            c.option '--platforms STRING', String, 'iOS or macOS'
+            c.option '--platforms x,y,z', Array, 'iOS or macOS'
             c.option '--application', 'Build an application target'
             c.option '--framework', 'Build a framework target'
             c.action do |args, options|
+
+                puts "args: #{args}"
+                puts "options: #{options}"
+
+                # Platforms
+                options.default :platforms => 'all'
+
+                unless platforms_supported(options.platforms)
+                    puts "Unsupported platform(s): #{options.platforms}"
+                    return
+                end
+
+                puts "Before sanitization: #{options.platforms}"
+                puts "Sanitized: #{sanitize_platforms(options.platforms)}"
 
                 # Product type
                 type = 'framework'
@@ -752,14 +766,6 @@ class Helper
 
                 if type == 'application' then
                     puts "No support for application types, yet. Sorry."
-                    return
-                end
-
-                # Platforms
-                options.default :platforms => 'all'
-
-                unless platforms_supported(options.platforms)
-                    puts "Unsupported platform(s): #{options.platforms}"
                     return
                 end
 
@@ -795,9 +801,7 @@ class Helper
         
         if platforms == 'all' then 
             return supported_platforms
-        end
-
-        if platforms.is_a? String then
+        elsif platforms.is_a? String then
             return [platforms]
         else
             return platforms
@@ -811,12 +815,14 @@ class Helper
 
         # If single platform, check if it is supported
         if platforms.is_a? String then
+            puts "Platforms: #{platforms} is a string!"
             if !supported_platforms.include?(platforms) then
                 return false
             end
 
         # If array of platforms, check if every platform is supported
         elsif platforms.is_a? Array then
+            puts "Platforms: #{platforms} is a array!"
             platforms.each do |platform|
                 if !supported_platforms.include?(platform) then
                     return false
