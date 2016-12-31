@@ -152,7 +152,7 @@ def init(name, platforms, type)
     end
 
     # Create environment
-    git_init
+    git_init(name)
     config(name, platforms)
     create_file_structure(name)
 
@@ -169,8 +169,9 @@ def init(name, platforms, type)
     project.save
 end
 
-def git_init
+def git_init(name)
     system('git init')
+    system("git remote add origin https://github.com/dn-m/#{name}")
 end
 
 def new_project(name)
@@ -385,7 +386,7 @@ def create_info_plists(name)
 end
 
 def info_plist(name, type, platform, isTest)
-
+    # TODO
 end
 
 def info_plist_preamble
