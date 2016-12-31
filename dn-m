@@ -159,6 +159,8 @@ def init(name, platforms, type)
     # Create xcodeproj
     project = new_project(name)
     configure_PBXGroups(project, name)
+
+    create_info_plists(name, type, platforms)
     add_info_plist_refs(project, name)
     configure_targets(project, name, platforms)
     configure_header(project, name, platforms)
@@ -182,7 +184,6 @@ end
 def create_file_structure(name)
     Dir.mkdir(name)
     Dir.mkdir("#{name}Tests")
-    create_info_plists(name)
 end
 
 # =============================================================================
@@ -377,168 +378,128 @@ def add_info_plist_refs(project, name)
     end
 end
 
-def create_info_plists(name)
-    create_tests_info_plist(name)
-    create_primary_framework_info_plist(name)
-end
-
-def info_plist(name, type, platform, isTest)
-    # TODO
-end
-
-def shared_plist_contents
-    return %{
-        <?xml version=\"1.0\" encoding=\"UTF-8\"?>
-        <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-        <plist version=\"1.0\">
-        <dict>
-            <key>CFBundleDevelopmentRegion</key>
-            <string>en</string>
-            <key>CFBundleExecutable</key>
-            <string>$(EXECUTABLE_NAME)</string>
-            <key>CFBundleIdentifier</key>
-            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-            <key>CFBundleInfoDictionaryVersion</key>
-            <string>6.0</string>
-            <key>CFBundleName</key>
-            <string>$(PRODUCT_NAME)</string>
-            <key>CFBundleShortVersionString</key>
-            <string>1.0</string>
-            <key>CFBundleSignature</key>
-            <string>????</string>
-            <key>CFBundleVersion</key>
-            <string>$(CURRENT_PROJECT_VERSION)</string>
-    }
-end
-
-def macOS_info_plist(name)
-
-# <?xml version="1.0" encoding="UTF-8"?>
-# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-# <plist version="1.0">
-# <dict>
-#     <key>CFBundleDevelopmentRegion</key>
-#     <string>en</string>
-#     <key>CFBundleExecutable</key>
-#     <string>$(EXECUTABLE_NAME)</string>
-#     <key>CFBundleIconFile</key>
-#     <string></string>
-#     <key>CFBundleIdentifier</key>
-#     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-#     <key>CFBundleInfoDictionaryVersion</key>
-#     <string>6.0</string>
-#     <key>CFBundleName</key>
-#     <string>$(PRODUCT_NAME)</string>
-#     <key>CFBundlePackageType</key>
-#     <string>APPL</string>
-#     <key>CFBundleShortVersionString</key>
-#     <string>1.0</string>
-#     <key>CFBundleVersion</key>
-#     <string>1</string>
-
-#     <key>LSMinimumSystemVersion</key>
-#     <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
-#     <key>NSHumanReadableCopyright</key>
-#     <string>Copyright © 2016 James Bean. All rights reserved.</string>
-#     <key>NSMainNibFile</key>
-#     <string>MainMenu</string>
-#     <key>NSPrincipalClass</key>
-#     <string>NSApplication</string>
-# </dict>
-# </plist>
-
-end
-
-def ios_info_plist(name)
-# ?xml version="1.0" encoding="UTF-8"?>
-# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-# <plist version="1.0">
-# <dict>
-#     <key>CFBundleDevelopmentRegion</key>
-#     <string>en</string>
-#     <key>CFBundleExecutable</key>
-#     <string>$(EXECUTABLE_NAME)</string>
-#     <key>CFBundleIdentifier</key>
-#     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-#     <key>CFBundleInfoDictionaryVersion</key>
-#     <string>6.0</string>
-#     <key>CFBundleName</key>
-#     <string>$(PRODUCT_NAME)</string>
-#     <key>CFBundlePackageType</key>
-#     <string>APPL</string>
-#     <key>CFBundleShortVersionString</key>
-#     <string>1.0</string>
-#     <key>CFBundleVersion</key>
-#     <string>1</string>
-
-#     <key>LSRequiresIPhoneOS</key>
-#     <true/>
-#     <key>UILaunchStoryboardName</key>
-#     <string>LaunchScreen</string>
-#     <key>UIMainStoryboardFile</key>
-#     <string>Main</string>
-#     <key>UIRequiredDeviceCapabilities</key>
-#     <array>
-#         <string>armv7</string>
-#     </array>
-#     <key>UISupportedInterfaceOrientations</key>
-#     <array>
-#         <string>UIInterfaceOrientationPortrait</string>
-#         <string>UIInterfaceOrientationLandscapeLeft</string>
-#         <string>UIInterfaceOrientationLandscapeRight</string>
-#     </array>
-#     <key>UISupportedInterfaceOrientations~ipad</key>
-#     <array>
-#         <string>UIInterfaceOrientationPortrait</string>
-#         <string>UIInterfaceOrientationPortraitUpsideDown</string>
-#         <string>UIInterfaceOrientationLandscapeLeft</string>
-#         <string>UIInterfaceOrientationLandscapeRight</string>
-#     </array>
-# </dict>
-# </plist>
+def create_info_plists(name, type, platforms)
+    
+    platforms.each do |platform|
+        case type
+        when 'framework'
+             create_framework_info_plist(name)
+             create_framework_tests_info_plist(name)
+        when 'application'
+            puts "APPLICATION"
+        end    
+    end
 end
 
 # TODO: App Info.plist
-def create_primary_framework_info_plist(name)
-
-    plist = shared_plist_contents + %{
-            <key>CFBundlePackageType</key>
-            <string>FMWK</string>
-            <key>NSPrincipalClass</key>
-            <string></string>
-        </dict>
-        </plist>
+def create_framework_info_plist(name)
+    File.open("#{name}/Info.plist", 'w') { |file|
+        file.write(framework_info_plist)
     }
-
-    File.open("#{name}/Info.plist", 'w') { |file| file.write(plist) }
 end
 
-def create_tests_info_plist(name)
+def create_framework_tests_info_plist(name)
     File.open("#{name}Tests/Info.plist", 'w') { |file| 
-        file.puts("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-        file.puts("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
-        file.puts("<plist version=\"1.0\">")
-        file.puts("<dict>")
-        file.puts("    <key>CFBundleDevelopmentRegion</key>")
-        file.puts("    <string>en</string>")
-        file.puts("    <key>CFBundleExecutable</key>")
-        file.puts("    <string>$(EXECUTABLE_NAME)</string>")
-        file.puts("    <key>CFBundleIdentifier</key>")
-        file.puts("    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>")
-        file.puts("    <key>CFBundleInfoDictionaryVersion</key>")
-        file.puts("    <string>6.0</string>")
-        file.puts("    <key>CFBundleName</key>")
-        file.puts("    <string>$(PRODUCT_NAME)</string>")
-        file.puts("    <key>CFBundlePackageType</key>")
-        file.puts("    <string>BNDL</string>")
-        file.puts("    <key>CFBundleShortVersionString</key>")
-        file.puts("    <string>1.0</string>")
-        file.puts("    <key>CFBundleSignature</key>")
-        file.puts("    <string>????</string>")
-        file.puts("    <key>CFBundleVersion</key>")
-        file.puts("    <string>1</string>")
-        file.puts("</dict>")
-        file.puts("</plist>")
+        file.write(framework_test_info_plist)
+    }
+end
+
+def framework_info_plist
+    return shared_plist_contents + %{
+        <key>CFBundlePackageType</key>
+        <string>FMWK</string>
+        <key>NSPrincipalClass</key>
+        <string></string>
+    </dict>
+    </plist>
+    }
+end
+
+def framework_test_info_plist
+    return shared_plist_contents + %{
+        <key>CFBundlePackageType</key>
+        <string>BNDL</string>
+    </dict>
+    </plist>
+    }
+end
+
+# macOS app Info.plist
+def macOS_app_info_plist
+    return shared_plist_contents + %{
+        <key>CFBundleIconFile</key>
+        <string></string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>LSMinimumSystemVersion</key>
+        <string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+        <key>NSHumanReadableCopyright</key>
+        <string>Copyright © 2016 James Bean. All rights reserved.</string>
+        <key>NSMainNibFile</key>
+        <string>MainMenu</string>
+        <key>NSPrincipalClass</key>
+        <string>NSApplication</string>
+    </dict>
+    </plist>
+    }
+end
+
+# iOS app Info.plist
+def ios_app_info_plist
+    return shared_plist_contents + %{
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>LSRequiresIPhoneOS</key>
+        <true/>
+        <key>UILaunchStoryboardName</key>
+        <string>LaunchScreen</string>
+        <key>UIMainStoryboardFile</key>
+        <string>Main</string>
+        <key>UIRequiredDeviceCapabilities</key>
+        <array>
+            <string>armv7</string>
+        </array>
+        <key>UISupportedInterfaceOrientations</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+        <key>UISupportedInterfaceOrientations~ipad</key>
+        <array>
+            <string>UIInterfaceOrientationPortrait</string>
+            <string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string>
+            <string>UIInterfaceOrientationLandscapeRight</string>
+        </array>
+    </dict>
+    </plist>
+    }
+end
+
+# The contents shared between all Info.plist files
+def shared_plist_contents
+    return %{
+    <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+    <!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+    <plist version=\"1.0\">
+    <dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>en</string>
+        <key>CFBundleExecutable</key>
+        <string>$(EXECUTABLE_NAME)</string>
+        <key>CFBundleIdentifier</key>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleName</key>
+        <string>$(PRODUCT_NAME)</string>
+        <key>CFBundleShortVersionString</key>
+        <string>1.0</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleVersion</key>
+        <string>$(CURRENT_PROJECT_VERSION)</string>
     }
 end
 
