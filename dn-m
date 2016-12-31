@@ -402,8 +402,6 @@ def shared_plist_contents
             <string>6.0</string>
             <key>CFBundleName</key>
             <string>$(PRODUCT_NAME)</string>
-            <key>CFBundlePackageType</key>
-            <string>FMWK</string>
             <key>CFBundleShortVersionString</key>
             <string>1.0</string>
             <key>CFBundleSignature</key>
@@ -504,6 +502,8 @@ end
 def create_primary_framework_info_plist(name)
 
     plist = shared_plist_contents + %{
+            <key>CFBundlePackageType</key>
+            <string>FMWK</string>
             <key>NSPrincipalClass</key>
             <string></string>
         </dict>
