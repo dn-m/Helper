@@ -144,13 +144,6 @@ def init(name, platforms, type)
 
     puts "Initializing for platforms: #{platforms}"
 
-    path = "#{Dir.pwd}/#{name}.xcodeproj"
-
-    unless !Dir.exist?(path) then
-        puts "There's already a project here!"
-        return
-    end
-
     # Create environment
     git_init(name)
     config(name, platforms)
@@ -162,7 +155,7 @@ def init(name, platforms, type)
 
     create_info_plists(name, type, platforms)
     add_info_plist_refs(project, name)
-    configure_targets(project, name, platforms)
+    configure_targets(project, name, type, platforms)
     configure_header(project, name, platforms)
     configure_schemes(project, name, platforms)
     configure_build_configuration_settings(project, name, platforms)
@@ -341,7 +334,9 @@ end
 # =============================================================================
 # Targets
 # =============================================================================
-def configure_targets(project, name, platforms, type='framework')
+def configure_targets(project, name, type, platforms)
+
+    puts "Configure targets: #{type}"
 
     platforms.each do |platform|
 
@@ -365,9 +360,11 @@ def configure_targets(project, name, platforms, type='framework')
             platform_symbol, 
             version
         )
-    
+        
         tests_target.add_dependency(primary_target)
     end
+
+    puts "Targets: #{project.targets}"
 end
 
 # =============================================================================
@@ -380,14 +377,19 @@ def add_info_plist_refs(project, name)
 end
 
 def create_info_plists(name, type, platforms)
-    
     platforms.each do |platform|
         case type
         when 'framework'
-             create_framework_info_plist(name)
-             create_framework_tests_info_plist(name)
+            create_framework_info_plist(name)
+            create_tests_info_plist(name)
         when 'application'
-            puts "APPLICATION"
+            case platform
+            when 'iOS'
+                create_iOS_app_info_plist(name)
+            when 'macOS'
+                create_macOS_app_info_plist(name)
+            end
+            create_tests_info_plist(name)
         end    
     end
 end
@@ -399,9 +401,21 @@ def create_framework_info_plist(name)
     }
 end
 
-def create_framework_tests_info_plist(name)
+def create_tests_info_plist(name)
     File.open("#{name}Tests/Info.plist", 'w') { |file| 
-        file.write(framework_test_info_plist)
+        file.write(tests_info_plist)
+    }
+end
+
+def create_macOS_app_info_plist(name)
+    File.open("#{name}/Info.plist", 'w') { |file|
+        file.write(macOS_app_info_plist)
+    }
+end
+
+def create_iOS_app_info_plist(name)
+    File.open("#{name}/Info.plist", 'w') { |file|
+        file.write(iOS_app_info_plist)
     }
 end
 
@@ -416,7 +430,7 @@ def framework_info_plist
     }
 end
 
-def framework_test_info_plist
+def tests_info_plist
     return shared_plist_contents + %{
         <key>CFBundlePackageType</key>
         <string>BNDL</string>
@@ -446,7 +460,7 @@ def macOS_app_info_plist
 end
 
 # iOS app Info.plist
-def ios_app_info_plist
+def iOS_app_info_plist
     return shared_plist_contents + %{
         <key>CFBundlePackageType</key>
         <string>APPL</string>
@@ -511,7 +525,7 @@ def configure_PBXGroups(project, name)
     [name, "#{name}Tests"].each do |x|
         project
             .new_group(x)
-            .new_group("Supporting Files")
+                .new_group("Supporting Files")
     end
     return project
 end
@@ -520,11 +534,8 @@ end
 # config command
 # =============================================================================
 def config(name, platforms=['iOS', 'macOS'])
-
-    puts "Configuring for platforms: #{platforms}"
-
     create_gitignore
-    create_travis(name, platforms) # find platforms
+    create_travis(name, platforms)
     create_swift_lint
     create_hound
     create_cartfile
@@ -684,6 +695,11 @@ class Helper
                 puts "args: #{args}"
                 puts "options: #{options}"
 
+                unless !Dir.exist?("#{Dir.pwd}/#{$project_name}.xcodeproj") then
+                    puts "There's already a project here!"
+                    return
+                end
+
                 platforms = args.empty? ? ['iOS', 'macOS'] : args
 
                 puts "Platforms: #{platforms}"
@@ -693,7 +709,6 @@ class Helper
                     return
                 end
 
-                
                 unless !verify_single_type(options)
                     puts "Can't do both application and framework. Choose one."
                     return
@@ -702,12 +717,12 @@ class Helper
                 # Product type
                 type = options.framework ? 'framework' : 'application'
 
-                puts "Type: #{type}"
-
-                if type == 'application' then
-                    puts "No support for application types, yet. Sorry."
+                unless type == 'application'
+                    puts "No application support yet."
                     return
                 end
+
+                puts "Type: #{type}"
 
                 init(
                     $project_name, 
