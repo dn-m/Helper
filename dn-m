@@ -341,7 +341,7 @@ end
 # =============================================================================
 # Targets
 # =============================================================================
-def configure_targets(project, name, platforms)
+def configure_targets(project, name, platforms, type='framework')
 
     platforms.each do |platform|
 
@@ -350,9 +350,10 @@ def configure_targets(project, name, platforms)
         # TODO: Store versions in Hash somewhere
         version = platform == 'iOS' ? '8.4' : '10.9'
         platform_symbol = platform == 'iOS' ? :ios : :osx
+        target_type = type == 'framework' ? :framework : :application
 
         primary_target = project.new_target(
-            :framework, 
+            target_type, 
             target_name, 
             platform_symbol, 
             version
@@ -373,8 +374,8 @@ end
 # Supporting Files
 # =============================================================================
 def add_info_plist_refs(project, name)
-    [name, "#{name}Tests"].each do |x|
-        project[x]["Supporting Files"].new_file("#{x}/Info.plist")
+    [name, "#{name}Tests"].each do |group|
+        project[group]["Supporting Files"].new_file("#{group}/Info.plist")
     end
 end
 
@@ -674,9 +675,8 @@ class Helper
         program :description, 'Creates and maintains dn-m projects.'
 
         command :init do |c|
-            c.syntax = 'init [-a | -f] [--platforms [iOS | macOS | all]]'
+            c.syntax = 'init [-a | -f] [iOS | macOS]'
             c.description = 'Create a new project'
-            c.option '--platforms x,y,z', Array, 'iOS or macOS'
             c.option '--application', 'Build an application target'
             c.option '--framework', 'Build a framework target'
             c.action do |args, options|
@@ -684,25 +684,25 @@ class Helper
                 puts "args: #{args}"
                 puts "options: #{options}"
 
-                # Platforms
-                options.default :platforms => 'all'
+                platforms = args.empty? ? ['iOS', 'macOS'] : args
 
-                unless platforms_supported(options.platforms)
-                    puts "Unsupported platform(s): #{options.platforms}"
+                puts "Platforms: #{platforms}"
+
+                if !platforms_are_supported(platforms)
+                    puts "Platform from: #{platforms} not supported"
                     return
                 end
 
-                puts "Before sanitization: #{options.platforms}"
-                puts "Sanitized: #{sanitize_platforms(options.platforms)}"
-
-                # Product type
-                type = 'framework'
-                if options.application && options.framework
+                
+                unless !verify_single_type(options)
                     puts "Can't do both application and framework. Choose one."
                     return
-                elsif options.application && !options.framework
-                    type = 'application'
                 end
+
+                # Product type
+                type = options.framework ? 'framework' : 'application'
+
+                puts "Type: #{type}"
 
                 if type == 'application' then
                     puts "No support for application types, yet. Sorry."
@@ -711,7 +711,7 @@ class Helper
 
                 init(
                     $project_name, 
-                    sanitize_platforms(options.platforms), 
+                    platforms, 
                     type
                 )
             end
@@ -736,40 +736,17 @@ class Helper
         run!
     end
 
-    # Ensure that platforms is an Array, not a String
-    def sanitize_platforms(platforms)
-        
-        if platforms == 'all' then 
-            return supported_platforms
-        elsif platforms.is_a? String then
-            return [platforms]
-        else
-            return platforms
-        end
-    end
-
-    # Check if platform(s) are supported
-    def platforms_supported(platforms)
-
-        if platforms == 'all' then return true end
-
-        # If single platform, check if it is supported
-        if platforms.is_a? String then
-            puts "Platforms: #{platforms} is a string!"
-            if !supported_platforms.include?(platforms) then
+    def platforms_are_supported(platforms)
+        platforms.each do |platform|
+            if !supported_platforms.include?(platform)
                 return false
-            end
-
-        # If array of platforms, check if every platform is supported
-        elsif platforms.is_a? Array then
-            puts "Platforms: #{platforms} is a array!"
-            platforms.each do |platform|
-                if !supported_platforms.include?(platform) then
-                    return false
-                end
             end
         end
         return true
+    end
+
+    def verify_single_type(options)
+        return options.application && options.framework
     end
 
     def supported_platforms
