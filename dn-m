@@ -39,76 +39,77 @@ def update_frameworks(name)
 end
 
 def inject_frameworks_into_application_targets(project)
-	project.targets
-		.select { |t| t.product_type == "com.apple.product-type.application" }
-		.each { |t| inject_frameworks_into_application_target(t) }
+    project
+        .targets
+        .select { |t| t.product_type == "com.apple.product-type.application" }
+        .each { |t| inject_frameworks_into_application_target(t) }
 end
 
 def inject_frameworks_into_application_target(t)
 
-	unless !t.product_type == "com.apple.product-type.application"
-		return
-	end
+    unless !t.product_type == "com.apple.product-type.application"
+        return
+    end
 
-	# Retrieve proper platform name
-	platform = t.platform_name == :ios ? 'iOS' : 'macOS'
+    # Retrieve proper platform name
+    platform = t.platform_name == :ios ? 'iOS' : 'macOS'
 
-	# Ensure that group exists for frameworks of given platform
-	if project.frameworks_group[platform].nil?
-		project.frameworks_group.new_group(platform)
-	end
+    # Ensure that group exists for frameworks of given platform
+    if project.frameworks_group[platform].nil?
+        project.frameworks_group.new_group(platform)
+    end
 
-	add_carthage_script(t, platform, frameworks[platform])
-	prepare_link_binaries_phase_for_target(t)
-	embed_frameworks_build_phase = create_embed_frameworks_phase(
-		project, t
-	)
+    add_carthage_script(t, platform, frameworks[platform])
+    prepare_link_binaries_phase_for_target(t)
+    embed_frameworks_build_phase = create_embed_frameworks_phase(
+        project, t
+    )
 
-	# Clear framework file references from each Frameworks subgroup
-	project.frameworks_group[platform].clear
+    # Clear framework file references from each Frameworks subgroup
+    project.frameworks_group[platform].clear
 
-	# For each framework, 
-	frameworks[platform].each do |f|
-		add_embed_frameworks_refs_to_phase(
-			embed_frameworks_build_phase, project, platform, t, f
-		)
-	end
+    # For each framework, 
+    frameworks[platform].each do |f|
+        add_embed_frameworks_refs_to_phase(
+            embed_frameworks_build_phase, project, platform, t, f
+        )
+    end
 end
 
 def add_embed_frameworks_refs_to_phase(phase, project, platform, t, f)
-	path = "#{carthage_build_path(platform, f)}.framework"
-	ref = project.frameworks_group[platform].new_reference(path)
-	build_file = phase.add_file_reference(ref)
-	
-	build_file.settings = { 
-		'ATTRIBUTES' => ['CodeSignOnCopy', 'RemoveHeadersOnCopy'] 
-	}
+    path = "#{carthage_build_path(platform, f)}.framework"
+    ref = project.frameworks_group[platform].new_reference(path)
+    build_file = phase.add_file_reference(ref)
+    
+    build_file.settings = { 
+        'ATTRIBUTES' => ['CodeSignOnCopy', 'RemoveHeadersOnCopy'] 
+    }
 
-	t.frameworks_build_phase.add_file_reference(ref)
+    t.frameworks_build_phase.add_file_reference(ref)
 end
 
 # Create and return embed frameworks phase for a given target
 def create_embed_frameworks_phase(project, t)
-	
-	t.build_phases.delete_if { |phase| 
-		phase.to_s == 'Embed Frameworks'
-	}
+    
+    t.build_phases.delete_if { |phase| 
+        phase.to_s == 'Embed Frameworks'
+    }
 
-	embed_frameworks_build_phase = project.new(
-		Xcodeproj::Project::Object::PBXCopyFilesBuildPhase
-	)
+    embed_frameworks_build_phase = project.new(
+        Xcodeproj::Project::Object::PBXCopyFilesBuildPhase
+    )
 
-	embed_frameworks_build_phase.name = 'Embed Frameworks'
-	embed_frameworks_build_phase.symbol_dst_subfolder_spec = :frameworks
-	t.build_phases << embed_frameworks_build_phase
-	return embed_frameworks_build_phase
+    embed_frameworks_build_phase.name = 'Embed Frameworks'
+    embed_frameworks_build_phase.symbol_dst_subfolder_spec = :frameworks
+    t.build_phases << embed_frameworks_build_phase
+    return embed_frameworks_build_phase
 end
 
 def prepare_link_binaries_phase_for_target(t)
-	link_binaries_phase = t.build_phases.find { |phase| 
-		phase.to_s == 'FrameworksBuildPhase'
-	}
-	link_binaries_phase.clear
+    link_binaries_phase = t.build_phases.find { |phase| 
+        phase.to_s == 'FrameworksBuildPhase'
+    }
+    link_binaries_phase.clear
 end
 
 def project_from_path(path)
@@ -118,7 +119,7 @@ def project_from_path(path)
 end
 
 def update_carthage
-	system('carthage update')
+    system('carthage update')
 end
 
 # TODO: Add knowledge of frameworks!
@@ -137,10 +138,10 @@ end
 
 # Takes in target
 def add_carthage_script(t, platform, fs)
-	if t.shell_script_build_phases.empty? then
+    if t.shell_script_build_phases.empty? then
         script_phase = t.new_shell_script_build_phase
         script_phase.shell_script = 
-        	'/usr/local/bin/carthage copy-frameworks'
+            '/usr/local/bin/carthage copy-frameworks'
     end
 
     # Only deal with the first one (we are hoping that's the only one)
@@ -170,11 +171,11 @@ def carthage_build_path(platform, framework)
 end
 
 def carthage_build_dir_for_platform(platform)
-	return "#{carthage_build_dir}/#{to_carthage_platform(platform)}"
+    return "#{carthage_build_dir}/#{to_carthage_platform(platform)}"
 end
 
 def carthage_build_dir
-	return "Carthage/Build"
+    return "Carthage/Build"
 end
 
 # Returns [platform: [framework_names]]
@@ -830,17 +831,17 @@ class Helper
             c.description = 'Update the frameworks for the current project'
             c.action do |args, options|
 
-            	# Ensure that Cartfile exists
-            	unless File.exist?("Cartfile")
-            		puts "No Cartfile!"
-            		return
-            	end
+                # Ensure that Cartfile exists
+                unless File.exist?("Cartfile")
+                    puts "No Cartfile!"
+                    return
+                end
 
-            	# Ensure that Cartfile is not empty
-            	unless !File.zero?("Cartfile")
-            		puts "Cartfile empty!"
-            		return
-            	end
+                # Ensure that Cartfile is not empty
+                unless !File.zero?("Cartfile")
+                    puts "Cartfile empty!"
+                    return
+                end
 
                 update_frameworks($project_name)
             end
