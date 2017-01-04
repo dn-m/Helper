@@ -12,12 +12,6 @@ $project_name = File.basename(Dir.getwd)
 # =============================================================================
 # xcodeproj utilities
 # =============================================================================
-def project_from_path(path)
-    project = Xcodeproj::Project.new(path, true)
-    project.initialize_from_file
-    return project
-end
-
 def target(project, name, platform, isTest)
     test_suffix = isTest ? ' Tests' : ''
     target_name = "#{name} #{platform}#{test_suffix}"
@@ -38,67 +32,153 @@ def update_frameworks(name)
 
     update_carthage()
     project = project_from_path(path)
-    create_carthage_script_phase(project, name)
+    create_carthage_script_phase_for_test_targets(project, name)
     add_framework_search_paths(project, name)
+    inject_frameworks_into_application_targets(project)
     project.save
 end
 
+def inject_frameworks_into_application_targets(project)
+	project.targets
+		.select { |t| t.product_type == "com.apple.product-type.application" }
+		.each { |t| inject_frameworks_into_application_target(t) }
+end
+
+def inject_frameworks_into_application_target(t)
+
+	unless !t.product_type == "com.apple.product-type.application"
+		return
+	end
+
+	# Retrieve proper platform name
+	platform = t.platform_name == :ios ? 'iOS' : 'macOS'
+
+	# Ensure that group exists for frameworks of given platform
+	if project.frameworks_group[platform].nil?
+		project.frameworks_group.new_group(platform)
+	end
+
+	add_carthage_script(t, platform, frameworks[platform])
+	prepare_link_binaries_phase_for_target(t)
+	embed_frameworks_build_phase = create_embed_frameworks_phase(
+		project, t
+	)
+
+	# Clear framework file references from each Frameworks subgroup
+	project.frameworks_group[platform].clear
+
+	# For each framework, 
+	frameworks[platform].each do |f|
+		add_embed_frameworks_refs_to_phase(
+			embed_frameworks_build_phase, project, platform, t, f
+		)
+	end
+end
+
+def add_embed_frameworks_refs_to_phase(phase, project, platform, t, f)
+	path = "#{carthage_build_path(platform, f)}.framework"
+	ref = project.frameworks_group[platform].new_reference(path)
+	build_file = phase.add_file_reference(ref)
+	
+	build_file.settings = { 
+		'ATTRIBUTES' => ['CodeSignOnCopy', 'RemoveHeadersOnCopy'] 
+	}
+
+	t.frameworks_build_phase.add_file_reference(ref)
+end
+
+# Create and return embed frameworks phase for a given target
+def create_embed_frameworks_phase(project, t)
+	
+	t.build_phases.delete_if { |phase| 
+		phase.to_s == 'Embed Frameworks'
+	}
+
+	embed_frameworks_build_phase = project.new(
+		Xcodeproj::Project::Object::PBXCopyFilesBuildPhase
+	)
+
+	embed_frameworks_build_phase.name = 'Embed Frameworks'
+	embed_frameworks_build_phase.symbol_dst_subfolder_spec = :frameworks
+	t.build_phases << embed_frameworks_build_phase
+	return embed_frameworks_build_phase
+end
+
+def prepare_link_binaries_phase_for_target(t)
+	link_binaries_phase = t.build_phases.find { |phase| 
+		phase.to_s == 'FrameworksBuildPhase'
+	}
+	link_binaries_phase.clear
+end
+
+def project_from_path(path)
+    project = Xcodeproj::Project.new(path, true)
+    project.initialize_from_file
+    return project
+end
+
 def update_carthage
-    system('carthage update')
+	system('carthage update')
 end
 
 # TODO: Add knowledge of frameworks!
 def add_framework_search_paths(project, name)
-
-    # Instead, gather the targets, and extract platforms
 
     ['iOS', 'macOS'].each do |platform|
         [true, false].each do |isTest|
             target(project, name, platform, isTest)
                 .build_configuration_list.set_setting(
                     'FRAMEWORK_SEARCH_PATHS', 
-                    "$(SRCROOT)/Carthage/Build/#{to_carthage_platform(platform)}"
+                    "$(SRCROOT)/#{carthage_build_dir_for_platform(platform)}"
                 )
         end
     end
 end
 
-def create_carthage_script_phase(project, name)
+# Takes in target
+def add_carthage_script(t, platform, fs)
+	if t.shell_script_build_phases.empty? then
+        script_phase = t.new_shell_script_build_phase
+        script_phase.shell_script = 
+        	'/usr/local/bin/carthage copy-frameworks'
+    end
 
-    frameworks.each do |platform, fs|
+    # Only deal with the first one (we are hoping that's the only one)
+    script_phase = t.shell_script_build_phases.first
 
-        # Only add shell script phase for test targets!
-        t = target(project, name, platform, true)
-
-        # Make sure there's only one shell script phase
-        if t.shell_script_build_phases.empty? then
-            script_phase = t.new_shell_script_build_phase
-            script_phase.shell_script = '/usr/local/bin/carthage copy-frameworks'
-        end
-
-        # Only deal with the first one (we are hoping that's the only one)
-        script_phase = t.shell_script_build_phases.first
-
-        # Add the path to the framework in the Carthage build dir
-        script_phase.input_paths.clear
-        fs.each do |f|
-            unless f == name
-            end
-            input_path = 
-                "$(SRCROOT)/#{carthage_build_path(
-                    to_carthage_platform(platform), f)}"
-            script_phase.input_paths << input_path
-        end
-        
+    # Add the path to the framework in the Carthage build dir
+    script_phase.input_paths.clear
+    fs.each do |f|
+        input_path = 
+            "$(SRCROOT)/#{carthage_build_path(
+                to_carthage_platform(platform), f)}.framework"
+        script_phase.input_paths << input_path
     end
 end
 
-def carthage_build_path(platform, framework)
-    return "Carthage/Build/#{platform}/#{framework}.framework"
+# Add carthage run script for test targets
+def create_carthage_script_phase_for_test_targets(project, name)
+    frameworks.each do |platform, fs|
+        t = target(project, name, platform, true)
+        add_carthage_script(t, platform, fs)
+    end
 end
 
-# Add platforms option
-def frameworks()
+# Take ['iOS', 'macOS'] platform
+def carthage_build_path(platform, framework)
+    return "#{carthage_build_dir_for_platform(platform)}/#{framework}"
+end
+
+def carthage_build_dir_for_platform(platform)
+	return "#{carthage_build_dir}/#{to_carthage_platform(platform)}"
+end
+
+def carthage_build_dir
+	return "Carthage/Build"
+end
+
+# Returns [platform: [framework_names]]
+def frameworks
     
     # Check that there is a `Cartfile` at all
     unless File.exist?('Cartfile')
@@ -266,6 +346,10 @@ end
 def configure_schemes(project, name, platforms)
     share_schemes(project, name, platforms)
     add_testable_entries(project, name, platforms)
+
+    Xcodeproj::Project.schemes("#{Dir.pwd}/#{$project_name}.xcodeproj").each do |scheme|
+        puts "Scheme: #{scheme}"
+    end
 end
 
 # TODO: Add platform variables
@@ -296,6 +380,7 @@ end
 
 # TODO: Add platform variables
 def share_schemes(project, name, platforms)
+    
     project.recreate_user_schemes(true)
     
     platforms.each do |platform|
@@ -744,6 +829,19 @@ class Helper
             c.syntax = 'update'
             c.description = 'Update the frameworks for the current project'
             c.action do |args, options|
+
+            	# Ensure that Cartfile exists
+            	unless File.exist?("Cartfile")
+            		puts "No Cartfile!"
+            		return
+            	end
+
+            	# Ensure that Cartfile is not empty
+            	unless !File.zero?("Cartfile")
+            		puts "Cartfile empty!"
+            		return
+            	end
+
                 update_frameworks($project_name)
             end
         end
