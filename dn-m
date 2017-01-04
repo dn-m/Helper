@@ -32,6 +32,9 @@ def update_frameworks(name)
 
     update_carthage()
     project = project_from_path(path)
+
+    puts "project: #{project}"
+
     create_carthage_script_phase_for_test_targets(project, name)
     add_framework_search_paths(project, name)
     inject_frameworks_into_application_targets(project)
@@ -39,15 +42,22 @@ def update_frameworks(name)
 end
 
 def inject_frameworks_into_application_targets(project)
+
+	puts "inject frameworks"
+
     project
         .targets
         .select { |t| t.product_type == "com.apple.product-type.application" }
-        .each { |t| inject_frameworks_into_application_target(t) }
+        .each { |t| inject_frameworks_into_application_target(t, project) }
 end
 
-def inject_frameworks_into_application_target(t)
+def inject_frameworks_into_application_target(t, project)
 
-    unless !t.product_type == "com.apple.product-type.application"
+	puts "inject framework for target: #{t}"
+	puts "type: #{t.product_type}"
+
+    unless t.product_type == "com.apple.product-type.application"
+    	puts "Not application target"
         return
     end
 
