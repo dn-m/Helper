@@ -31,10 +31,8 @@ def update_frameworks(name)
     end
 
     update_carthage()
+    
     project = project_from_path(path)
-
-    puts "project: #{project}"
-
     create_carthage_script_phase_for_test_targets(project, name)
     add_framework_search_paths(project, name)
     inject_frameworks_into_application_targets(project)
@@ -42,8 +40,6 @@ def update_frameworks(name)
 end
 
 def inject_frameworks_into_application_targets(project)
-
-	puts "inject frameworks"
 
     project
         .targets
@@ -53,11 +49,8 @@ end
 
 def inject_frameworks_into_application_target(t, project)
 
-	puts "inject framework for target: #{t}"
-	puts "type: #{t.product_type}"
-
     unless t.product_type == "com.apple.product-type.application"
-    	puts "Not application target"
+    	puts "Not application target!"
         return
     end
 
@@ -232,8 +225,6 @@ end
 # init command
 # =============================================================================
 def init(name, platforms, type)
-
-    puts "Initializing for platforms: #{platforms}"
 
     # Create environment
     git_init(name)
@@ -432,8 +423,6 @@ end
 # =============================================================================
 def configure_targets(project, name, type, platforms)
 
-    puts "Configure targets: #{type}"
-
     platforms.each do |platform|
 
         target_name = "#{name} #{platform}"
@@ -459,8 +448,6 @@ def configure_targets(project, name, type, platforms)
         
         tests_target.add_dependency(primary_target)
     end
-
-    puts "Targets: #{project.targets}"
 end
 
 # =============================================================================
