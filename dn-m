@@ -293,7 +293,8 @@ def configure_project_build_configuration_settings(project, name)
         'GCC_WARN_UNUSED_VARIABLE' => 'YES',
         'GCC_NO_COMMON_BLOCKS' => 'YES',
         'ENABLE_STRICT_OBJC_MSGSEND' => 'YES',
-        'SWIFT_OPTIMIZATION_LEVEL' => '-Owholemodule'
+        'SWIFT_OPTIMIZATION_LEVEL' => '-Owholemodule',
+        'ENABLE_BITCODE' => 'NO'
     }
 
     settings.each do |key, val| 
