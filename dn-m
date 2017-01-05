@@ -663,7 +663,7 @@ def create_travis(name, platforms)
 
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
-        file.puts("osx_image: xcode8")
+        file.puts("osx_image: xcode8.2")
         file.puts("env:")
         file.puts("  matrix:")
 
