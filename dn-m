@@ -130,11 +130,20 @@ def add_framework_search_paths(project, name)
 
     ['iOS', 'macOS'].each do |platform|
         [true, false].each do |isTest|
-            target(project, name, platform, isTest)
-                .build_configuration_list.set_setting(
-                    'FRAMEWORK_SEARCH_PATHS', 
-                    "$(SRCROOT)/#{carthage_build_dir_for_platform(platform)}"
-                )
+        	t = target(project, name, platform, isTest)
+
+        	# Add carthage build dir to framework search paths
+            t.build_configuration_list.set_setting(
+                'FRAMEWORK_SEARCH_PATHS', 
+                "$(SRCROOT)/#{carthage_build_dir_for_platform(platform)}"
+            )
+
+            # Add carthage build dir to runpath search paths
+            t.build_configuration_list.set_setting(
+                'LD_RUNPATH_SEARCH_PATHS',
+                "$(SRCROOT)/#{carthage_build_dir_for_platform(platform)}"
+            )
+            
         end
     end
 end
