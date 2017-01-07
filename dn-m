@@ -819,7 +819,7 @@ class Helper
                 # Product type
                 type = options.framework ? 'framework' : 'application'
 
-                unless type == 'application'
+                unless type != 'application'
                     puts "No application support yet."
                     return
                 end
