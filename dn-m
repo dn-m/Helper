@@ -138,12 +138,21 @@ def add_framework_search_paths(project, name)
                 "$(SRCROOT)/#{carthage_build_dir_for_platform(platform)}"
             )
 
-            # Add carthage build dir to runpath search paths
-            t.build_configuration_list.set_setting(
-                'LD_RUNPATH_SEARCH_PATHS',
-                "$(SRCROOT)/#{carthage_build_dir_for_platform(platform)}"
-            )
-            
+            if isTest
+                # Add carthage build dir to runpath search paths
+                case platform
+                when 'iOS'
+                    t.build_configuration_list.set_setting(
+                        'LD_RUNPATH_SEARCH_PATHS',
+                        "$(inherited) @executable_path/Frameworks @loader_path/Frameworks $(SRCROOT)/Carthage/Build/iOS"
+                    )
+                when 'macOS'
+                    t.build_configuration_list.set_setting(
+                        'LD_RUNPATH_SEARCH_PATHS',
+                        "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(SRCROOT)/Carthage/Build/Mac"
+                    )
+                end
+            end
         end
     end
 end
