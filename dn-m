@@ -863,6 +863,12 @@ class Helper
             end
         end
 
+        command :bump do |c|
+            c.syntax = 'bump [--Major | --minor | --patch]'
+            c.description = 'Bump version tag, and prepare binary'
+            c.action do |args, options|
+                puts "Bump not yet supported!"
+            end
         run!
     end
 
