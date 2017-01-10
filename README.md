@@ -23,20 +23,32 @@ If you have any issues, it's worth giving `brew update` / `brew upgrade` a shot.
 
 ## Usage
 
-- `dn-m init` 
-	- Creates a new iOS + macOS framework from scratch
-	- Calls `config`
-- `dn-m config`
-	- Creates the necessary configuration files for:
-		- Version tracking with [git](https://git-scm.com/)
-		- Dependency management with [Carthage](https://github.com/Carthage/Carthage)
-		- Testing with [Travis CI](https://travis-ci.org/)
-		- Code coverage with [Codecov](https://codecov.io/)
-		- Code style with [Hound CI](https://houndci.com/) and [SwiftLint](https://github.com/realm/SwiftLint)
-	- Creates `README.md`
-- `dn-m update`
-	- Updates framework dependencies via [Carthage](https://github.com/Carthage/Carthage)
-	- Calls `inject`
+### Creating a project
+
+Create a new directory with the name of the new project:
+- `mkdir NameOfNewProject` 
+
+Navigate to that directory:
+- `cd NameOfNewProject`
+
+#### `dn-m init` 
+- Creates a new iOS + macOS framework from scratch
+- Calls `config`
 	
-- `dn-m inject`
-	- Injects framework dependencies into project
+#### `dn-m config`
+- Creates the necessary configuration files for:
+    - Version tracking with [git](https://git-scm.com/)
+    - Dependency management with [Carthage](https://github.com/Carthage/Carthage)
+    - Testing with [Travis CI](https://travis-ci.org/)
+    - Code coverage with [Codecov](https://codecov.io/)
+    - Code style with [Hound CI](https://houndci.com/) and [SwiftLint](https://github.com/realm/SwiftLint)
+- Creates `README.md`
+
+### Maintaining a project
+
+#### `dn-m update`
+- Updates framework dependencies via [Carthage](https://github.com/Carthage/Carthage)
+- Calls `inject`
+	
+#### `dn-m inject`
+- Injects framework dependencies into project
