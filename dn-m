@@ -884,7 +884,13 @@ class Helper
         command :bump do |c|
             c.syntax = 'bump [--Major | --minor | --patch]'
             c.description = 'Bump version tag, and prepare binary'
+            c.option '--Major', 'Bump to the next major version'
+            c.option '--minor', 'Bump to the next minor version'
+            c.option '--patch', 'Bump to the next patch version'
             c.action do |args, options|
+
+                puts "#{args} #{options}"
+
                 puts "Bump not yet supported!"
             end
         end
