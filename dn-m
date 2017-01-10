@@ -31,7 +31,18 @@ def update_frameworks(name)
     end
 
     update_carthage()
+    inject_frameworks(name)
+end
+
+def inject_frameworks(name)
     
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+
+    if !Dir.exist?(path) then
+        puts "No project!"
+        return
+    end
+
     project = project_from_path(path)
     create_carthage_script_phase_for_test_targets(project, name)
     add_framework_search_paths(project, name)
@@ -860,6 +871,14 @@ class Helper
                 end
 
                 update_frameworks($project_name)
+            end
+        end
+
+        command :inject do |c|
+            c.syntax = 'inject'
+            c.description = 'Injects the frameworks into the current project'
+            c.action do |args, options|
+                inject_frameworks($project_name)
             end
         end
 
