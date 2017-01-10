@@ -888,6 +888,8 @@ class Helper
             c.action do |args, options|
                 puts "Bump not yet supported!"
             end
+        end
+        
         run!
     end
 
