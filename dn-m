@@ -170,6 +170,9 @@ end
 
 # Takes in target
 def add_carthage_script(t, platform, fs)
+
+    puts "add carthage script: target: #{t}, platform: #{platform}"
+
     if t.shell_script_build_phases.empty? then
         script_phase = t.new_shell_script_build_phase
         script_phase.shell_script = 
@@ -183,8 +186,7 @@ def add_carthage_script(t, platform, fs)
     script_phase.input_paths.clear
     fs.each do |f|
         input_path = 
-            "$(SRCROOT)/#{carthage_build_path(
-                to_carthage_platform(platform), f)}.framework"
+            "$(SRCROOT)/#{carthage_build_path(platform, f)}.framework"
         script_phase.input_paths << input_path
     end
 end
@@ -199,10 +201,16 @@ end
 
 # Take ['iOS', 'macOS'] platform
 def carthage_build_path(platform, framework)
+
+    puts "platform: #{platform}: #{carthage_build_dir_for_platform(platform)}"
+
     return "#{carthage_build_dir_for_platform(platform)}/#{framework}"
 end
 
 def carthage_build_dir_for_platform(platform)
+
+    puts "from: #{platform} to carthage platform: #{to_carthage_platform(platform)}"
+
     return "#{carthage_build_dir}/#{to_carthage_platform(platform)}"
 end
 
@@ -889,7 +897,7 @@ class Helper
                 puts "Bump not yet supported!"
             end
         end
-        
+
         run!
     end
 
