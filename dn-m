@@ -31,7 +31,18 @@ def update_frameworks(name)
     end
 
     update_carthage()
+    inject_frameworks(name)
+end
+
+def inject_frameworks(name)
     
+    path = "#{Dir.pwd}/#{name}.xcodeproj"
+
+    if !Dir.exist?(path) then
+        puts "No project!"
+        return
+    end
+
     project = project_from_path(path)
     create_carthage_script_phase_for_test_targets(project, name)
     add_framework_search_paths(project, name)
@@ -172,8 +183,7 @@ def add_carthage_script(t, platform, fs)
     script_phase.input_paths.clear
     fs.each do |f|
         input_path = 
-            "$(SRCROOT)/#{carthage_build_path(
-                to_carthage_platform(platform), f)}.framework"
+            "$(SRCROOT)/#{carthage_build_path(platform, f)}.framework"
         script_phase.input_paths << input_path
     end
 end
@@ -860,6 +870,22 @@ class Helper
                 end
 
                 update_frameworks($project_name)
+            end
+        end
+
+        command :inject do |c|
+            c.syntax = 'inject'
+            c.description = 'Injects the frameworks into the current project'
+            c.action do |args, options|
+                inject_frameworks($project_name)
+            end
+        end
+
+        command :bump do |c|
+            c.syntax = 'bump [--Major | --minor | --patch]'
+            c.description = 'Bump version tag, and prepare binary'
+            c.action do |args, options|
+                puts "Bump not yet supported!"
             end
         end
 
