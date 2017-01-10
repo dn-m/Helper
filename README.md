@@ -24,10 +24,8 @@ If you have any issues, it's worth giving `brew update` / `brew upgrade` a shot.
 ## Usage
 
 - `dn-m init` 
-	- `[--platforms [iOS | macOS | all]]` (creates targets for selected platform(s) (default: `all`)
-	- Creates a new iOS + macOS project from scratch, with the name of the containing directory
-	- Will fail if you already have a Xcode project in there
-	- Automatically calls `config`
+	- Creates a new iOS + macOS framework from scratch
+	- Calls `config`
 - `dn-m config`
 	- Creates the necessary configuration files for:
 		- Version tracking with [git](https://git-scm.com/)
@@ -35,6 +33,10 @@ If you have any issues, it's worth giving `brew update` / `brew upgrade` a shot.
 		- Testing with [Travis CI](https://travis-ci.org/)
 		- Code coverage with [Codecov](https://codecov.io/)
 		- Code style with [Hound CI](https://houndci.com/) and [SwiftLint](https://github.com/realm/SwiftLint)
+	- Creates `README.md`
 - `dn-m update`
 	- Updates framework dependencies via [Carthage](https://github.com/Carthage/Carthage)
-	- Injects them into your project
+	- Calls `inject`
+	
+- `dn-m inject`
+	- Injects framework dependencies into project
