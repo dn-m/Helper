@@ -789,6 +789,16 @@ def create_readme(name, platforms)
     }
 end
 
+def bump(level)
+
+    # get current version
+    tagsPath = "#{Dir.pwd}/.git/refs/tags"
+
+    tags = Dir.entries(tagsPath)
+
+    puts tags
+end
+
 class Helper
   include Commander::Methods
 
@@ -802,10 +812,8 @@ class Helper
             c.description = 'Create a new project'
             c.option '--application', 'Build an application target'
             c.option '--framework', 'Build a framework target'
+            c.option '--skip-git', 'Do reinitialize git'
             c.action do |args, options|
-
-                puts "args: #{args}"
-                puts "options: #{options}"
 
                 unless !Dir.exist?("#{Dir.pwd}/#{$project_name}.xcodeproj") then
                     puts "There's already a project here!"
@@ -884,14 +892,18 @@ class Helper
         command :bump do |c|
             c.syntax = 'bump [--Major | --minor | --patch]'
             c.description = 'Bump version tag, and prepare binary'
-            c.option '--Major', 'Bump to the next major version'
+            c.option '--major', 'Bump to the next major version'
             c.option '--minor', 'Bump to the next minor version'
             c.option '--patch', 'Bump to the next patch version'
             c.action do |args, options|
 
-                puts "#{args} #{options}"
-
-                puts "Bump not yet supported!"
+                if options.major then
+                    bump('major')
+                elsif options.minor then
+                    bump('minor')
+                elsif options.patch then
+                    bump('patch')
+                end
             end
         end
 
