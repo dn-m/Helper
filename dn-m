@@ -252,10 +252,14 @@ end
 # =============================================================================
 # init command
 # =============================================================================
-def init(name, platforms, type)
+def init(name, platforms, type, skip_git)
 
     # Create environment
-    git_init(name)
+
+    unless skip_git
+        git_init(name)
+    end
+    
     config(name, platforms)
     create_file_structure(name)
 
@@ -842,12 +846,13 @@ class Helper
                     return
                 end
 
-                puts "Type: #{type}"
+                
 
                 init(
                     $project_name, 
                     platforms, 
-                    type
+                    type,
+                    options.skip_git
                 )
             end
         end
