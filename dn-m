@@ -48,6 +48,23 @@ def inject_frameworks(name)
     add_framework_search_paths(project, name)
     inject_frameworks_into_application_targets(project)
     project.save
+
+    inject_frameworks_into_demos(name)
+end
+
+def inject_frameworks_into_demos(name)
+
+	# first, find directories with name + platform
+	supported_platforms.each do |platform|
+		source_dir = "#{Dir.pwd}/#{name} #{platform}"
+		if Dir.exist?(source_dir)
+			filename = "#{name} #{platform}.xcodeproj"
+			project = project_from_path("#{source_dir}/#{filename}")
+
+			# TODO
+		end
+	end
+
 end
 
 def inject_frameworks_into_application_targets(project)
@@ -90,6 +107,8 @@ def inject_frameworks_into_application_target(t, project)
     end
 end
 
+# t = target
+# f = framework
 def add_embed_frameworks_refs_to_phase(phase, project, platform, t, f)
     path = "#{carthage_build_path(platform, f)}.framework"
     ref = project.frameworks_group[platform].new_reference(path)
@@ -103,11 +122,10 @@ def add_embed_frameworks_refs_to_phase(phase, project, platform, t, f)
 end
 
 # Create and return embed frameworks phase for a given target
+# t = target
 def create_embed_frameworks_phase(project, t)
     
-    t.build_phases.delete_if { |phase| 
-        phase.to_s == 'Embed Frameworks'
-    }
+    t.build_phases.delete_if { |phase| phase.to_s == 'Embed Frameworks' }
 
     embed_frameworks_build_phase = project.new(
         Xcodeproj::Project::Object::PBXCopyFilesBuildPhase
