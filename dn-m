@@ -900,7 +900,7 @@ class Helper
             		create_travis($project_name)
             	elsif options.travis then
             		create_readme($project_name)
-            	elsif 
+            	elsif options.git
             		git_init($project_name)
             	elsif options.carthage then
             		create_cartfile
