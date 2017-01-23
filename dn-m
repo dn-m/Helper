@@ -892,12 +892,15 @@ class Helper
             c.description = 'Creates configuration files for testing.'
             c.option '--travis', 'Update only the Travis CI configuration'
             c.option '--readme', 'Update only the README configuration'
+            c.option '--git', 'Update only the git configuration'
             c.action do |args, options|
 
             	if options.travis then
             		create_travis($project_name)
             	elsif options.travis then
             		create_readme($project_name)
+            	elsif 
+            		git_init($project_name)
             	else
 					config($project_name)
 				end
