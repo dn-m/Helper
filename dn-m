@@ -893,6 +893,7 @@ class Helper
             c.option '--travis', 'Update only the Travis CI configuration'
             c.option '--readme', 'Update only the README configuration'
             c.option '--git', 'Update only the git configuration'
+            c.option '--carthage', 'Update only the Carthage configuration'
             c.action do |args, options|
 
             	if options.travis then
@@ -901,6 +902,8 @@ class Helper
             		create_readme($project_name)
             	elsif 
             		git_init($project_name)
+            	elsif options.carthage then
+            		create_cartfile
             	else
 					config($project_name)
 				end
