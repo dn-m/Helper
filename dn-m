@@ -706,12 +706,16 @@ def create_gitignore
 end
 
 # TODO: Store build hardware, OS versions, etc. in Hash somewhere
-def create_travis(name, platforms)
+def create_travis(name, platforms=['iOS', 'macOS'])
+
+	gh_token = "cEyhk8JBa/vS4QPc8O7OCCr3+gTWTemRt3zMIkc0PXukH3aQW7IXaD2Kqx1VXuD0DVJ+k8mQhbYkA6k+ooenX56Hy/GtxjErNWn/zkZSQAT6u8mcD3jEpGZ98P+j/HsSM9FtTpeVqonucGEmWTZ+9J8ttqQNlETa4taPruE85fSGhCXKLbxyuf+e7lPn/j/Tkmb0PglLl3dJTBov3IWNTuEp3+W1ITxiWf8Fr9bSqcKWzhuM6w1fj4enwnwMIT64fJKofp3FOjtNpT47t/80Tn612S5OyLjCCoZ75cg/xWDE4uPaP3/zxR4zCPsIUwvMUcgaV33qYCtMvBNLoXymbbRoxWgTlU1/fSwc7kzFUM9AT7YpnKGOEu93wW91ajCMGRp/ZpCdJSNyvfPje+qIIeZEZvZcESoAIKfq2hyTh5xcSm4UyJzSmcPqGM1uY3ruMso+tjK/bFf1ryYz4Qs9YJm1GkUj+Zfyt95ywJ3w4TyGleSge/FUopMi8GpMnorCX/fH+fu6bonUkTJiy96p0EjSF4hF/sE7+pwajGOoByUxiZTxseeByT8c0syHJvcBUi8FkdfQvGXzJfMZixUwOJls3aS1AxFfn1UFR/Sim5Hua8wX0vYAFWlKhSTmB/5r3D4OBDh49Mo/XuAnhB1RaQA/M8uIOEcnKYDg3Lz0Y3Q="
 
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8.2")
         file.puts("env:")
+        file.puts("  global:")
+        file.puts("    secure: #{gh_token}")
         file.puts("  matrix:")
 
         platforms.each do |platform|
@@ -740,16 +744,32 @@ def create_travis(name, platforms)
         end
 
         file.puts()
-        file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
+        file.puts("before_script:")
+        file.puts("- if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
+
         file.puts("script: travis_retry xcodebuild test")
         file.puts("  -project #{name}.xcodeproj")
         file.puts("  -scheme \"${SCHEME}\"")
         file.puts("  -destination \"${DESTINATION}\"")
         file.puts("  TOOLCHAINS=swift")
         file.puts()
+
         file.puts("after_success:")
-        file.puts("  - bash <(curl -s https://codecov.io/bash)")
+		file.puts("  - bash <(curl -s https://codecov.io/bash)")
+
+        # Automated documentation generation
+        file.puts("- git config --global user.name \"jsbean\"")
+        file.puts("- git config --global user.email \"jbean46@gmail.com\"")
+        
+        file.puts("gem install jazzy")
+        file.puts("- git clone https://${GH_TOKEN}@github.com/dn-m/dn-m.github.io.git")
+        file.puts("jazzy")
+        file.puts("- cp -r docs dn-m.github.io/#{name}")
+        file.puts("- cd dn-m.github.io")
+        file.puts("- git add .")
+        file.puts("- git commit -m \"Update docs\"")
+        file.puts("- git push origin master")
     }   
 end
 
@@ -862,11 +882,19 @@ class Helper
             end
         end
 
+        # TODO: Split config into `--readme, --travis, --carthage, --etc.`
         command :config do |c|
             c.syntax = 'config'
             c.description = 'Creates configuration files for testing.'
+            c.option '--travis', 'Update only the Travis CI configuration'
             c.action do |args, options|
-                config($project_name)
+
+            	if options.travis then
+            		create_travis($project_name)
+            	else
+					config($project_name)
+				end
+                
             end
         end
 
@@ -899,6 +927,7 @@ class Helper
             end
         end
 
+		# warning: Not yet supported!
         command :bump do |c|
             c.syntax = 'bump [--Major | --minor | --patch]'
             c.description = 'Bump version tag, and prepare binary'
