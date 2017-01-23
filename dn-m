@@ -768,7 +768,7 @@ def create_travis(name, platforms=['iOS', 'macOS'])
 
         file.puts("- gem install jazzy")
         file.puts("- git clone https://${GH_TOKEN}@github.com/dn-m/dn-m.github.io.git")
-        file.puts("jazzy")
+        file.puts("- jazzy")
         file.puts("- cp -r docs dn-m.github.io/#{name}")
         file.puts("- cd dn-m.github.io")
         file.puts("- git add .")
@@ -802,7 +802,7 @@ def create_cartfile
     FileUtils.touch('Cartfile')
 end
 
-def create_readme(name, platforms)
+def create_readme(name, platforms=['iOS', 'macOS'])
 
     platform_phrase = platforms.join(' or ')
 
@@ -891,10 +891,13 @@ class Helper
             c.syntax = 'config'
             c.description = 'Creates configuration files for testing.'
             c.option '--travis', 'Update only the Travis CI configuration'
+            c.option '--readme', 'Update only the README configuration'
             c.action do |args, options|
 
             	if options.travis then
             		create_travis($project_name)
+            	elsif options.travis then
+            		create_readme($project_name)
             	else
 					config($project_name)
 				end
@@ -931,7 +934,7 @@ class Helper
             end
         end
 
-		# warning: Not yet supported!
+		# Warning: Not yet supported!
         command :bump do |c|
             c.syntax = 'bump [--Major | --minor | --patch]'
             c.description = 'Bump version tag, and prepare binary'
