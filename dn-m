@@ -744,10 +744,13 @@ def create_travis(name, platforms=['iOS', 'macOS'])
         end
 
         file.puts()
+
+        # Ensure dependencies up-to-date
         file.puts("before_script:")
         file.puts("- if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
 
+        # Build and test the project
         file.puts("script: travis_retry xcodebuild test")
         file.puts("  -project #{name}.xcodeproj")
         file.puts("  -scheme \"${SCHEME}\"")
@@ -755,14 +758,15 @@ def create_travis(name, platforms=['iOS', 'macOS'])
         file.puts("  TOOLCHAINS=swift")
         file.puts()
 
+        # Upon success, get code coverage
         file.puts("after_success:")
-		file.puts("  - bash <(curl -s https://codecov.io/bash)")
+		file.puts("- bash <(curl -s https://codecov.io/bash)")
 
         # Automated documentation generation
         file.puts("- git config --global user.name \"jsbean\"")
         file.puts("- git config --global user.email \"jbean46@gmail.com\"")
-        
-        file.puts("gem install jazzy")
+
+        file.puts("- gem install jazzy")
         file.puts("- git clone https://${GH_TOKEN}@github.com/dn-m/dn-m.github.io.git")
         file.puts("jazzy")
         file.puts("- cp -r docs dn-m.github.io/#{name}")
