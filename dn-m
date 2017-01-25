@@ -791,6 +791,10 @@ def create_swift_lint
     }
 end
 
+def create_jazzy
+    puts "Does not create .jazzy.yaml yet!"
+end
+
 def create_hound 
     File.open('.hound.yml', 'w') { |file| 
         file.puts("swift:")
