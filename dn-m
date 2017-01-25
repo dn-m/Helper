@@ -791,8 +791,14 @@ def create_swift_lint
     }
 end
 
-def create_jazzy
-    puts "Does not create .jazzy.yaml yet!"
+def create_jazzy(name)
+    File.open('.jazzy.yaml', 'w') { |file| 
+        file.puts("min_acl: public")
+        file.puts("clean: true")
+        file.puts("skip_undocumented: true")
+        file.puts("github_url: https://github.com/dn-m/#{name}")
+        file.puts("output: dn-m.github.io/#{name}")
+    }
 end
 
 def create_hound 
@@ -898,6 +904,7 @@ class Helper
             c.option '--readme', 'Update only the README configuration'
             c.option '--git', 'Update only the git configuration'
             c.option '--carthage', 'Update only the Carthage configuration'
+            c.option '--jazzy', 'Update only the Jazzy configuration'
             c.action do |args, options|
 
             	if options.travis then
@@ -908,6 +915,8 @@ class Helper
             		git_init($project_name)
             	elsif options.carthage then
             		create_cartfile
+                elsif options.jazzy then
+                    create_jazzy($project_name)
             	else
 					config($project_name)
 				end
