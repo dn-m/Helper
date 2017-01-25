@@ -798,6 +798,7 @@ def create_jazzy(name)
         file.puts("skip_undocumented: true")
         file.puts("github_url: https://github.com/dn-m/#{name}")
         file.puts("output: dn-m.github.io/#{name}")
+        file.puts("theme: fullwidth")
     }
 end
 
