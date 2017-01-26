@@ -767,12 +767,12 @@ def create_travis(name, platforms=['iOS', 'macOS'])
         file.puts("- git config --global user.email \"jbean46@gmail.com\"")
 
         file.puts("- gem install jazzy")
-        file.puts("- git clone https://${GH_TOKEN}@github.com/dn-m/dn-m.github.io.git")
+        file.puts("- git clone https://${GH_TOKEN}@github.com/dn-m/dn-m.github.io.git -b nuke")
         file.puts("- jazzy")
         file.puts("- cd dn-m.github.io")
         file.puts("- git add .")
         file.puts("- git commit -m \"Update docs\"")
-        file.puts("- git push origin master")
+        file.puts("- git push origin nuke")
     }   
 end
 
