@@ -775,7 +775,7 @@ def create_travis(name, platforms=['iOS', 'macOS'])
         file.puts("- cd dn-m.github.io")
 
         file.puts("- git remote rm origin")
-        file.puts("- git remote add origin https://${GH_TOKEN}@github.com/dn-m.dn-m/github.io.git")
+        file.puts("- git remote add origin https://jsbean:${GH_TOKEN}@github.com/dn-m.dn-m/github.io.git")
 
         file.puts("- build/frontpage.rb")
         file.puts("- git pull origin nuke")
