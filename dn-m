@@ -48,6 +48,23 @@ def inject_frameworks(name)
     add_framework_search_paths(project, name)
     inject_frameworks_into_application_targets(project)
     project.save
+
+    inject_frameworks_into_demos(name)
+end
+
+def inject_frameworks_into_demos(name)
+
+	# first, find directories with name + platform
+	supported_platforms.each do |platform|
+		source_dir = "#{Dir.pwd}/#{name} #{platform}"
+		if Dir.exist?(source_dir)
+			filename = "#{name} #{platform}.xcodeproj"
+			project = project_from_path("#{source_dir}/#{filename}")
+
+			# TODO
+		end
+	end
+
 end
 
 def inject_frameworks_into_application_targets(project)
@@ -90,6 +107,8 @@ def inject_frameworks_into_application_target(t, project)
     end
 end
 
+# t = target
+# f = framework
 def add_embed_frameworks_refs_to_phase(phase, project, platform, t, f)
     path = "#{carthage_build_path(platform, f)}.framework"
     ref = project.frameworks_group[platform].new_reference(path)
@@ -103,11 +122,10 @@ def add_embed_frameworks_refs_to_phase(phase, project, platform, t, f)
 end
 
 # Create and return embed frameworks phase for a given target
+# t = target
 def create_embed_frameworks_phase(project, t)
     
-    t.build_phases.delete_if { |phase| 
-        phase.to_s == 'Embed Frameworks'
-    }
+    t.build_phases.delete_if { |phase| phase.to_s == 'Embed Frameworks' }
 
     embed_frameworks_build_phase = project.new(
         Xcodeproj::Project::Object::PBXCopyFilesBuildPhase
@@ -688,12 +706,16 @@ def create_gitignore
 end
 
 # TODO: Store build hardware, OS versions, etc. in Hash somewhere
-def create_travis(name, platforms)
+def create_travis(name, platforms=['iOS', 'macOS'])
+
+	gh_token = "cEyhk8JBa/vS4QPc8O7OCCr3+gTWTemRt3zMIkc0PXukH3aQW7IXaD2Kqx1VXuD0DVJ+k8mQhbYkA6k+ooenX56Hy/GtxjErNWn/zkZSQAT6u8mcD3jEpGZ98P+j/HsSM9FtTpeVqonucGEmWTZ+9J8ttqQNlETa4taPruE85fSGhCXKLbxyuf+e7lPn/j/Tkmb0PglLl3dJTBov3IWNTuEp3+W1ITxiWf8Fr9bSqcKWzhuM6w1fj4enwnwMIT64fJKofp3FOjtNpT47t/80Tn612S5OyLjCCoZ75cg/xWDE4uPaP3/zxR4zCPsIUwvMUcgaV33qYCtMvBNLoXymbbRoxWgTlU1/fSwc7kzFUM9AT7YpnKGOEu93wW91ajCMGRp/ZpCdJSNyvfPje+qIIeZEZvZcESoAIKfq2hyTh5xcSm4UyJzSmcPqGM1uY3ruMso+tjK/bFf1ryYz4Qs9YJm1GkUj+Zfyt95ywJ3w4TyGleSge/FUopMi8GpMnorCX/fH+fu6bonUkTJiy96p0EjSF4hF/sE7+pwajGOoByUxiZTxseeByT8c0syHJvcBUi8FkdfQvGXzJfMZixUwOJls3aS1AxFfn1UFR/Sim5Hua8wX0vYAFWlKhSTmB/5r3D4OBDh49Mo/XuAnhB1RaQA/M8uIOEcnKYDg3Lz0Y3Q="
 
     File.open('.travis.yml', 'w') { |file| 
         file.puts("language: objective-c")
         file.puts("osx_image: xcode8.2")
         file.puts("env:")
+        file.puts("  global:")
+        file.puts("    secure: #{gh_token}")
         file.puts("  matrix:")
 
         platforms.each do |platform|
@@ -722,16 +744,44 @@ def create_travis(name, platforms)
         end
 
         file.puts()
-        file.puts("before_script: if [ -f ./Cartfile ]; then carthage update; fi;")
+
+        # Ensure dependencies up-to-date
+        file.puts("before_script:")
+        file.puts("- if [ -f ./Cartfile ]; then carthage update; fi;")
         file.puts()
+
+        # Build and test the project
         file.puts("script: travis_retry xcodebuild test")
         file.puts("  -project #{name}.xcodeproj")
         file.puts("  -scheme \"${SCHEME}\"")
         file.puts("  -destination \"${DESTINATION}\"")
         file.puts("  TOOLCHAINS=swift")
         file.puts()
+
+        # Upon success, get code coverage
         file.puts("after_success:")
-        file.puts("  - bash <(curl -s https://codecov.io/bash)")
+		file.puts("- bash <(curl -s https://codecov.io/bash)")
+
+        # Automated documentation generation
+        file.puts("- git config --global user.name \"jsbean\"")
+        file.puts("- git config --global user.email \"jbean46@gmail.com\"")
+
+        file.puts("- git config credential.helper \"store --file=.git/credentials\"")
+        file.puts("- echo \"https://${GH_TOKEN}:@github.com\" > .git/credentials")
+
+        file.puts("- gem install jazzy")
+        file.puts("- git clone https://${GH_TOKEN}@github.com/dn-m/dn-m.github.io.git -b nuke")
+        file.puts("- jazzy")
+        file.puts("- cd dn-m.github.io")
+
+        file.puts("- git remote rm origin")
+        file.puts("- git remote add origin https://jsbean:${GH_TOKEN}@github.com/dn-m.dn-m/github.io.git")
+
+        file.puts("- build/frontpage.rb")
+        file.puts("- git pull origin nuke")
+        file.puts("- git add .")
+        file.puts("- git commit -m \"Update docs - #{name}\"")
+        file.puts("- git push origin nuke")
     }   
 end
 
@@ -749,6 +799,17 @@ def create_swift_lint
     }
 end
 
+def create_jazzy(name)
+    File.open('.jazzy.yaml', 'w') { |file| 
+        file.puts("min_acl: public")
+        file.puts("clean: true")
+        file.puts("skip_undocumented: true")
+        file.puts("github_url: https://github.com/dn-m/#{name}")
+        file.puts("output: dn-m.github.io/#{name}")
+        file.puts("theme: fullwidth")
+    }
+end
+
 def create_hound 
     File.open('.hound.yml', 'w') { |file| 
         file.puts("swift:")
@@ -760,7 +821,7 @@ def create_cartfile
     FileUtils.touch('Cartfile')
 end
 
-def create_readme(name, platforms)
+def create_readme(name, platforms=['iOS', 'macOS'])
 
     platform_phrase = platforms.join(' or ')
 
@@ -844,11 +905,31 @@ class Helper
             end
         end
 
+        # TODO: Split config into `--readme, --travis, --carthage, --etc.`
         command :config do |c|
             c.syntax = 'config'
             c.description = 'Creates configuration files for testing.'
+            c.option '--travis', 'Update only the Travis CI configuration'
+            c.option '--readme', 'Update only the README configuration'
+            c.option '--git', 'Update only the git configuration'
+            c.option '--carthage', 'Update only the Carthage configuration'
+            c.option '--jazzy', 'Update only the Jazzy configuration'
             c.action do |args, options|
-                config($project_name)
+
+            	if options.travis then
+            		create_travis($project_name)
+            	elsif options.travis then
+            		create_readme($project_name)
+            	elsif options.git
+            		git_init($project_name)
+            	elsif options.carthage then
+            		create_cartfile
+                elsif options.jazzy then
+                    create_jazzy($project_name)
+            	else
+					config($project_name)
+				end
+                
             end
         end
 
@@ -881,6 +962,7 @@ class Helper
             end
         end
 
+		# Warning: Not yet supported!
         command :bump do |c|
             c.syntax = 'bump [--Major | --minor | --patch]'
             c.description = 'Bump version tag, and prepare binary'
