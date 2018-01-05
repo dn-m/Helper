@@ -794,7 +794,7 @@ end
 # =============================================================================
 
 # name of project, type of increment ("major", "minor", "patch")
-def bump_version(name, type)
+def bump_version(name, type, options)
     if type != 'major' && type != 'minor' && type != 'patch'
         puts "Unknown type '#{type}'"
         return
@@ -819,17 +819,34 @@ def bump_version(name, type)
         return
     end
 
+    puts "Pushing to GitHub"
     unless push_git_tag(new_version)
         puts "Could not push tag"
         return
     end
 
-    unless build_carthage_archive
+    # default is to do archiving
+    should_archive = options.archive.nil? ? true : options.archive
+
+    if should_archive && !build_carthage_archive
         puts "Carthage archiving failed"
         return
     end
 
-    push_github_release(name, new_version)
+    unless push_github_release(name, new_version, options)
+        puts "Could not push release to GitHub"
+        return
+    end
+
+    if should_archive
+        archive_path = "#{name}.framework.zip"
+        unless upload_release_archive(name, new_version, archive_path, options)
+            puts "Could not upload release archive to GitHub"
+            return
+        end
+    end
+
+    puts "Success!"
 end
 
 def get_current_version()
@@ -882,8 +899,42 @@ def build_carthage_archive()
     return true
 end
 
-def push_github_release(name, tag)
+def push_github_release(name, tag, options)
+
+    # check for access token first
+    if ENV['GITHUB_TOKEN'].nil?
+        puts "GITHUB_TOKEN not set, can't authenticate"
+        return
+    end
+
+    header_config = "-H \"Content-Type: application/json\"\
+                     -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
+
+    head = (`git rev-parse HEAD`).chomp
+
+    json = "\'{
+            \"tag_name\": \"#{tag}\",
+            \"target-commitish\": \"#{head}\",
+            \"name\": \"#{tag}\",
+            \"body\": \"Release version #{tag}\"
+            }\'"
+    url = "https://api.github.com/repos/dn-m/#{name}/releases"
+
+    response = `curl -X POST #{header_config} -d #{json} #{url}`
+
+    # current way of detecting success. TODO: better?
+    if (response =~ /#{url}/) == nil
+        puts "Release creation failed"
+        puts "Response: #{response}"
+        return false
+    end
+
+    return true
+end
+
+def upload_release_archive(name, new_version, archive_path, options)
     # TODO
+    return true
 end
 
 class Helper
@@ -980,10 +1031,12 @@ class Helper
 
         command :bump do |c|
             c.syntax = 'bump [--major | --minor | --patch]'
-            c.description = 'Bump version tag, and prepare binary. If more than one is specified, only the "most important" will be incremented'
+            c.description = 'Bump version tag, and prepare binary. If more than one is specified, only the most important will be incremented'
             c.option '-M', '--major', 'Increment the major version number'
             c.option '-m', '--minor', 'Increment the minor version number'
             c.option '-p', '--patch', 'Increment the patch version number'
+            c.option '--[no-]archive', 'Whether or not to upload a carthage-archived zip. Default: true'
+
             c.action do |args, options|
                 type = ''
                 if options.patch
@@ -999,8 +1052,7 @@ class Helper
                     puts 'No bump type specified, use one of major, minor or patch.'
                     return
                 end
-
-                bump_version($project_name, type)
+                bump_version($project_name, type, options)
             end
         end
 
