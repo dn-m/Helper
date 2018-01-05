@@ -796,6 +796,7 @@ end
 # =============================================================================
 
 # name of project, type of increment ("major", "minor", "patch")
+# TODO: walk back tag creation on failure
 def bump_version(name, type, options)
     if type != 'major' && type != 'minor' && type != 'patch'
         puts "Unknown type '#{type}'"
@@ -957,6 +958,7 @@ def upload_release_archive(response, archive_path)
 
     puts "URL: #{url}"
 
+    # TODO: check response
     response = `curl -X POST #{header_config} --data-binary @#{archive_path} #{url}`
     puts "Response: #{response}"
     return true
