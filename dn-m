@@ -819,6 +819,11 @@ def bump_version(name, type)
         return
     end
 
+    unless push_git_tag(new_version)
+        puts "Could not push tag"
+        return
+    end
+
     unless build_carthage_archive
         puts "Carthage archiving failed"
         return
@@ -857,6 +862,10 @@ end
 
 def add_git_tag(tag)
     return system("git tag #{tag}")
+end
+
+def push_git_tag(tag)
+    return system("git push origin #{tag}")
 end
 
 def build_carthage_archive()
