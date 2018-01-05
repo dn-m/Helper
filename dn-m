@@ -920,7 +920,7 @@ def push_github_release(name, tag, options)
             }\'"
     url = "https://api.github.com/repos/dn-m/#{name}/releases"
 
-    response = `curl -X POST #{header_config} -d #{json} #{url}`
+    response = `curl -s -X POST #{header_config} -d #{json} #{url}`
 
     # current way of detecting success. TODO: better?
     if (response =~ /#{url}/) == nil
