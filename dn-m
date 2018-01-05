@@ -3,6 +3,7 @@
 require 'xcodeproj'
 require 'rubygems'
 require 'commander'
+require 'json'
 
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
@@ -814,12 +815,13 @@ def bump_version(name, type, options)
         return
     end
 
+    puts "Creating tag #{new_version}"
     unless add_git_tag(new_version)
         puts "Could not add tag"
         return
     end
 
-    puts "Pushing to GitHub"
+    puts "Pushing tag to GitHub"
     unless push_git_tag(new_version)
         puts "Could not push tag"
         return
@@ -833,13 +835,16 @@ def bump_version(name, type, options)
         return
     end
 
-    unless push_github_release(name, new_version, options)
+    puts "Pushing release to GitHub"
+    response = push_github_release(name, new_version, options)
+    if response == nil
         puts "Could not push release to GitHub"
         return
     end
 
     if should_archive
         archive_path = "#{name}.framework.zip"
+        puts "Pushing zipped framework to GitHub"
         unless upload_release_archive(name, new_version, archive_path, options)
             puts "Could not upload release archive to GitHub"
             return
@@ -910,9 +915,14 @@ def push_github_release(name, tag, options)
     header_config = "-H \"Content-Type: application/json\"\
                      -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
 
+    description = options.desc.nil? ? "Release version #{tag}" : options.desc
+    prerelease = options.beta.nil? ? false : options.beta
+
     json = "\'{
             \"tag_name\": \"#{tag}\",
-            \"body\": \"Release version #{tag}\"
+            \"body\": \"#{description}\",
+            \"draft\": false,
+            \"prerelease\": #{prerelease}
             }\'"
     url = "https://api.github.com/repos/dn-m/#{name}/releases"
 
@@ -922,10 +932,10 @@ def push_github_release(name, tag, options)
     if (response =~ /#{url}/) == nil
         puts "Release creation failed"
         puts "Response: #{response}"
-        return false
+        return nil
     end
 
-    return true
+    return JSON.parse(response)
 end
 
 def upload_release_archive(name, new_version, archive_path, options)
