@@ -4,6 +4,7 @@ require 'xcodeproj'
 require 'rubygems'
 require 'commander'
 require 'json'
+require 'uri_template'
 
 # The name of the project to be created or configured
 $project_name = File.basename(Dir.getwd)
@@ -845,7 +846,7 @@ def bump_version(name, type, options)
     if should_archive
         archive_path = "#{name}.framework.zip"
         puts "Pushing zipped framework to GitHub"
-        unless upload_release_archive(name, new_version, archive_path, options)
+        unless upload_release_archive(response, archive_path)
             puts "Could not upload release archive to GitHub"
             return
         end
@@ -855,7 +856,7 @@ def bump_version(name, type, options)
 end
 
 def get_current_version()
-    return `git tag`
+    return `git describe --abbrev=0 --tags`
 end
 
 # parses a string of the form "1.0.3" or "1.4" or "3" and returns the fields
@@ -939,7 +940,7 @@ def push_github_release(name, tag, options)
     return JSON.parse(response)
 end
 
-def upload_release_archive(name, response, new_version, archive_path, options)
+def upload_release_archive(response, archive_path)
 
     # check for access token first
     if ENV['GITHUB_TOKEN'].nil?
@@ -950,9 +951,13 @@ def upload_release_archive(name, response, new_version, archive_path, options)
     header_config = "-H \"Content-Type: application/zip\"\
                      -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
 
-    url = response['upload_url']
+    tpl = response['upload_url']
+    tpl = URITemplate.new(tpl)
+    url = tpl.expand('name' => "#{archive_path}")
 
-    response = `curl -X POST #{header_config} --data-binary #{archive_path} #{url}`
+    puts "URL: #{url}"
+
+    response = `curl -X POST #{header_config} --data-binary @#{archive_path} #{url}`
     puts "Response: #{response}"
     return true
 end
