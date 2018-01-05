@@ -819,7 +819,10 @@ def bump_version(name, type)
         return
     end
 
-    build_carthage_archive
+    unless build_carthage_archive
+        puts "Carthage archiving failed"
+        return
+    end
 
     push_github_release(name, new_version)
 end
@@ -857,7 +860,17 @@ def add_git_tag(tag)
 end
 
 def build_carthage_archive()
-    # TODO
+    unless system("carthage build --no-skip-current")
+        puts "Could not execute 'carthage build'"
+        return false
+    end
+
+    unless system("carthage archive")
+        puts "Could not execute 'carthage archive'"
+        return false
+    end
+
+    return true
 end
 
 def push_github_release(name, tag)
