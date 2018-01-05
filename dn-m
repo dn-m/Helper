@@ -789,6 +789,22 @@ def create_readme(name, platforms)
     }
 end
 
+# =============================================================================
+# bump command
+# =============================================================================
+
+# name of project, type of increment ("major", "minor", "patch")
+def bump_version(name, type)
+    if type != 'major' && type != 'minor' && type != 'patch'
+        puts "Unknown type '#{type}'"
+        return
+    end
+
+    # TODO: debugging
+    puts "name: #{name}"
+    puts "type: #{type}"
+end
+
 class Helper
   include Commander::Methods
 
@@ -882,10 +898,28 @@ class Helper
         end
 
         command :bump do |c|
-            c.syntax = 'bump [--Major | --minor | --patch]'
-            c.description = 'Bump version tag, and prepare binary'
+            c.syntax = 'bump [--major | --minor | --patch]'
+            c.description = 'Bump version tag, and prepare binary. If more than one is specified, only the "most important" will be incremented'
+            c.option '-M', '--major', 'Increment the major version number'
+            c.option '-m', '--minor', 'Increment the minor version number'
+            c.option '-p', '--patch', 'Increment the patch version number'
             c.action do |args, options|
-                puts "Bump not yet supported!"
+                type = ''
+                if options.patch
+                    type = 'patch'
+                end
+                if options.minor
+                    type = 'minor'
+                end
+                if options.major
+                    type = 'major'
+                end
+                if type == ''
+                    puts 'No bump type specified, use one of major, minor or patch.'
+                    return
+                end
+
+                bump_version($project_name, type)
             end
         end
 
