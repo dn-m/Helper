@@ -910,13 +910,8 @@ def push_github_release(name, tag, options)
     header_config = "-H \"Content-Type: application/json\"\
                      -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
 
-    # Gets the current head. Delete trailing newline
-    head = (`git rev-parse HEAD`).chomp
-
     json = "\'{
             \"tag_name\": \"#{tag}\",
-            \"target-commitish\": \"#{head}\",
-            \"name\": \"#{tag}\",
             \"body\": \"Release version #{tag}\"
             }\'"
     url = "https://api.github.com/repos/dn-m/#{name}/releases"
