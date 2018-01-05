@@ -800,14 +800,7 @@ def bump_version(name, type)
         return
     end
 
-    # TODO: debugging
-    puts "name: #{name}"
-    puts "type: #{type}"
-
     current_version = get_current_version
-
-    # TODO: debugging
-    puts "current_version: #{current_version}"
 
     major, minor, patch = parse_version_string(current_version, type)
     if major == nil
@@ -815,17 +808,11 @@ def bump_version(name, type)
         return
     end
 
-    # TODO: debugging
-    puts "parsed version: #{major}.#{minor}.#{patch}"
-
     new_version = calculate_new_version(major, minor, patch, type)
     if new_version == ""
         puts "Could not calculate version update: '#{major}.#{minor}.#{patch}', type='#{type}'"
         return
     end
-
-    # TODO: debugging
-    puts "new version: #{new_version}"
 
     unless add_git_tag(new_version)
         puts "Could not add tag"
