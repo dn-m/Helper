@@ -883,11 +883,11 @@ def calculate_new_version(major, minor, patch, type)
 end
 
 def add_git_tag(tag)
-    return system("git tag #{tag}")
+    return system("git tag #{tag} &> /dev/null")
 end
 
 def push_git_tag(tag)
-    return system("git push origin #{tag}")
+    return system("git push origin #{tag} &> /dev/null")
 end
 
 def build_carthage_archive()
