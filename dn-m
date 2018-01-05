@@ -1063,7 +1063,7 @@ class Helper
             c.option '-m', '--minor', 'Increment the minor version number'
             c.option '-p', '--patch', 'Increment the patch version number'
             c.option '--[no-]archive', 'Whether or not to upload a carthage-archived zip. Default: true'
-            c.option '-d', '--desc', 'Description of the release'
+            c.option '-d DESC', '--desc DESC', String, 'Description of the release'
             c.option '-b', '--beta', 'Create a beta release (prerelease)'
 
             c.action do |args, options|
