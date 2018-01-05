@@ -904,6 +904,7 @@ def build_carthage_archive()
     return true
 end
 
+# returns the response as a JSON object, or nil on fail
 def push_github_release(name, tag, options)
 
     # check for access token first
@@ -938,8 +939,21 @@ def push_github_release(name, tag, options)
     return JSON.parse(response)
 end
 
-def upload_release_archive(name, new_version, archive_path, options)
-    # TODO
+def upload_release_archive(name, response, new_version, archive_path, options)
+
+    # check for access token first
+    if ENV['GITHUB_TOKEN'].nil?
+        puts "GITHUB_TOKEN not set, can't authenticate"
+        return
+    end
+
+    header_config = "-H \"Content-Type: application/zip\"\
+                     -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
+
+    url = response['upload_url']
+
+    response = `curl -X POST #{header_config} --data-binary #{archive_path} #{url}`
+    puts "Response: #{response}"
     return true
 end
 
@@ -1042,6 +1056,8 @@ class Helper
             c.option '-m', '--minor', 'Increment the minor version number'
             c.option '-p', '--patch', 'Increment the patch version number'
             c.option '--[no-]archive', 'Whether or not to upload a carthage-archived zip. Default: true'
+            c.option '-d', '--desc', 'Description of the release'
+            c.option '-b', '--beta', 'Create a beta release (prerelease)'
 
             c.action do |args, options|
                 type = ''
