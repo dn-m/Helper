@@ -805,11 +805,32 @@ def bump_version(name, type)
     puts "type: #{type}"
 
     current_version = get_current_version
+
+    # TODO: debugging
     puts "current_version: #{current_version}"
 
-    new_version = calculate_new_version(current_version, type)
+    major, minor, patch = parse_version_string(current_version, type)
+    if major == nil
+        puts "Could not parse version string '#{type}'"
+        return
+    end
 
-    add_git_tag(new_version)
+    # TODO: debugging
+    puts "parsed version: #{major}.#{minor}.#{patch}"
+
+    new_version = calculate_new_version(major, minor, patch, type)
+    if new_version == ""
+        puts "Could not calculate version update: '#{major}.#{minor}.#{patch}', type='#{type}'"
+        return
+    end
+
+    # TODO: debugging
+    puts "new version: #{new_version}"
+
+    unless add_git_tag(new_version)
+        puts "Could not add tag"
+        return
+    end
 
     build_carthage_archive
 
@@ -817,15 +838,35 @@ def bump_version(name, type)
 end
 
 def get_current_version()
-    # TODO
+    return `git tag`
 end
 
-def calculate_new_version(current_version, type)
-    # TODO
+# parses a string of the form "1.0.3" or "1.4" or "3" and returns the fields
+# returns all-nil if no way to parse
+def parse_version_string(version, type)
+    if (/^(\d+)(?:\.(\d+))?(?:\.(\d+))?$/ =~ version) == nil
+        return nil, nil, nil
+    end
+
+    return $1.to_i, $2.to_i, $3.to_i
+end
+
+# bumps up the version number and returns a new string
+def calculate_new_version(major, minor, patch, type)
+    case type
+    when 'major'
+        return "#{major + 1}.0.0"
+    when 'minor'
+        return "#{major}.#{minor + 1}.0"
+    when 'patch'
+        return "#{major}.#{minor}.#{patch + 1}"
+    else
+        return ''
+    end
 end
 
 def add_git_tag(tag)
-    # TODO
+    return system("git tag #{tag}")
 end
 
 def build_carthage_archive()
