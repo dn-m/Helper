@@ -803,6 +803,37 @@ def bump_version(name, type)
     # TODO: debugging
     puts "name: #{name}"
     puts "type: #{type}"
+
+    current_version = get_current_version
+    puts "current_version: #{current_version}"
+
+    new_version = calculate_new_version(current_version, type)
+
+    add_git_tag(new_version)
+
+    build_carthage_archive
+
+    push_github_release(name, new_version)
+end
+
+def get_current_version()
+    # TODO
+end
+
+def calculate_new_version(current_version, type)
+    # TODO
+end
+
+def add_git_tag(tag)
+    # TODO
+end
+
+def build_carthage_archive()
+    # TODO
+end
+
+def push_github_release(name, tag)
+    # TODO
 end
 
 class Helper
