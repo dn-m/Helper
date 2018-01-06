@@ -798,22 +798,9 @@ end
 # name of project, type of increment ("major", "minor", "patch")
 # TODO: walk back tag creation on failure
 def bump_version(name, type, options)
-    if type != 'major' && type != 'minor' && type != 'patch'
-        puts "Unknown type '#{type}'"
-        return
-    end
-
-    current_version = get_current_version
-
-    major, minor, patch = parse_version_string(current_version, type)
-    if major == nil
-        puts "Could not parse version string '#{type}'"
-        return
-    end
-
-    new_version = calculate_new_version(major, minor, patch, type)
+    new_version = calculate_new_version(type)
     if new_version == ""
-        puts "Could not calculate version update: '#{major}.#{minor}.#{patch}', type='#{type}'"
+        puts "Could not calculate new version."
         return
     end
 
@@ -874,7 +861,7 @@ def parse_version_string(version, type)
 end
 
 # bumps up the version number and returns a new string
-def calculate_new_version(major, minor, patch, type)
+def increment_version(major, minor, patch, type)
     case type
     when 'major'
         return "#{major + 1}.0.0"
@@ -885,6 +872,23 @@ def calculate_new_version(major, minor, patch, type)
     else
         return ''
     end
+end
+
+# returns new version string, "" on fail
+def calculate_new_version(type)
+    if type != 'major' && type != 'minor' && type != 'patch'
+        puts "Unknown type '#{type}'"
+        return ""
+    end
+
+    current_version = get_current_version
+    major, minor, patch = parse_version_string(current_version, type)
+    if major == nil
+        puts "Could not parse version string '#{type}'"
+        return ""
+    end
+
+    return increment_version(major, minor, patch, type)
 end
 
 def add_git_tag(tag)
