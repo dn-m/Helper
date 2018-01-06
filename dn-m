@@ -932,7 +932,7 @@ def push_github_release(name, tag, options)
     # check for access token first
     if ENV['GITHUB_TOKEN'].nil?
         puts "GITHUB_TOKEN not set, can't authenticate"
-        return
+        return nil
     end
 
     header_config = "-H \"Content-Type: application/json\"\
