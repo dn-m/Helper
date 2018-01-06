@@ -912,12 +912,12 @@ def remove_github_tag(tag)
 end
 
 def build_carthage_archive()
-    unless system("carthage build --no-skip-current")
+    unless system("carthage build --no-skip-current > /dev/null")
         puts "Could not execute 'carthage build'"
         return false
     end
 
-    unless system("carthage archive")
+    unless system("carthage archive > /dev/null")
         puts "Could not execute 'carthage archive'"
         return false
     end
