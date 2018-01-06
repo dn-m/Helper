@@ -834,7 +834,7 @@ def bump_version(name, type, options)
 
     if should_archive
         archive_path = "#{name}.framework.zip"
-        unless upload_release_archive(response, archive_path)
+        unless upload_release_archive(response, archive_path, options)
             puts "Could not upload release archive to GitHub"
             remove_git_tag(new_version)
             remove_github_tag(new_version)
@@ -924,18 +924,30 @@ def build_carthage_archive()
     return true
 end
 
+def get_github_token(options)
+    token = options.token
+    token = token.nil? ? ENV['GITHUB_TOKEN'] : token
+
+    if token.nil?
+        puts "Could not retrieve GitHub token. Either pass it via -t or set GITHUB_TOKEN"
+    end
+
+    return token
+end
+
 # returns the response as a JSON object, or nil on fail
 def push_github_release(name, tag, options)
     puts "Pushing release to GitHub"
 
     # check for access token first
-    if ENV['GITHUB_TOKEN'].nil?
-        puts "GITHUB_TOKEN not set, can't authenticate"
+    token = get_github_token(options)
+    if token.nil?
+        puts "Could not retrieve GitHub token. Either pass it via -t or set GITHUB_TOKEN"
         return nil
     end
 
     header_config = "-H \"Content-Type: application/json\"\
-                     -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
+                     -H \"Authorization: token #{token}\""
 
     description = options.desc.nil? ? "Release version #{tag}" : options.desc
     prerelease = options.beta.nil? ? false : options.beta
@@ -963,17 +975,17 @@ def push_github_release(name, tag, options)
     return JSON.parse(response)
 end
 
-def upload_release_archive(response, archive_path)
+def upload_release_archive(response, archive_path, options)
     puts "Pushing zipped framework to GitHub"
 
     # check for access token first
-    if ENV['GITHUB_TOKEN'].nil?
-        puts "GITHUB_TOKEN not set, can't authenticate"
-        return
+    token = get_github_token(options)
+    if token.nil?
+        return nil
     end
 
     header_config = "-H \"Content-Type: application/zip\"\
-                     -H \"Authorization: token #{ENV['GITHUB_TOKEN']}\""
+                     -H \"Authorization: token #{token}\""
 
     tpl = response['upload_url']
     tpl = URITemplate.new(tpl)
@@ -1080,7 +1092,7 @@ class Helper
         end
 
         command :bump do |c|
-            c.syntax = 'bump -[Mmp] [-b] [-d <desc>] [-n <name>] [--[no-]archive]'
+            c.syntax = 'bump -[Mmp] [-b] [-d <desc>] [-n <name>] [--[no-]archive] [-t <token>]'
             c.description = 'Bump version tag, and prepare binary. If more than one is specified, only the most important will be incremented'
             c.option '-M', '--major', 'Increment the major version number'
             c.option '-m', '--minor', 'Increment the minor version number'
@@ -1089,6 +1101,7 @@ class Helper
             c.option '-n NAME', '--name NAME', String, 'Name of the release'
             c.option '-d DESC', '--desc DESC', String, 'Description of the release'
             c.option '-b', '--beta', 'Create a beta release (prerelease)'
+            c.option '-t TOKEN', '--token TOKEN', String, 'GitHub token for auth. You can also export the environment variable GITHUB_TOKEN'
 
             c.action do |args, options|
                 type = ''
