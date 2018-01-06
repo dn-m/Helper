@@ -796,7 +796,6 @@ end
 # =============================================================================
 
 # name of project, type of increment ("major", "minor", "patch")
-# TODO: walk back tag creation on failure
 def bump_version(name, type, options)
     new_version = calculate_new_version(type)
     if new_version == ""
