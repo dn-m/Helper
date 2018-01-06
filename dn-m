@@ -817,13 +817,11 @@ def bump_version(name, type, options)
         return
     end
 
-    puts "Creating local tag #{new_version}"
     unless add_git_tag(new_version)
         puts "Could not add tag"
         return
     end
 
-    puts "Pushing tag to GitHub"
     unless add_github_tag(new_version)
         puts "Could not push tag"
         remove_git_tag(new_version)
@@ -840,7 +838,6 @@ def bump_version(name, type, options)
         return
     end
 
-    puts "Pushing release to GitHub"
     response = push_github_release(name, new_version, options)
     if response == nil
         puts "Could not push release to GitHub"
@@ -851,7 +848,6 @@ def bump_version(name, type, options)
 
     if should_archive
         archive_path = "#{name}.framework.zip"
-        puts "Pushing zipped framework to GitHub"
         unless upload_release_archive(response, archive_path)
             puts "Could not upload release archive to GitHub"
             remove_git_tag(new_version)
@@ -892,10 +888,12 @@ def calculate_new_version(major, minor, patch, type)
 end
 
 def add_git_tag(tag)
+    puts "Creating local tag #{new_version}"
     return system("git tag #{tag} &> /dev/null")
 end
 
 def add_github_tag(tag)
+    puts "Pushing tag to GitHub"
     return system("git push origin #{tag} &> /dev/null")
 end
 
@@ -925,6 +923,7 @@ end
 
 # returns the response as a JSON object, or nil on fail
 def push_github_release(name, tag, options)
+    puts "Pushing release to GitHub"
 
     # check for access token first
     if ENV['GITHUB_TOKEN'].nil?
@@ -959,6 +958,7 @@ def push_github_release(name, tag, options)
 end
 
 def upload_release_archive(response, archive_path)
+    puts "Pushing zipped framework to GitHub"
 
     # check for access token first
     if ENV['GITHUB_TOKEN'].nil?
