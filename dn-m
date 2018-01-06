@@ -940,16 +940,19 @@ def push_github_release(name, tag, options)
 
     description = options.desc.nil? ? "Release version #{tag}" : options.desc
     prerelease = options.beta.nil? ? false : options.beta
+    release_name = options.name.nil? ? "#{tag}" : options.name
 
     json = "\'{
             \"tag_name\": \"#{tag}\",
+            \"name\": \"#{release_name}\",
             \"body\": \"#{description}\",
             \"draft\": false,
             \"prerelease\": #{prerelease}
             }\'"
     url = "https://api.github.com/repos/dn-m/#{name}/releases"
 
-    response = `curl -s -X POST #{header_config} -d #{json} #{url}`
+    command = "curl -s -X POST #{header_config} -d #{json} #{url}"
+    response = `#{command}`
 
     # current way of detecting success. TODO: better?
     if (response =~ /#{url}/) == nil
@@ -1084,6 +1087,7 @@ class Helper
             c.option '-m', '--minor', 'Increment the minor version number'
             c.option '-p', '--patch', 'Increment the patch version number'
             c.option '--[no-]archive', 'Whether or not to upload a carthage-archived zip. Default: true'
+            c.option '-n NAME', '--name NAME', String, 'Name of the release'
             c.option '-d DESC', '--desc DESC', String, 'Description of the release'
             c.option '-b', '--beta', 'Create a beta release (prerelease)'
 
