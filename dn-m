@@ -826,7 +826,7 @@ def bump_version(name, type, options)
     puts "Pushing tag to GitHub"
     unless add_github_tag(new_version)
         puts "Could not push tag"
-        remove_git_tag
+        remove_git_tag(new_version)
         return
     end
 
@@ -835,8 +835,8 @@ def bump_version(name, type, options)
 
     if should_archive && !build_carthage_archive
         puts "Carthage archiving failed"
-        remove_git_tag
-        remove_github_tag
+        remove_git_tag(new_version)
+        remove_github_tag(new_version)
         return
     end
 
@@ -844,8 +844,8 @@ def bump_version(name, type, options)
     response = push_github_release(name, new_version, options)
     if response == nil
         puts "Could not push release to GitHub"
-        remove_git_tag
-        remove_github_tag
+        remove_git_tag(new_version)
+        remove_github_tag(new_version)
         return
     end
 
@@ -854,8 +854,8 @@ def bump_version(name, type, options)
         puts "Pushing zipped framework to GitHub"
         unless upload_release_archive(response, archive_path)
             puts "Could not upload release archive to GitHub"
-            remove_git_tag
-            remove_github_tag
+            remove_git_tag(new_version)
+            remove_github_tag(new_version)
             return
         end
     end
