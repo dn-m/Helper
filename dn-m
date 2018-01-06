@@ -892,12 +892,12 @@ def calculate_new_version(type)
 end
 
 def add_git_tag(tag)
-    puts "Creating local tag #{new_version}"
+    puts "Creating local tag #{tag}"
     return system("git tag #{tag} &> /dev/null")
 end
 
 def add_github_tag(tag)
-    puts "Pushing tag to GitHub"
+    puts "Creating remote tag #{tag}"
     return system("git push origin #{tag} &> /dev/null")
 end
 
