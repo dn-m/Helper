@@ -823,7 +823,7 @@ def bump_version(name, type, options)
     end
 
     unless add_github_tag(new_version)
-        puts "Could not push tag"
+        puts "Could not push remote tag"
         remove_git_tag(new_version)
         return
     end
