@@ -824,7 +824,7 @@ def bump_version(name, type, options)
     end
 
     puts "Pushing tag to GitHub"
-    unless push_git_tag(new_version)
+    unless add_github_tag(new_version)
         puts "Could not push tag"
         return
     end
@@ -888,7 +888,7 @@ def add_git_tag(tag)
     return system("git tag #{tag} &> /dev/null")
 end
 
-def push_git_tag(tag)
+def add_github_tag(tag)
     return system("git push origin #{tag} &> /dev/null")
 end
 
