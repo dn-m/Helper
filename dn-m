@@ -1080,7 +1080,7 @@ class Helper
         end
 
         command :bump do |c|
-            c.syntax = 'bump [--major | --minor | --patch]'
+            c.syntax = 'bump -[Mmp] [-b] [-d <desc>] [-n <name>] [--[no-]archive]'
             c.description = 'Bump version tag, and prepare binary. If more than one is specified, only the most important will be incremented'
             c.option '-M', '--major', 'Increment the major version number'
             c.option '-m', '--minor', 'Increment the minor version number'
