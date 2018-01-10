@@ -850,13 +850,36 @@ def bump_version(name, type, options)
     puts "Success!"
 end
 
-def get_current_version()
-    return `git describe --abbrev=0 --tags`
+# finds the most recent tag
+def resolve_current_version()
+    most_recent_tag = `git describe --abbrev=0 --tags`
+    tag_list = `git tag --points-at #{most_recent_tag}`
+    tags = tag_list.split("\n")
+    if tags.size > 1
+        puts "Multiple tags found:"
+        for tag in tags
+            puts "\t" + tag
+        end
+        most_recent_tag = resolve_highest_version(tags)
+        puts "Resolved to #{most_recent_tag}"
+    end
+
+    return most_recent_tag
+end
+
+def resolve_highest_version(tags)
+    tags = tags.map {|tag| parse_version_string(tag) }
+    tags = tags.select {|tuple| tuple[0] != nil }
+    if tags.empty?
+        return ''
+    else
+        return tags.sort().last().join('.')
+    end
 end
 
 # parses a string of the form "1.0.3" or "1.4" or "3" and returns the fields
 # returns all-nil if no way to parse
-def parse_version_string(version, type)
+def parse_version_string(version)
     if (/^(\d+)(?:\.(\d+))?(?:\.(\d+))?$/ =~ version) == nil
         return nil, nil, nil
     end
@@ -885,8 +908,8 @@ def calculate_new_version(type)
         return ""
     end
 
-    current_version = get_current_version
-    major, minor, patch = parse_version_string(current_version, type)
+    current_version = resolve_current_version
+    major, minor, patch = parse_version_string(current_version)
     if major == nil
         puts "Could not parse version string '#{type}'"
         return ""
