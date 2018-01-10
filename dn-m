@@ -862,6 +862,8 @@ def resolve_current_version()
         end
         most_recent_tag = resolve_highest_version(tags)
         puts "Resolved to #{most_recent_tag}"
+    else
+        most_recent_tag = most_recent_tag.chop()
     end
 
     return most_recent_tag
