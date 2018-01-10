@@ -913,7 +913,7 @@ def calculate_new_version(type)
     current_version = resolve_current_version
     major, minor, patch = parse_version_string(current_version)
     if major == nil
-        puts "Could not parse version string '#{type}'"
+        puts "Could not parse version string '#{current_version}'"
         return ""
     end
 
