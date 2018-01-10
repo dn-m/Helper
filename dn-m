@@ -803,6 +803,11 @@ def bump_version(name, type, options)
         return
     end
 
+    if options.version_only
+        puts "New version would be #{new_version}"
+        return
+    end
+
     unless add_git_tag(new_version)
         puts "Could not add tag"
         return
@@ -1102,6 +1107,7 @@ class Helper
             c.option '-d DESC', '--desc DESC', String, 'Description of the release'
             c.option '-b', '--beta', 'Create a beta release (prerelease)'
             c.option '-t TOKEN', '--token TOKEN', String, 'GitHub token for auth. You can also export the environment variable GITHUB_TOKEN'
+            c.option '--version-only', 'Only calculates the new version number and exits'
 
             c.action do |args, options|
                 type = ''
